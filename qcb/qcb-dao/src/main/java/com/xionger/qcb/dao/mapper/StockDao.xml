@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xionger.qcb.dao.mapper.StockDao" >
+  <resultMap id="BaseResultMap" type="com.xionger.qcb.model.Stock" >
+    <id column="id" property="id" jdbcType="CHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="codeName" property="codeName" jdbcType="VARCHAR" />
+    <result column="newPrice" property="newPrice" jdbcType="DECIMAL" />
+    <result column="amplitude" property="amplitude" jdbcType="DECIMAL" />
+    <result column="amplitudePrice" property="amplitudePrice" jdbcType="DECIMAL" />
+    <result column="buyPrice" property="buyPrice" jdbcType="DECIMAL" />
+    <result column="salePrice" property="salePrice" jdbcType="DECIMAL" />
+    <result column="dealVol" property="dealVol" jdbcType="BIGINT" />
+    <result column="dealPrice" property="dealPrice" jdbcType="DECIMAL" />
+    <result column="todayOpen" property="todayOpen" jdbcType="DECIMAL" />
+    <result column="yeatedayClose" property="yeatedayClose" jdbcType="DECIMAL" />
+    <result column="heightPrice" property="heightPrice" jdbcType="DECIMAL" />
+    <result column="lowPrice" property="lowPrice" jdbcType="DECIMAL" />
+    <result column="createDate" property="createDate" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id,code,codeName,newPrice,amplitude,amplitudePrice,buyPrice,salePrice,dealVol,dealPrice,todayOpen,yeatedayClose,heightPrice,lowPrice,createDate
+  </sql>
+  
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_stock
+    where id = #{id,jdbcType=CHAR}
+  </select>
+ 
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from t_stock
+    where id = #{id,jdbcType=CHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.xionger.qcb.model.Stock" >
+    insert into t_stock (
+    	id,code,codeName,newPrice,amplitude,amplitudePrice,buyPrice,salePrice,dealVol,dealPrice,todayOpen,yeatedayClose,heightPrice,lowPrice,createDate
+    )
+    values (
+    	#{id,jdbcType=CHAR}, #{code,jdbcType=VARCHAR}, #{codeName,jdbcType=VARCHAR}, 
+        #{newPrice,jdbcType=DECIMAL}, #{amplitude,jdbcType=DECIMAL}, #{amplitudePrice,jdbcType=DECIMAL}, 
+        #{buyPrice,jdbcType=DECIMAL},#{salePrice,jdbcType=DECIMAL}, #{dealVol,jdbcType=BIGINT}, 
+        #{dealPrice,jdbcType=DECIMAL},#{todayOpen,jdbcType=DECIMAL}, #{yeatedayClose,jdbcType=DECIMAL}, 
+        #{heightPrice,jdbcType=DECIMAL}, #{lowPrice,jdbcType=DECIMAL},#{createDate,jdbcType=VARCHAR}
+    )
+  </insert>
+  
+  <delete id="deleteStockListByDataDate" parameterType="java.lang.String" >
+    delete from t_stock
+    where createDate = #{dataDate,jdbcType=VARCHAR}
+  </delete>
+  
+  
+</mapper>
