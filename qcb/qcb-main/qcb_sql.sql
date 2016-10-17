@@ -20,6 +20,7 @@ CREATE TABLE `t_stock` (
 
 
 
+
 //股票均线统计表
 CREATE TABLE `t_stock_ma` (
   `id` varchar(32) NOT NULL DEFAULT '',
@@ -34,6 +35,7 @@ CREATE TABLE `t_stock_ma` (
   `createDate` varchar(8) DEFAULT NULL COMMENT '统计日期服务器时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 
 //过滤出来的股票数据

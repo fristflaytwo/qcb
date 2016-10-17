@@ -10,6 +10,7 @@
      
 	<task:scheduler id="trust-task" pool-size="20"/>
 	<task:scheduled-tasks scheduler="trust-task">
-		<task:scheduled ref="executorTimer" method="initStockData" cron="0 27 17 * * ?"/> <!-- 资产处置到期后自动延期job -->
+		<task:scheduled ref="executorTimer" method="initStockData" cron="0 30 14 * * ?"/> <!-- 股票信息下载统计 -->
+		<task:scheduled ref="executorTimer" method="initStockData" cron="0 30 16 * * ?"/> <!-- 股票信息下载统计 -->
 	</task:scheduled-tasks>
 </beans>
