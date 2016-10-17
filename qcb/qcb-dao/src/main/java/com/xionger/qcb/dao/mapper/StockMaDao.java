@@ -14,4 +14,11 @@ public interface StockMaDao {
     int updateByPrimaryKeySelective(StockMa record);
 
     int updateByPrimaryKey(StockMa record);
+    
+    /**
+     * 删除对应日期的数据结果集
+     * @param createDate
+     * @return
+     */
+    int deleteByCreateDate(String createDate);
 }

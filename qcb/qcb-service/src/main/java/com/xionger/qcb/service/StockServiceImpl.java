@@ -7,6 +7,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -18,26 +19,36 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.xionger.qcb.common.util.conllection.CollectionUtil;
 import com.xionger.qcb.common.util.date.DateUtil;
 import com.xionger.qcb.common.util.string.StringUtil;
 import com.xionger.qcb.dao.mapper.StockDao;
+import com.xionger.qcb.dao.mapper.StockMaDao;
+import com.xionger.qcb.dao.mapper.StockResultDao;
 import com.xionger.qcb.model.Stock;
+import com.xionger.qcb.model.StockMa;
+import com.xionger.qcb.model.StockResult;
 
 @Service("userService")
 public class StockServiceImpl implements StockService{
 	private static final Logger LOGGER = LoggerFactory.getLogger(StockServiceImpl.class);
 	@Autowired
 	private StockDao stockDao;
+	@Autowired
+	private StockMaDao stockMaDao;
+	@Autowired
+	private StockResultDao stockResultDao;
 	
 	/**
      * 从下载的excel冲将数据导入到数据库,调用次方法必须要求该日数据excel必须存在
      * @param xlsDate
      */
-    public void insertStockListByXlsdate(Date xlsDate,String path){
+    public String insertStockListByXlsdate(Date xlsDate,String path){
     	LOGGER.info("开始读取{0}日下载的股票excel数据，并保存数据库",xlsDate);
     	HSSFWorkbook wb=null;
     	POIFSFileSystem pfs=null;
     	FileInputStream fis=null;
+    	String dataDate=null;
         try{
         	File file = new File(path);
         	fis=new FileInputStream(file);
@@ -47,7 +58,6 @@ public class StockServiceImpl implements StockService{
             Iterator<Row> rows=sheet.rowIterator();
             Row row=null;
             int i=0;
-            String dataDate=null;
             while(rows.hasNext()){
             	row=rows.next();
             	if(i==0){
@@ -120,5 +130,101 @@ public class StockServiceImpl implements StockService{
 				
 			}
         }
+        return dataDate;
+    }
+    
+    /**
+     * 保存股票结果集，并进行均线统计，Channel01：量比昨天大，收盘大于昨天最高，（收盘-开盘）> (最高-收盘)，当前>5日均线
+     * @param date 股票信息表的股票数据日期
+     */
+    public void insertStockResultListByChannel01(String date){
+    	List<Stock> list=this.stockDao.selectListByCreateDate(date);
+    	if(CollectionUtil.isNotEmpty(list)){
+    		//先删除该天的均线数据和已经过滤好的结果集数据
+    		String createDate=DateUtil.dateToString(new Date(),DateUtil.formatPattern_Short);
+    		this.stockMaDao.deleteByCreateDate(createDate);//删除均线
+    		this.stockResultDao.deleteByCreateDate(createDate);//删除已经过滤出来的结果集
+    		//均线和过滤适合条件的股票算法开始
+    		List<Stock> stock20List=null;
+    		for(Stock stock:list){
+    			stock20List=this.stockDao.select20ListByCodeOrderCreateDateDesc(stock.getCode());//必须结果集倒序
+    			//均线计算
+    			BigDecimal day5=new BigDecimal("0.00");
+    			BigDecimal day10=new BigDecimal("0.00");
+    			BigDecimal day20=new BigDecimal("0.00");
+    			BigDecimal maSum=new BigDecimal("0.00");
+    			boolean isResult=false;//是否需要保存到result中，默认不符合规则，无需保存
+    			if(CollectionUtil.isNotEmpty(stock20List)){
+    				for(int i=0;i<stock20List.size();i++){
+    					maSum=maSum.add(stock20List.get(i).getNewPrice());
+    					//判断是否符合结果集的过滤条件
+    					if(i==1){
+    						Stock tStock=stock20List.get(0);//今天数据对象
+    						Stock yStock=stock20List.get(1);//昨天数据对象
+    						if(tStock.getDealVol().compareTo(yStock.getDealVol())==1 
+    								&& tStock.getNewPrice().compareTo(yStock.getHeightPrice())==1
+    								&& ((tStock.getNewPrice().subtract(tStock.getTodayOpen())).compareTo(tStock.getHeightPrice().subtract(tStock.getNewPrice()))==1)){
+    							isResult=true;
+    						}
+    					}
+    					//均线区间统计
+    					if(stock20List.size()>10){
+    						if(i==4){
+    							day5=maSum.divide(new BigDecimal("5.00"),2);
+            				}
+            				if(i==9){
+            					day10=maSum.divide(new BigDecimal("10.00"),2);
+            				}
+            				if(i==(stock20List.size()-1)){
+            					day20=maSum.divide(new BigDecimal((stock20List.size()+"")),2);
+            				}
+            				continue;
+    					}else if(stock20List.size()>5 && stock20List.size()<=10){
+    						if(i==4){
+    							day5=maSum.divide(new BigDecimal("5.00"),2);
+            				}
+    						if(i==(stock20List.size()-1)){
+            					day10=maSum.divide(new BigDecimal((stock20List.size()+"")),2);
+            				}
+            				continue;
+    					}else if(stock20List.size()<=5){
+    						if(i==(stock20List.size()-1)){
+            					day5=maSum.divide(new BigDecimal((stock20List.size()+"")),2);
+            				}
+    					}
+        			}
+    			}
+    			
+    			//保存均线数据
+    			StockMa stockMa=new StockMa();
+    			stockMa.generateId();
+    			stockMa.setCode(stock.getCode());
+    			stockMa.setCodename(stock.getCodeName());
+    			stockMa.setCreateDate(createDate);
+    			stockMa.setDay5(day5);
+    			stockMa.setDay10(day10);
+    			stockMa.setDay20(day20);
+    			stockMaDao.insertSelective(stockMa);
+    			
+    			//如果isResult=true,则初步确定为我想要的数据
+    			if(isResult){
+    				if(stock.getNewPrice().compareTo(day5)==1){//当前价大于5日均线
+    					StockResult stockResult=new StockResult();
+    					stockResult.generateId();
+    					stockResult.setChanneltype("01");
+    					stockResult.setCode(stock.getCode());
+    					stockResult.setCodename(stock.getCodeName());
+    					stockResult.setCreateDate(createDate);
+    					stockResult.setHeightprice(stock.getHeightPrice());
+    					stockResult.setNewprice(stock.getNewPrice());
+    					stockResult.setMaday5(day5);
+    					stockResult.setMaday10(day10);
+    					stockResult.setMaday20(day20);
+    					this.stockResultDao.insertSelective(stockResult);
+    				}
+    			}
+    			
+    		}
+    	}
     }
 }

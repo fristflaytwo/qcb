@@ -53,5 +53,17 @@
     where createDate = #{dataDate,jdbcType=VARCHAR}
   </delete>
   
+  <select id="selectListByCreateDate" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_stock
+    where createDate = #{createDate,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="select20ListByCodeOrderCreateDateDesc" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+	<include refid="Base_Column_List" /> 
+	from t_stock t where t.`code`=#{code,jdbcType=VARCHAR} and t.newPrice <![CDATA[>]]> 0.00 ORDER BY t.createDate desc LIMIT 20
+  </select>
   
 </mapper>

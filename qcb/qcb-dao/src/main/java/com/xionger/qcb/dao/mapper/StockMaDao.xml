@@ -11,7 +11,7 @@
     <result column="week5" property="week5" jdbcType="DECIMAL" />
     <result column="week10" property="week10" jdbcType="DECIMAL" />
     <result column="week20" property="week20" jdbcType="DECIMAL" />
-    <result column="createDate" property="createdate" jdbcType="VARCHAR" />
+    <result column="createDate" property="createDate" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, code, codeName, day5, day10, day20, week5, week10, week20, createDate
@@ -34,7 +34,7 @@
     values (#{id,jdbcType=CHAR}, #{code,jdbcType=VARCHAR}, #{codename,jdbcType=VARCHAR}, 
       #{day5,jdbcType=DECIMAL}, #{day10,jdbcType=DECIMAL}, #{day20,jdbcType=DECIMAL}, 
       #{week5,jdbcType=DECIMAL}, #{week10,jdbcType=DECIMAL}, #{week20,jdbcType=DECIMAL}, 
-      #{createdate,jdbcType=VARCHAR})
+      #{createDate,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.xionger.qcb.model.StockMa" >
     insert into t_stock_ma
@@ -66,7 +66,7 @@
       <if test="week20 != null" >
         week20,
       </if>
-      <if test="createdate != null" >
+      <if test="createDate != null" >
         createDate,
       </if>
     </trim>
@@ -98,8 +98,8 @@
       <if test="week20 != null" >
         #{week20,jdbcType=DECIMAL},
       </if>
-      <if test="createdate != null" >
-        #{createdate,jdbcType=VARCHAR},
+      <if test="createDate != null" >
+        #{createDate,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -130,8 +130,8 @@
       <if test="week20 != null" >
         week20 = #{week20,jdbcType=DECIMAL},
       </if>
-      <if test="createdate != null" >
-        createDate = #{createdate,jdbcType=VARCHAR},
+      <if test="createDate != null" >
+        createDate = #{createDate,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=CHAR}
@@ -146,10 +146,13 @@
       week5 = #{week5,jdbcType=DECIMAL},
       week10 = #{week10,jdbcType=DECIMAL},
       week20 = #{week20,jdbcType=DECIMAL},
-      createDate = #{createdate,jdbcType=VARCHAR}
+      createDate = #{createDate,jdbcType=VARCHAR}
     where id = #{id,jdbcType=CHAR}
   </update>
   
-  
+  <delete id="deleteByCreateDate" parameterType="java.lang.String" >
+    delete from t_stock_ma
+    where createDate = #{createDate,jdbcType=VARCHAR}
+  </delete>
   
 </mapper>

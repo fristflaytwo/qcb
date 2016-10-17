@@ -14,4 +14,11 @@ public interface StockResultDao {
     int updateByPrimaryKeySelective(StockResult record);
 
     int updateByPrimaryKey(StockResult record);
+    
+    /**
+     * 删除对应日期的股票结果集数据
+     * @param createDate
+     * @return
+     */
+    int deleteByCreateDate(String createDate);
 }

@@ -1,5 +1,7 @@
 package com.xionger.qcb.dao.mapper;
 
+import java.util.List;
+
 import com.xionger.qcb.model.Stock;
 
 
@@ -31,5 +33,18 @@ public interface StockDao {
      */
     public void deleteStockListByDataDate(String dataDate);
 
-   
+    /**
+     * 根据数据日期查询改天的所有数据记录
+     * @param id
+     * @return
+     */
+    public List<Stock> selectListByCreateDate(String createDate);
+    
+    
+    /**
+     * 根据code查询某只股票近20天的数据，按照数据日期进行倒序排列
+     * @param code
+     * @return
+     */
+    public List<Stock> select20ListByCodeOrderCreateDateDesc(String code);
 }
