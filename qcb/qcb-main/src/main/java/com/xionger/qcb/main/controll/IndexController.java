@@ -38,8 +38,8 @@ public class IndexController extends BaseController {
 	 * app下载页
 	 */
 	@RequestMapping("/test")
-	public ResultVo test(){
-		String path="d:/stock_xls/20161013.xls";
+	public ResultVo test(String fileName){
+		String path="d:/stock_xls/"+fileName+".xls";
 		stockService.insertStockListByXlsdate(new Date(), path);
 		return new ResultVo();
 	}

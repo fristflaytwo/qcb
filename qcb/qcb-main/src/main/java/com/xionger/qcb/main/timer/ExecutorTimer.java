@@ -30,7 +30,7 @@ public class ExecutorTimer {
 	/**
 	 * 利用httpclient获取股票信息数据
 	 */
-	public void insertStockList() {
+	public void initStockData() {
 		//先下载数据到本地磁盘
 		BufferedOutputStream bw = null;
 		String path="d:/stock_xls/"+DateUtil.dateToString(new Date(),DateUtil.formatPattern_Short)+".xls";
@@ -53,8 +53,14 @@ public class ExecutorTimer {
 			}
 			bw=null;
 		}
+		
 		//调用server层进行数据保存
 		stockService.insertStockListByXlsdate(new Date(), path);
+		
+		//重新计算均线
+		
+		//得到最终过滤出来的股票
+		
 	}
 	
 	

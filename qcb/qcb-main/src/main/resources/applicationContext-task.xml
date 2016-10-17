@@ -10,6 +10,6 @@
      
 	<task:scheduler id="trust-task" pool-size="20"/>
 	<task:scheduled-tasks scheduler="trust-task">
-		<task:scheduled ref="executorTimer" method="insertStockList" cron="0 28 11 * * ?"/> <!-- 资产处置到期后自动延期job -->
+		<task:scheduled ref="executorTimer" method="initStockData" cron="0 28 11 * * ?"/> <!-- 资产处置到期后自动延期job -->
 	</task:scheduled-tasks>
 </beans>

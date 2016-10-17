@@ -1,3 +1,4 @@
+//股票原始数据采集表
 CREATE TABLE `t_stock` (
   `id` varchar(32) NOT NULL,
   `code` varchar(64) DEFAULT NULL COMMENT '股票代码',
@@ -13,23 +14,44 @@ CREATE TABLE `t_stock` (
   `yeatedayClose` decimal(20,2) DEFAULT NULL COMMENT '昨收',
   `heightPrice` decimal(20,2) DEFAULT NULL COMMENT '最高',
   `lowPrice` decimal(20,2) DEFAULT NULL COMMENT '最低',
-  `createDate` varchar(8) DEFAULT NULL COMMENT '创建日期',
+  `createDate` varchar(8) DEFAULT NULL COMMENT '数据日期',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+//股票均线统计表
+CREATE TABLE `t_stock_ma` (
+  `id` varchar(32) NOT NULL DEFAULT '',
+  `code` varchar(64) DEFAULT NULL COMMENT '股票代码',
+  `codeName` varchar(128) DEFAULT NULL COMMENT '股票名称',
+  `day5` decimal(20,2) DEFAULT NULL COMMENT '5日均线',
+  `day10` decimal(20,2) DEFAULT NULL COMMENT '10日均线',
+  `day20` decimal(20,2) DEFAULT NULL COMMENT '20日均线',
+  `week5` decimal(20,2) DEFAULT NULL COMMENT '5周均线',
+  `week10` decimal(20,2) DEFAULT NULL COMMENT '10周均线',
+  `week20` decimal(20,2) DEFAULT NULL COMMENT '20周均线',
+  `createDate` varchar(8) DEFAULT NULL COMMENT '统计日期服务器时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+//过滤出来的股票数据
+CREATE TABLE `t_stock_result` (
+  `id` varchar(32) NOT NULL DEFAULT '',
+  `code` varchar(64) DEFAULT NULL COMMENT '股票代码',
+  `codeName` varchar(128) DEFAULT NULL COMMENT '股票名称',
+  `channelType` varchar(2) DEFAULT NULL COMMENT '统计渠道类别：01：量和昨日最高价',
+  `maDay5` decimal(20,2) DEFAULT NULL COMMENT '5日均线',
+  `maDay10` decimal(20,2) DEFAULT NULL COMMENT '10日均线',
+  `maDay20` decimal(20,2) DEFAULT NULL COMMENT '20日均线',
+  `newPrice` decimal(20,2) DEFAULT NULL COMMENT '最新价格',
+  `heightPrice` decimal(20,2) DEFAULT NULL COMMENT '今日最高价',
+  `createDate` varchar(8) DEFAULT NULL COMMENT '统计日期，服务器时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
 
-SELECT
-	t.*, t.todayOpen - t.yeatedayClose AS 'aa',
-	t.lowPrice - t.yeatedayClose AS 'bb'
-FROM
-	t_stock t
-WHERE
-	t.todayOpen > (t.yeatedayClose+0.1)
-AND t.lowPrice > (t.yeatedayClose+0.1)
-and t.newPrice>t.todayOpen
-AND t.newPrice < 30
-and t.codeName not like '%ST%'
-and t.createDate='20160912'
-order by CAST(REPLACE(t.amplitude,'%','') AS signed) desc,t.todayOpen - t.yeatedayClose desc,t.lowPrice - t.yeatedayClose desc;
+
