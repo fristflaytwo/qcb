@@ -279,7 +279,7 @@ public class StockServiceImpl implements StockService{
     			
     			//如果isResult=true,则初步确定为我想要的数据
     			if(isResult){
-    				if(stock.getNewPrice().compareTo(day5)==1 && week5.compareTo(week10)==1 && week5.compareTo(week20)==1){//当前价大于5日均线,5周均线分别在10周和20周准线之上
+    				if(stock.getNewPrice().compareTo(day5)==1 && week5.compareTo(week10)>=0 && week5.compareTo(week20)>=0){//当前价大于5日均线,5周均线分别在10周和20周准线之上
     					StockResult stockResult=new StockResult();
     					stockResult.generateId();
     					stockResult.setChanneltype("01");
