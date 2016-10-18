@@ -15,7 +15,8 @@ CREATE TABLE `t_stock` (
   `heightPrice` decimal(20,2) DEFAULT NULL COMMENT '最高',
   `lowPrice` decimal(20,2) DEFAULT NULL COMMENT '最低',
   `createDate` varchar(8) DEFAULT NULL COMMENT '数据日期',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `i_createDate` (`createDate`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -33,7 +34,8 @@ CREATE TABLE `t_stock_ma` (
   `week10` decimal(20,2) DEFAULT NULL COMMENT '10周均线',
   `week20` decimal(20,2) DEFAULT NULL COMMENT '20周均线',
   `createDate` varchar(8) DEFAULT NULL COMMENT '统计日期服务器时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `i_ma_createDate` (`createDate`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -50,10 +52,13 @@ CREATE TABLE `t_stock_result` (
   `newPrice` decimal(20,2) DEFAULT NULL COMMENT '最新价格',
   `heightPrice` decimal(20,2) DEFAULT NULL COMMENT '今日最高价',
   `createDate` varchar(8) DEFAULT NULL COMMENT '统计日期，服务器时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `i_result_createDate` (`createDate`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-
+/**
+ * 快速寻找合适的股票
+ */
+select * from t_stock_result t order by (t.heightPrice-t.newPrice) ASC;
 
 

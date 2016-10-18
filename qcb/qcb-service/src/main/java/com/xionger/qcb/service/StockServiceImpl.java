@@ -145,22 +145,26 @@ public class StockServiceImpl implements StockService{
     		this.stockMaDao.deleteByCreateDate(createDate);//删除均线
     		this.stockResultDao.deleteByCreateDate(createDate);//删除已经过滤出来的结果集
     		//均线和过滤适合条件的股票算法开始
-    		List<Stock> stock20List=null;
+    		List<Stock> stock100List=null;
     		for(Stock stock:list){
-    			stock20List=this.stockDao.select20ListByCodeOrderCreateDateDesc(stock.getCode());//必须结果集倒序
+    			stock100List=this.stockDao.select100ListByCodeOrderCreateDateDesc(stock.getCode());//必须结果集倒序
     			//均线计算
     			BigDecimal day5=new BigDecimal("0.00");
     			BigDecimal day10=new BigDecimal("0.00");
     			BigDecimal day20=new BigDecimal("0.00");
+    			BigDecimal week5=new BigDecimal("0.00");
+    			BigDecimal week10=new BigDecimal("0.00");
+    			BigDecimal week20=new BigDecimal("0.00");
     			BigDecimal maSum=new BigDecimal("0.00");
+    			
     			boolean isResult=false;//是否需要保存到result中，默认不符合规则，无需保存
-    			if(CollectionUtil.isNotEmpty(stock20List)){
-    				for(int i=0;i<stock20List.size();i++){
-    					maSum=maSum.add(stock20List.get(i).getNewPrice());
+    			if(CollectionUtil.isNotEmpty(stock100List)){
+    				for(int i=0;i<stock100List.size();i++){
+    					maSum=maSum.add(stock100List.get(i).getNewPrice());
     					//判断是否符合结果集的过滤条件
     					if(i==1){
-    						Stock tStock=stock20List.get(0);//今天数据对象
-    						Stock yStock=stock20List.get(1);//昨天数据对象
+    						Stock tStock=stock100List.get(0);//今天数据对象
+    						Stock yStock=stock100List.get(1);//昨天数据对象
     						if(tStock.getDealVol().compareTo(yStock.getDealVol())==1 
     								&& tStock.getNewPrice().compareTo(yStock.getHeightPrice())==1
     								&& ((tStock.getNewPrice().subtract(tStock.getTodayOpen())).compareTo(tStock.getHeightPrice().subtract(tStock.getNewPrice()))==1)){
@@ -168,31 +172,95 @@ public class StockServiceImpl implements StockService{
     						}
     					}
     					//均线区间统计
-    					if(stock20List.size()>10){
+    					if(stock100List.size()>50){
     						if(i==4){
     							day5=maSum.divide(new BigDecimal("5.00"),2);
             				}
             				if(i==9){
             					day10=maSum.divide(new BigDecimal("10.00"),2);
             				}
-            				if(i==(stock20List.size()-1)){
-            					day20=maSum.divide(new BigDecimal((stock20List.size()+"")),2);
+            				if(i==19){
+            					day20=maSum.divide(new BigDecimal("20.00"),2);
+            				}
+            				if(i==24){
+            					week5=maSum.divide(new BigDecimal("25.00"),2);
+            				}
+            				if(i==49){
+            					week10=maSum.divide(new BigDecimal("50.00"),2);
+            				}
+            				if(i==(stock100List.size()-1)){
+            					week20=maSum.divide(new BigDecimal((stock100List.size()+"")),2);
             				}
             				continue;
-    					}else if(stock20List.size()>5 && stock20List.size()<=10){
+    					}else if(stock100List.size()>25 && stock100List.size()<=50){
     						if(i==4){
     							day5=maSum.divide(new BigDecimal("5.00"),2);
             				}
-    						if(i==(stock20List.size()-1)){
-            					day10=maSum.divide(new BigDecimal((stock20List.size()+"")),2);
+    						if(i==9){
+            					day10=maSum.divide(new BigDecimal("10.00"),2);
+            				}
+    						if(i==19){
+            					day20=maSum.divide(new BigDecimal("20.00"),2);
+            				}
+    						if(i==24){
+            					week5=maSum.divide(new BigDecimal("25.00"),2);
+            				}
+    						if(i==(stock100List.size()-1)){
+    							week10=maSum.divide(new BigDecimal((stock100List.size()+"")),2);
             				}
             				continue;
-    					}else if(stock20List.size()<=5){
-    						if(i==(stock20List.size()-1)){
-            					day5=maSum.divide(new BigDecimal((stock20List.size()+"")),2);
+    					}else if(stock100List.size()>20 && stock100List.size()<=25){
+    						if(i==4){
+    							day5=maSum.divide(new BigDecimal("5.00"),2);
+            				}
+    						if(i==9){
+            					day10=maSum.divide(new BigDecimal("10.00"),2);
+            				}
+    						if(i==19){
+            					day20=maSum.divide(new BigDecimal("20.00"),2);
+            				}
+    						if(i==(stock100List.size()-1)){
+    							week5=maSum.divide(new BigDecimal((stock100List.size()+"")),2);
+            				}
+    					}else if(stock100List.size()>10 && stock100List.size()<=20){
+    						if(i==4){
+    							day5=maSum.divide(new BigDecimal("5.00"),2);
+            				}
+    						if(i==9){
+            					day10=maSum.divide(new BigDecimal("10.00"),2);
+            				}
+    						if(i==(stock100List.size()-1)){
+    							day20=maSum.divide(new BigDecimal((stock100List.size()+"")),2);
+            				}
+    					}else if(stock100List.size()>5 && stock100List.size()<=10){
+    						if(i==4){
+    							day5=maSum.divide(new BigDecimal("5.00"),2);
+            				}
+    						if(i==(stock100List.size()-1)){
+    							day10=maSum.divide(new BigDecimal((stock100List.size()+"")),2);
+            				}
+    					}else{
+    						if(i==(stock100List.size()-1)){
+    							day5=maSum.divide(new BigDecimal((stock100List.size()+"")),2);
             				}
     					}
         			}
+    			}
+    			
+    			if(day10.doubleValue()<1){
+    				day10=day5;
+    			}
+    			if(day20.doubleValue()<1){
+    				day20=day10;
+    			}
+    			if(week5.doubleValue()<1){
+    				week5=day20;
+    			}
+    			if(week10.doubleValue()<1){
+    				week10=week5;
+    			}
+    			if(week20.doubleValue()<1){
+    				week20=week10;
     			}
     			
     			//保存均线数据
@@ -204,11 +272,14 @@ public class StockServiceImpl implements StockService{
     			stockMa.setDay5(day5);
     			stockMa.setDay10(day10);
     			stockMa.setDay20(day20);
+    			stockMa.setWeek5(week5);
+    			stockMa.setWeek10(week10);
+    			stockMa.setWeek20(week20);
     			stockMaDao.insertSelective(stockMa);
     			
     			//如果isResult=true,则初步确定为我想要的数据
     			if(isResult){
-    				if(stock.getNewPrice().compareTo(day5)==1){//当前价大于5日均线
+    				if(stock.getNewPrice().compareTo(day5)==1 && week5.compareTo(week10)==1 && week5.compareTo(week20)==1){//当前价大于5日均线,5周均线分别在10周和20周准线之上
     					StockResult stockResult=new StockResult();
     					stockResult.generateId();
     					stockResult.setChanneltype("01");

@@ -46,5 +46,5 @@ public interface StockDao {
      * @param code
      * @return
      */
-    public List<Stock> select20ListByCodeOrderCreateDateDesc(String code);
+    public List<Stock> select100ListByCodeOrderCreateDateDesc(String code);
 }

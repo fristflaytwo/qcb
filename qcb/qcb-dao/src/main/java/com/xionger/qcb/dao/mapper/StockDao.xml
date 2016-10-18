@@ -60,10 +60,10 @@
     where createDate = #{createDate,jdbcType=VARCHAR}
   </select>
   
-  <select id="select20ListByCodeOrderCreateDateDesc" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  <select id="select100ListByCodeOrderCreateDateDesc" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
 	<include refid="Base_Column_List" /> 
-	from t_stock t where t.`code`=#{code,jdbcType=VARCHAR} and t.newPrice <![CDATA[>]]> 0.00 ORDER BY t.createDate desc LIMIT 20
+	from t_stock t where t.`code`=#{code,jdbcType=VARCHAR} and t.newPrice <![CDATA[>]]> 0.00 ORDER BY t.createDate desc LIMIT 100
   </select>
   
 </mapper>
