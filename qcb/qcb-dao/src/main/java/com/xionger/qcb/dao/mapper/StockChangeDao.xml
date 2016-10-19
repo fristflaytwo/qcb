@@ -225,4 +225,12 @@
     delete from t_stock_change
     where stockDate = #{stockDate,jdbcType=VARCHAR}
   </delete>
+  
+  
+  <select id="selectChangeStockList" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_stock_change
+  </select>
+  
 </mapper>

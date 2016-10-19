@@ -1,5 +1,7 @@
 package com.xionger.qcb.dao.mapper;
 
+import java.util.List;
+
 import com.xionger.qcb.model.StockChange;
 
 public interface StockChangeDao {
@@ -21,4 +23,10 @@ public interface StockChangeDao {
      * @return
      */
     public int deleteByStockDate(String stockDate);
+    
+    /**
+     * 查询所有的异动的股票
+     * @return
+     */
+    public List<StockChange> selectChangeStockList();
 }

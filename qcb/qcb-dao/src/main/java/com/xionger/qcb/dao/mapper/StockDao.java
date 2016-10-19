@@ -47,4 +47,11 @@ public interface StockDao {
      * @return
      */
     public List<Stock> select100ListByCodeOrderCreateDateDesc(String code);
+    
+    /**
+     * 根据股票代码和数据日期，查询大于这天的该股票的数据结果集，并按照正序排列
+     * @param record
+     * @return
+     */
+    public List<Stock> selectListByCodeAndCreateDateAsc(Stock record);
 }

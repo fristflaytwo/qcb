@@ -304,7 +304,7 @@ public class StockServiceImpl implements StockService{
     }
     
     /**
-     * 保存该日期的股票数据存在移动的数据 02:涨停；03：跳高；04：回缺
+     * 保存该日期的股票数据存在移动的数据 02:涨停；03：跳高；04：回缺;05单阳不破
      * @param date
      */
     public void insertStockChange(String date){
@@ -344,6 +344,40 @@ public class StockServiceImpl implements StockService{
     			}
     			
     		}
+    	}
+    }
+    
+    
+    /**
+     * 对需要坚挺的股票进行指定日期的监听
+     * @param date 调用改监听的日起
+     */
+    public void updateStockListenerChange(){
+    	List<StockChange> needList=this.stockChangeDao.selectChangeStockList();//需要异常监控的数据
+    	if(CollectionUtil.isNotEmpty(needList)){
+    		List<Stock> list=null;
+    		for(StockChange obj:needList){
+    			Stock stock=new Stock();
+    			stock.setCode(obj.getCode());
+    			stock.setCreateDate(obj.getStockdate());
+    			list=this.stockDao.selectListByCodeAndCreateDateAsc(stock);
+    			if(CollectionUtil.isNotEmpty(list)){
+    				if(list.size()>5){//超过监控期限，释放监控对象
+    					this.stockChangeDao.deleteByPrimaryKey(obj.getId());
+    					continue;
+    				}
+    				if("02".equals(obj.getChangetype())){
+    					continue;
+    				}else if("03".equals(obj.getChangetype())){
+    					continue;
+    				}else if("04".equals(obj.getChangetype())){
+    					continue;
+    				}else if("05".equals(obj.getChangetype())){
+    					
+    				}
+    			}
+    		}
+    		
     	}
     }
 }

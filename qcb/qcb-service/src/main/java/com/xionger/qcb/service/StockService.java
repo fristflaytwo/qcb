@@ -31,5 +31,10 @@ public interface StockService{
      * @param date
      */
     public void insertStockChange(String date);
+    
+    /**
+     * 对需要坚挺的股票进行指定日期的监听
+     */
+    public void updateStockListenerChange();
 	
 }
