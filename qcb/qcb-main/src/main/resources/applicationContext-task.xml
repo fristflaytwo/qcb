@@ -10,8 +10,7 @@
      
 	<task:scheduler id="trust-task" pool-size="20"/>
 	<task:scheduled-tasks scheduler="trust-task">
-		<task:scheduled ref="executorTimer" method="initStockData" cron="0 0 12 * * ?"/> <!-- 股票信息下载统计 -->
-		<task:scheduled ref="executorTimer" method="initStockData" cron="0 30 14 * * ?"/> <!-- 股票信息下载统计 -->
-		<task:scheduled ref="executorTimer" method="initStockData" cron="0 30 16 * * ?"/> <!-- 股票信息下载统计 -->
+		<task:scheduled ref="executorTimer" method="initStockData" cron="0 30 14 * * ?"/> <!-- 股票信息下载统计，截至收盘前突袭，常规01战法 -->
+		<task:scheduled ref="executorTimer" method="initStockData" cron="0 30 16 * * ?"/> <!-- 股票信息下载统计，当日数据修正 -->
 	</task:scheduled-tasks>
 </beans>

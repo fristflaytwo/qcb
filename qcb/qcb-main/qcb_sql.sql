@@ -56,6 +56,30 @@ CREATE TABLE `t_stock_result` (
   KEY `i_result_createDate` (`createDate`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+//移动股票监控
+CREATE TABLE `t_stock_change` (
+  `id` varchar(32) NOT NULL DEFAULT '',
+  `code` varchar(64) DEFAULT NULL COMMENT '股票代码',
+  `codeName` varchar(128) DEFAULT NULL COMMENT '股票名称',
+  `changeType` varchar(2) DEFAULT NULL COMMENT '02:涨停；03：跳高；04：回缺',
+  `stockDate` varchar(8) DEFAULT NULL COMMENT '异常日期',
+  `price` decimal(20,2) DEFAULT NULL COMMENT '异常价格',
+  `stockDate1` varchar(8) DEFAULT NULL COMMENT '第一天监控',
+  `price1` decimal(20,2) DEFAULT NULL COMMENT '第一天监控价格',
+  `stockDate2` varchar(8) DEFAULT NULL COMMENT '第二天监控',
+  `price2` decimal(20,2) DEFAULT NULL COMMENT '第二天监控价格',
+  `stockDate3` varchar(8) DEFAULT NULL COMMENT '第三天监控',
+  `price3` decimal(20,2) DEFAULT NULL COMMENT '第三天监控价格',
+  `stockDate4` varchar(8) DEFAULT NULL COMMENT '第四天监控',
+  `price4` decimal(20,2) DEFAULT NULL COMMENT '第四天监控价格',
+  `stockDate5` varchar(8) DEFAULT NULL COMMENT '第五天监控',
+  `price5` decimal(20,2) DEFAULT NULL COMMENT '第五天监控价格',
+  PRIMARY KEY (`id`),
+  KEY `i_change_code` (`code`),
+  KEY `i_change_changeType` (`changeType`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 /**
  * 快速寻找合适的股票
  */
