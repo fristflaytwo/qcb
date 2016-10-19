@@ -62,4 +62,12 @@ public class ExecutorTimer {
 	}
 	
 	
+	/**
+	 * 每天异动股票信息记录
+	 */
+	public void initStockChange(){
+		this.stockService.insertStockChange(DateUtil.dateToString(new Date(),DateUtil.formatPattern_Short));
+	}
+	
+	
 }

@@ -1,5 +1,7 @@
 package com.xionger.qcb.dao.mapper;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.xionger.qcb.model.StockResult;
 
 public interface StockResultDao {
@@ -20,5 +22,5 @@ public interface StockResultDao {
      * @param createDate
      * @return
      */
-    int deleteByCreateDate(String createDate);
+    int deleteByCreateDate(@Param("createDate") String createDate,@Param("channelType") String channelType);
 }

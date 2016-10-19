@@ -153,7 +153,7 @@
   
   <delete id="deleteByCreateDate" parameterType="java.lang.String" >
     delete from t_stock_result
-    where createDate = #{createDate,jdbcType=VARCHAR}
+    where createDate = #{createDate,jdbcType=VARCHAR} and channelType = #{channelType,jdbcType=VARCHAR}
   </delete>
   
 </mapper>

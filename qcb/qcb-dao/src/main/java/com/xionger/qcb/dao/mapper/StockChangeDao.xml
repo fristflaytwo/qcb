@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xionger.qcb.dao.mapper.StockChangeDao" >
+  <resultMap id="BaseResultMap" type="com.xionger.qcb.model.StockChange" >
+    <id column="id" property="id" jdbcType="CHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="codeName" property="codename" jdbcType="VARCHAR" />
+    <result column="changeType" property="changetype" jdbcType="VARCHAR" />
+    <result column="stockDate" property="stockdate" jdbcType="VARCHAR" />
+    <result column="price" property="price" jdbcType="DECIMAL" />
+    <result column="stockDate1" property="stockdate1" jdbcType="VARCHAR" />
+    <result column="price1" property="price1" jdbcType="DECIMAL" />
+    <result column="stockDate2" property="stockdate2" jdbcType="VARCHAR" />
+    <result column="price2" property="price2" jdbcType="DECIMAL" />
+    <result column="stockDate3" property="stockdate3" jdbcType="VARCHAR" />
+    <result column="price3" property="price3" jdbcType="DECIMAL" />
+    <result column="stockDate4" property="stockdate4" jdbcType="VARCHAR" />
+    <result column="price4" property="price4" jdbcType="DECIMAL" />
+    <result column="stockDate5" property="stockdate5" jdbcType="VARCHAR" />
+    <result column="price5" property="price5" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, code, codeName, changeType, stockDate, price, stockDate1, price1, stockDate2, 
+    price2, stockDate3, price3, stockDate4, price4, stockDate5, price5
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_stock_change
+    where id = #{id,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_stock_change
+    where id = #{id,jdbcType=CHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xionger.qcb.model.StockChange" >
+    insert into t_stock_change (id, code, codeName, 
+      changeType, stockDate, price, 
+      stockDate1, price1, stockDate2, 
+      price2, stockDate3, price3, 
+      stockDate4, price4, stockDate5, 
+      price5)
+    values (#{id,jdbcType=CHAR}, #{code,jdbcType=VARCHAR}, #{codename,jdbcType=VARCHAR}, 
+      #{changetype,jdbcType=VARCHAR}, #{stockdate,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL}, 
+      #{stockdate1,jdbcType=VARCHAR}, #{price1,jdbcType=DECIMAL}, #{stockdate2,jdbcType=VARCHAR}, 
+      #{price2,jdbcType=DECIMAL}, #{stockdate3,jdbcType=VARCHAR}, #{price3,jdbcType=DECIMAL}, 
+      #{stockdate4,jdbcType=VARCHAR}, #{price4,jdbcType=DECIMAL}, #{stockdate5,jdbcType=VARCHAR}, 
+      #{price5,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xionger.qcb.model.StockChange" >
+    insert into t_stock_change
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="code != null" >
+        code,
+      </if>
+      <if test="codename != null" >
+        codeName,
+      </if>
+      <if test="changetype != null" >
+        changeType,
+      </if>
+      <if test="stockdate != null" >
+        stockDate,
+      </if>
+      <if test="price != null" >
+        price,
+      </if>
+      <if test="stockdate1 != null" >
+        stockDate1,
+      </if>
+      <if test="price1 != null" >
+        price1,
+      </if>
+      <if test="stockdate2 != null" >
+        stockDate2,
+      </if>
+      <if test="price2 != null" >
+        price2,
+      </if>
+      <if test="stockdate3 != null" >
+        stockDate3,
+      </if>
+      <if test="price3 != null" >
+        price3,
+      </if>
+      <if test="stockdate4 != null" >
+        stockDate4,
+      </if>
+      <if test="price4 != null" >
+        price4,
+      </if>
+      <if test="stockdate5 != null" >
+        stockDate5,
+      </if>
+      <if test="price5 != null" >
+        price5,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=CHAR},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="codename != null" >
+        #{codename,jdbcType=VARCHAR},
+      </if>
+      <if test="changetype != null" >
+        #{changetype,jdbcType=VARCHAR},
+      </if>
+      <if test="stockdate != null" >
+        #{stockdate,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="stockdate1 != null" >
+        #{stockdate1,jdbcType=VARCHAR},
+      </if>
+      <if test="price1 != null" >
+        #{price1,jdbcType=DECIMAL},
+      </if>
+      <if test="stockdate2 != null" >
+        #{stockdate2,jdbcType=VARCHAR},
+      </if>
+      <if test="price2 != null" >
+        #{price2,jdbcType=DECIMAL},
+      </if>
+      <if test="stockdate3 != null" >
+        #{stockdate3,jdbcType=VARCHAR},
+      </if>
+      <if test="price3 != null" >
+        #{price3,jdbcType=DECIMAL},
+      </if>
+      <if test="stockdate4 != null" >
+        #{stockdate4,jdbcType=VARCHAR},
+      </if>
+      <if test="price4 != null" >
+        #{price4,jdbcType=DECIMAL},
+      </if>
+      <if test="stockdate5 != null" >
+        #{stockdate5,jdbcType=VARCHAR},
+      </if>
+      <if test="price5 != null" >
+        #{price5,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xionger.qcb.model.StockChange" >
+    update t_stock_change
+    <set >
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="codename != null" >
+        codeName = #{codename,jdbcType=VARCHAR},
+      </if>
+      <if test="changetype != null" >
+        changeType = #{changetype,jdbcType=VARCHAR},
+      </if>
+      <if test="stockdate != null" >
+        stockDate = #{stockdate,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        price = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="stockdate1 != null" >
+        stockDate1 = #{stockdate1,jdbcType=VARCHAR},
+      </if>
+      <if test="price1 != null" >
+        price1 = #{price1,jdbcType=DECIMAL},
+      </if>
+      <if test="stockdate2 != null" >
+        stockDate2 = #{stockdate2,jdbcType=VARCHAR},
+      </if>
+      <if test="price2 != null" >
+        price2 = #{price2,jdbcType=DECIMAL},
+      </if>
+      <if test="stockdate3 != null" >
+        stockDate3 = #{stockdate3,jdbcType=VARCHAR},
+      </if>
+      <if test="price3 != null" >
+        price3 = #{price3,jdbcType=DECIMAL},
+      </if>
+      <if test="stockdate4 != null" >
+        stockDate4 = #{stockdate4,jdbcType=VARCHAR},
+      </if>
+      <if test="price4 != null" >
+        price4 = #{price4,jdbcType=DECIMAL},
+      </if>
+      <if test="stockdate5 != null" >
+        stockDate5 = #{stockdate5,jdbcType=VARCHAR},
+      </if>
+      <if test="price5 != null" >
+        price5 = #{price5,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xionger.qcb.model.StockChange" >
+    update t_stock_change
+    set code = #{code,jdbcType=VARCHAR},
+      codeName = #{codename,jdbcType=VARCHAR},
+      changeType = #{changetype,jdbcType=VARCHAR},
+      stockDate = #{stockdate,jdbcType=VARCHAR},
+      price = #{price,jdbcType=DECIMAL},
+      stockDate1 = #{stockdate1,jdbcType=VARCHAR},
+      price1 = #{price1,jdbcType=DECIMAL},
+      stockDate2 = #{stockdate2,jdbcType=VARCHAR},
+      price2 = #{price2,jdbcType=DECIMAL},
+      stockDate3 = #{stockdate3,jdbcType=VARCHAR},
+      price3 = #{price3,jdbcType=DECIMAL},
+      stockDate4 = #{stockdate4,jdbcType=VARCHAR},
+      price4 = #{price4,jdbcType=DECIMAL},
+      stockDate5 = #{stockdate5,jdbcType=VARCHAR},
+      price5 = #{price5,jdbcType=DECIMAL}
+    where id = #{id,jdbcType=CHAR}
+  </update>
+  
+  <delete id="deleteByStockDate" parameterType="java.lang.String" >
+    delete from t_stock_change
+    where stockDate = #{stockDate,jdbcType=VARCHAR}
+  </delete>
+</mapper>

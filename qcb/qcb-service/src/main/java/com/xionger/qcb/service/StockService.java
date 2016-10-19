@@ -21,9 +21,15 @@ public interface StockService{
     public String insertStockListByXlsdate(Date xlsDate,String path);
     
     /**
-     * 保存股票结果集，并进行均线统计，Channel01：量比昨天大，收盘大于昨天最高，（收盘-开盘）> (最高-收盘)，收盘>5日均线
+     * 保存股票结果集，并进行均线统计，Channel01：量比昨天大，收盘大于昨天最高，（收盘-开盘）> (最高-收盘)，收盘>5日均线,5周大于等于10和20周
      * @param date 股票信息表的股票数据日期
      */
     public void insertStockResultListByChannel01(String date);
+    
+    /**
+     * 保存该日期的股票数据存在移动的数据 02:涨停；03：跳高；04：回缺
+     * @param date
+     */
+    public void insertStockChange(String date);
 	
 }

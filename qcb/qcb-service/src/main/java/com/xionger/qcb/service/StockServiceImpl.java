@@ -22,10 +22,12 @@ import org.springframework.stereotype.Service;
 import com.xionger.qcb.common.util.conllection.CollectionUtil;
 import com.xionger.qcb.common.util.date.DateUtil;
 import com.xionger.qcb.common.util.string.StringUtil;
+import com.xionger.qcb.dao.mapper.StockChangeDao;
 import com.xionger.qcb.dao.mapper.StockDao;
 import com.xionger.qcb.dao.mapper.StockMaDao;
 import com.xionger.qcb.dao.mapper.StockResultDao;
 import com.xionger.qcb.model.Stock;
+import com.xionger.qcb.model.StockChange;
 import com.xionger.qcb.model.StockMa;
 import com.xionger.qcb.model.StockResult;
 
@@ -38,6 +40,8 @@ public class StockServiceImpl implements StockService{
 	private StockMaDao stockMaDao;
 	@Autowired
 	private StockResultDao stockResultDao;
+	@Autowired
+	private StockChangeDao stockChangeDao;
 	
 	/**
      * 从下载的excel冲将数据导入到数据库,调用次方法必须要求该日数据excel必须存在
@@ -143,7 +147,7 @@ public class StockServiceImpl implements StockService{
     		//先删除该天的均线数据和已经过滤好的结果集数据
     		String createDate=DateUtil.dateToString(new Date(),DateUtil.formatPattern_Short);
     		this.stockMaDao.deleteByCreateDate(createDate);//删除均线
-    		this.stockResultDao.deleteByCreateDate(createDate);//删除已经过滤出来的结果集
+    		this.stockResultDao.deleteByCreateDate(createDate,"01");//删除已经过滤出来的结果集
     		//均线和过滤适合条件的股票算法开始
     		List<Stock> stock100List=null;
     		for(Stock stock:list){
@@ -293,6 +297,50 @@ public class StockServiceImpl implements StockService{
     					stockResult.setMaday20(day20);
     					this.stockResultDao.insertSelective(stockResult);
     				}
+    			}
+    			
+    		}
+    	}
+    }
+    
+    /**
+     * 保存该日期的股票数据存在移动的数据 02:涨停；03：跳高；04：回缺
+     * @param date
+     */
+    public void insertStockChange(String date){
+    	//先判断当天是否存在数据
+    	List<Stock> stockList=this.stockDao.selectListByCreateDate(date);
+    	if(CollectionUtil.isNotEmpty(stockList)){//如果存在数据
+    		
+    		//如果统计异常的日期存在数据则先删除
+    		stockChangeDao.deleteByStockDate(date);
+    		
+    		StockChange stockChange=null;
+    		for(Stock stock:stockList){
+    			stockChange=new StockChange();
+    			stockChange.generateId();
+    			stockChange.setCode(stock.getCode());
+    			stockChange.setCodename(stock.getCodeName());
+    			stockChange.setStockdate(stock.getCreateDate());
+    			stockChange.setPrice(stock.getNewPrice());
+    			
+    			//03跳高
+    			if(stock.getTodayOpen().compareTo(stock.getYeatedayClose())==1 && stock.getNewPrice().compareTo(stock.getYeatedayClose())==1){
+    				stockChange.setChangetype("03");
+    			}
+    			
+    			//02判断涨停
+    			if(stock.getAmplitude().compareTo(new BigDecimal("0.0995"))>=0){
+    				stockChange.setChangetype("02");
+    			}
+    			
+    			//04跳空低开，后面监控缺口回补
+    			if(stock.getTodayOpen().compareTo(stock.getYeatedayClose())==-1 && stock.getNewPrice().compareTo(stock.getYeatedayClose())==-1){
+    				stockChange.setChangetype("04");
+    			}
+    			
+    			if(StringUtil.isNotBlank(stockChange.getChangetype())){
+    				this.stockChangeDao.insertSelective(stockChange);
     			}
     			
     		}
