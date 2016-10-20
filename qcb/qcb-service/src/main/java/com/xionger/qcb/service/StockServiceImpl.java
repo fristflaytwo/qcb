@@ -326,8 +326,14 @@ public class StockServiceImpl implements StockService{
     			
     			//03跳高
     			if(stock.getTodayOpen().compareTo(stock.getYeatedayClose())==1 && stock.getNewPrice().compareTo(stock.getYeatedayClose())==1){
-    				stockChange.setChangetype("03");
-    				stockChange.setPrice(stock.getYeatedayClose());
+    				Stock filterStock=new Stock();
+    				filterStock.setCode(stock.getCode());
+    				filterStock.setCreateDate(date);
+    				filterStock=this.stockDao.selectByCodeAndBeforCreateDateDescOne(filterStock);
+    				if(stock.getTodayOpen().compareTo(filterStock.getTodayOpen())==1){
+    					stockChange.setChangetype("03");
+        				stockChange.setPrice(stock.getYeatedayClose());
+    				}
     			}
     			
     			//02判断涨停

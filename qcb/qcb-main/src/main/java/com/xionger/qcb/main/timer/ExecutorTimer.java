@@ -69,5 +69,12 @@ public class ExecutorTimer {
 		this.stockService.insertStockChange(DateUtil.dateToString(new Date(),DateUtil.formatPattern_Short));
 	}
 	
+	/**
+	 * 对移动股票数据进行监控
+	 */
+	public void initStockListenerChange(){
+		this.stockService.updateStockListenerChange();
+	}
+	
 	
 }
