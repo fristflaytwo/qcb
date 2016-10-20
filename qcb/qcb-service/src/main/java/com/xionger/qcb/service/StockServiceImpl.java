@@ -330,10 +330,13 @@ public class StockServiceImpl implements StockService{
     				filterStock.setCode(stock.getCode());
     				filterStock.setCreateDate(date);
     				filterStock=this.stockDao.selectByCodeAndBeforCreateDateDescOne(filterStock);
-    				if(stock.getTodayOpen().compareTo(filterStock.getTodayOpen())==1){
-    					stockChange.setChangetype("03");
-        				stockChange.setPrice(stock.getYeatedayClose());
+    				if(filterStock!=null){
+    					if(stock.getTodayOpen().compareTo(filterStock.getTodayOpen())==1){
+        					stockChange.setChangetype("03");
+            				stockChange.setPrice(stock.getYeatedayClose());
+        				}
     				}
+    				
     			}
     			
     			//02判断涨停
@@ -425,7 +428,7 @@ public class StockServiceImpl implements StockService{
     		    				filterStock.setCode(stock.getCode());
     		    				filterStock.setCreateDate(afterStock.getCreateDate());
     		    				filterStock=this.stockDao.selectByCodeAndBeforCreateDateDescOne(filterStock);
-    		    				if(afterStock.getDealVol()>filterStock.getDealVol()){
+    		    				if(filterStock!=null && afterStock.getDealVol()>filterStock.getDealVol()){
     		    					i=0;
     		    					break;
     		    				}
