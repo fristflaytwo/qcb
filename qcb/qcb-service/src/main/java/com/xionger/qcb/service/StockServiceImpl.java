@@ -342,6 +342,7 @@ public class StockServiceImpl implements StockService{
     			//02判断涨停
     			if(stock.getAmplitude().compareTo(new BigDecimal("0.0995"))>=0){
     				stockChange.setChangetype("02");
+    				stockChange.setPrice(stock.getNewPrice());
     			}
     			
     			//04跳空低开，后面监控缺口回补
