@@ -29,4 +29,11 @@ public interface StockChangeDao {
      * @return
      */
     public List<StockChange> selectChangeStockList();
+    
+    /**
+     * 根据code和Type产出异动的股票监控对象
+     * @param record
+     * @return
+     */
+    public int deleteByCodeAndChangeType(StockChange record);
 }

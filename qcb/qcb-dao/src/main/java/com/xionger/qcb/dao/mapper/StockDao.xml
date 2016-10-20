@@ -72,4 +72,10 @@
 	<include refid="Base_Column_List" /> 
 	from t_stock t where t.`code`=#{code,jdbcType=VARCHAR} and t.createDate <![CDATA[>]]> #{createDate,jdbcType=VARCHAR} ORDER BY t.createDate asc
   </select>
+  
+  <select id="selectByCodeAndBeforCreateDateDescOne" resultMap="BaseResultMap" parameterType="com.xionger.qcb.model.Stock" >
+    select 
+	<include refid="Base_Column_List" /> 
+	from t_stock t where t.`code`=#{code,jdbcType=VARCHAR} and t.createDate <![CDATA[<]]> #{createDate,jdbcType=VARCHAR} ORDER BY t.createDate desc LIMIT 1
+  </select>
 </mapper>

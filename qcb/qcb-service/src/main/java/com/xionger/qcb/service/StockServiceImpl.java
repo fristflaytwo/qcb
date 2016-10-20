@@ -327,6 +327,7 @@ public class StockServiceImpl implements StockService{
     			//03跳高
     			if(stock.getTodayOpen().compareTo(stock.getYeatedayClose())==1 && stock.getNewPrice().compareTo(stock.getYeatedayClose())==1){
     				stockChange.setChangetype("03");
+    				stockChange.setPrice(stock.getYeatedayClose());
     			}
     			
     			//02判断涨停
@@ -336,11 +337,19 @@ public class StockServiceImpl implements StockService{
     			
     			//04跳空低开，后面监控缺口回补
     			if(stock.getTodayOpen().compareTo(stock.getYeatedayClose())==-1 && stock.getNewPrice().compareTo(stock.getYeatedayClose())==-1){
-    				stockChange.setChangetype("04");
+    				Stock filterStock=new Stock();
+    				filterStock.setCode(stock.getCode());
+    				filterStock.setCreateDate(date);
+    				filterStock=this.stockDao.selectByCodeAndBeforCreateDateDescOne(filterStock);
+    				if(filterStock!=null && filterStock.getNewPrice().compareTo(filterStock.getTodayOpen())==-1){
+    					stockChange.setChangetype("04");
+        				stockChange.setPrice(stock.getYeatedayClose());
+    				}
     			}
     			
     			if(StringUtil.isNotBlank(stockChange.getChangetype())){
-    				this.stockChangeDao.insertSelective(stockChange);
+    				this.stockChangeDao.deleteByCodeAndChangeType(stockChange);//先根据code和type删除之前已经产生的监控对象
+    				this.stockChangeDao.insertSelective(stockChange);//保存新的监控对象
     			}
     			
     		}
@@ -355,6 +364,10 @@ public class StockServiceImpl implements StockService{
     public void updateStockListenerChange(){
     	List<StockChange> needList=this.stockChangeDao.selectChangeStockList();//需要异常监控的数据
     	if(CollectionUtil.isNotEmpty(needList)){
+    		String date=DateUtil.dateToString(new Date(),DateUtil.formatPattern_Short);
+    		this.stockResultDao.deleteByCreateDate(date,"02");//删除已经过滤出来的结果集
+    		this.stockResultDao.deleteByCreateDate(date,"03");//删除已经过滤出来的结果集
+    		this.stockResultDao.deleteByCreateDate(date,"04");//删除已经过滤出来的结果集
     		List<Stock> list=null;
     		for(StockChange obj:needList){
     			Stock stock=new Stock();
@@ -362,22 +375,103 @@ public class StockServiceImpl implements StockService{
     			stock.setCreateDate(obj.getStockdate());
     			list=this.stockDao.selectListByCodeAndCreateDateAsc(stock);
     			if(CollectionUtil.isNotEmpty(list)){
+    				stock=list.get(list.size()-1);//将最后一条记录赋值最新的股票信息对象
     				if(list.size()>5){//超过监控期限，释放监控对象
     					this.stockChangeDao.deleteByPrimaryKey(obj.getId());
     					continue;
     				}
-    				if("02".equals(obj.getChangetype())){
+    				if("02".equals(obj.getChangetype())||"03".equals(obj.getChangetype())){//02:涨停；03：跳高；
+    					int i=1;//当前循环记录数
+    					for(Stock afterStock:list){
+    						if(afterStock.getNewPrice().compareTo(obj.getPrice())<=0){
+    							i=0;//表示删除该异动数据
+    							if(new Date().getTime()>DateUtil.stringToDate(DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short)+"153000", DateUtil.formatPattern_rand).getTime()){
+    								this.stockChangeDao.deleteByPrimaryKey(obj.getId());
+    							}
+    							break;
+    						}else{
+    							setStockChangeForUpdate(obj, afterStock, i);
+    						}
+    						i++;
+    					}
+    					if(i>0){
+    						this.stockChangeDao.updateByPrimaryKeySelective(obj);
+    						if(i==6){
+    							StockResult stockResult=new StockResult();
+    	    					stockResult.generateId();
+    	    					stockResult.setChanneltype(obj.getChangetype());
+    	    					stockResult.setCode(stock.getCode());
+    	    					stockResult.setCodename(stock.getCodeName());
+    	    					stockResult.setCreateDate(date);//因为基本每天跑，所以这里是数据日期
+    	    					stockResult.setHeightprice(stock.getHeightPrice());
+    	    					stockResult.setNewprice(stock.getNewPrice());
+    	    					this.stockResultDao.insertSelective(stockResult);
+    						}
+    					}
     					continue;
-    				}else if("03".equals(obj.getChangetype())){
+    				}else if("04".equals(obj.getChangetype())){//04：回缺;
+    					int i=1;//当前循环记录数
+    					for(Stock afterStock:list){
+    						if(afterStock.getNewPrice().compareTo(obj.getPrice())<=0){
+    							setStockChangeForUpdate(obj, afterStock, i);
+    						}else{
+    							Stock filterStock=new Stock();
+    		    				filterStock.setCode(stock.getCode());
+    		    				filterStock.setCreateDate(afterStock.getCreateDate());
+    		    				filterStock=this.stockDao.selectByCodeAndBeforCreateDateDescOne(filterStock);
+    		    				if(afterStock.getDealVol()>filterStock.getDealVol()){
+    		    					i=0;
+    		    					break;
+    		    				}
+    						}
+    						i++;
+    					}
+    					if(i==0){
+    						if(new Date().getTime()>DateUtil.stringToDate(DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short)+"153000", DateUtil.formatPattern_rand).getTime()){
+        						this.stockChangeDao.deleteByPrimaryKey(obj.getId());
+    						}
+    						StockResult stockResult=new StockResult();
+	    					stockResult.generateId();
+	    					stockResult.setChanneltype(obj.getChangetype());
+	    					stockResult.setCode(stock.getCode());
+	    					stockResult.setCodename(stock.getCodeName());
+	    					stockResult.setCreateDate(date);//因为基本每天跑，所以这里是数据日期
+	    					stockResult.setHeightprice(stock.getHeightPrice());
+	    					stockResult.setNewprice(stock.getNewPrice());
+	    					this.stockResultDao.insertSelective(stockResult);
+    					}else{
+    						this.stockChangeDao.updateByPrimaryKeySelective(obj);
+    					}
     					continue;
-    				}else if("04".equals(obj.getChangetype())){
-    					continue;
-    				}else if("05".equals(obj.getChangetype())){
+    				}else if("05".equals(obj.getChangetype())){//05单阳不破
     					
     				}
     			}
     		}
     		
     	}
+    }
+    
+    private void setStockChangeForUpdate(StockChange obj,Stock afterStock,int index){
+    	if(index==1){
+			obj.setPrice1(afterStock.getNewPrice());
+			obj.setStockdate1(afterStock.getCreateDate());
+		}
+		if(index==2){
+			obj.setPrice2(afterStock.getNewPrice());
+			obj.setStockdate2(afterStock.getCreateDate());
+		}
+		if(index==3){
+			obj.setPrice3(afterStock.getNewPrice());
+			obj.setStockdate3(afterStock.getCreateDate());								
+		}
+		if(index==4){
+			obj.setPrice4(afterStock.getNewPrice());
+			obj.setStockdate4(afterStock.getCreateDate());
+		}
+		if(index==5){
+			obj.setPrice5(afterStock.getNewPrice());
+			obj.setStockdate5(afterStock.getCreateDate());
+		}
     }
 }

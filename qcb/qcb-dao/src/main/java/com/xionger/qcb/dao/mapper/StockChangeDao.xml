@@ -233,4 +233,9 @@
     from t_stock_change
   </select>
   
+  <delete id="deleteByCodeAndChangeType" parameterType="com.xionger.qcb.model.StockChange" >
+    delete from t_stock_change
+    where code = #{code,jdbcType=VARCHAR} and changeType = #{changetype,jdbcType=VARCHAR}
+  </delete>
+  
 </mapper>

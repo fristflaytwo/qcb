@@ -54,4 +54,11 @@ public interface StockDao {
      * @return
      */
     public List<Stock> selectListByCodeAndCreateDateAsc(Stock record);
+    
+    /**
+     * 根据股票代码查询createDate前一天的数据
+     * @param record
+     * @return
+     */
+    public Stock selectByCodeAndBeforCreateDateDescOne(Stock record);
 }

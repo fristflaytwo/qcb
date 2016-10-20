@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xionger.qcb.common.util.date.DateUtil;
 import com.xionger.qcb.model.vo.ResultVo;
@@ -41,6 +42,21 @@ public class IndexController extends BaseController {
 	public ResultVo test(String fileName){
 		String path="d:/stock_xls/"+fileName+".xls";
 		stockService.insertStockListByXlsdate(new Date(), path);
+		return new ResultVo();
+	}
+	
+	@RequestMapping("/insertStockChange")
+	@ResponseBody
+	public ResultVo insertStockChange(String date){
+		this.stockService.insertStockChange(date);
+		return new ResultVo();
+	}
+	
+	
+	@RequestMapping("/updateStockListenerChange")
+	@ResponseBody
+	public ResultVo updateStockListenerChange(){
+		this.stockService.updateStockListenerChange();
 		return new ResultVo();
 	}
 	
