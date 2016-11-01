@@ -304,8 +304,8 @@ public class StockServiceImpl implements StockService{
     }
     
     /**
-     * 保存该日期的股票数据存在移动的数据 02:涨停；03：跳高；04：回缺;05单阳不破
-     * @param date
+     * 保存该日期的股票数据存在异动的数据 02:涨停；03：跳高；04：回缺;05单阳不破(未开发);06常规战法庄家吸筹上传散户，需要注意仓位（抓去短中线）07轴线上升趋势，日线均线支撑
+     * @param date 股票数据日期
      */
     public void insertStockChange(String date){
     	//先判断当天是否存在数据
@@ -325,12 +325,14 @@ public class StockServiceImpl implements StockService{
     			stockChange.setPrice(stock.getNewPrice());
     			
     			//03跳高
-    			if(stock.getTodayOpen().compareTo(stock.getYeatedayClose())==1 && stock.getNewPrice().compareTo(stock.getYeatedayClose())==1){
+    			if(stock.getTodayOpen().compareTo(stock.getYeatedayClose())==1 
+    					&& stock.getNewPrice().compareTo(stock.getYeatedayClose())==1
+    					&& stock.getAmplitude().compareTo(new BigDecimal("0.0500"))>=0){
     				Stock filterStock=new Stock();
     				filterStock.setCode(stock.getCode());
     				filterStock.setCreateDate(date);
     				filterStock=this.stockDao.selectByCodeAndBeforCreateDateDescOne(filterStock);
-    				if(filterStock!=null){
+    				if(filterStock!=null){//此处逻辑最好保留，因为表示特别强势
     					if(stock.getTodayOpen().compareTo(filterStock.getTodayOpen())==1){
         					stockChange.setChangetype("03");
             				stockChange.setPrice(stock.getYeatedayClose());
@@ -346,7 +348,9 @@ public class StockServiceImpl implements StockService{
     			}
     			
     			//04跳空低开，后面监控缺口回补
-    			if(stock.getTodayOpen().compareTo(stock.getYeatedayClose())==-1 && stock.getNewPrice().compareTo(stock.getYeatedayClose())==-1){
+    			if(stock.getTodayOpen().compareTo(stock.getYeatedayClose())==-1 
+    					&& stock.getNewPrice().compareTo(stock.getYeatedayClose())==-1
+    					&& stock.getAmplitude().compareTo(new BigDecimal("-0.0300"))<=0){//比较重要低开缺口，此处的监控对象比较合理，但具体的监控过程逻辑需要优化，目的抓去大牛股，一定注意需要注意量能，压力、支撑
     				Stock filterStock=new Stock();
     				filterStock.setCode(stock.getCode());
     				filterStock.setCreateDate(date);
@@ -355,6 +359,10 @@ public class StockServiceImpl implements StockService{
     					stockChange.setChangetype("04");
         				stockChange.setPrice(stock.getYeatedayClose());
     				}
+    			}
+    			
+    			if(){
+    				
     			}
     			
     			if(StringUtil.isNotBlank(stockChange.getChangetype())){
