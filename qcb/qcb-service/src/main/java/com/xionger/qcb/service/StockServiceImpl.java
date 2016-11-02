@@ -304,7 +304,12 @@ public class StockServiceImpl implements StockService{
     }
     
     /**
-     * 保存该日期的股票数据存在异动的数据 02:涨停；03：跳高；04：回缺;05单阳不破(未开发);06常规战法庄家吸筹上传散户，需要注意仓位（抓去短中线）07轴线上升趋势，日线均线支撑
+     * 保存该日期的股票数据存在异动的数据 02:涨停；
+     * 							 03：跳高；
+     * 							 04：回缺;
+     * 							 05单阳不破(未开发);
+     * 							 06常规战法庄家吸筹上传散户，需要注意仓位（抓去短中线，未开发）
+     * 							 07中线上升趋势，日线均线支撑15日内有涨停或跳空5点之上最好，创新高一定要放量，周线要过滤创新高但上影大于红柱，或大阴线（未开发）
      * @param date 股票数据日期
      */
     public void insertStockChange(String date){
@@ -351,20 +356,11 @@ public class StockServiceImpl implements StockService{
     			if(stock.getTodayOpen().compareTo(stock.getYeatedayClose())==-1 
     					&& stock.getNewPrice().compareTo(stock.getYeatedayClose())==-1
     					&& stock.getAmplitude().compareTo(new BigDecimal("-0.0300"))<=0){//比较重要低开缺口，此处的监控对象比较合理，但具体的监控过程逻辑需要优化，目的抓去大牛股，一定注意需要注意量能，压力、支撑
-    				Stock filterStock=new Stock();
-    				filterStock.setCode(stock.getCode());
-    				filterStock.setCreateDate(date);
-    				filterStock=this.stockDao.selectByCodeAndBeforCreateDateDescOne(filterStock);
-    				if(filterStock!=null && filterStock.getNewPrice().compareTo(filterStock.getTodayOpen())==-1){
-    					stockChange.setChangetype("04");
-        				stockChange.setPrice(stock.getYeatedayClose());
-    				}
+    				stockChange.setChangetype("04");
+    				stockChange.setPrice(stock.getYeatedayClose());
     			}
     			
-    			if(){
-    				
-    			}
-    			
+    			//保存需要监控的对象
     			if(StringUtil.isNotBlank(stockChange.getChangetype())){
     				this.stockChangeDao.deleteByCodeAndChangeType(stockChange);//先根据code和type删除之前已经产生的监控对象
     				this.stockChangeDao.insertSelective(stockChange);//保存新的监控对象
@@ -376,8 +372,8 @@ public class StockServiceImpl implements StockService{
     
     
     /**
-     * 对需要坚挺的股票进行指定日期的监听
-     * @param date 调用改监听的日起
+     * 对需要监控的股票进行监听
+     * 
      */
     public void updateStockListenerChange(){
     	List<StockChange> needList=this.stockChangeDao.selectChangeStockList();//需要异常监控的数据
@@ -440,6 +436,8 @@ public class StockServiceImpl implements StockService{
     		    				if(filterStock!=null && afterStock.getDealVol()>filterStock.getDealVol()){
     		    					i=0;
     		    					break;
+    		    				}else{
+    		    					setStockChangeForUpdate(obj, afterStock, i);
     		    				}
     						}
     						i++;
@@ -461,8 +459,6 @@ public class StockServiceImpl implements StockService{
     						this.stockChangeDao.updateByPrimaryKeySelective(obj);
     					}
     					continue;
-    				}else if("05".equals(obj.getChangetype())){//05单阳不破
-    					
     				}
     			}
     		}
