@@ -19,6 +19,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.DomElement;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.xionger.qcb.common.util.conllection.CollectionUtil;
 import com.xionger.qcb.common.util.date.DateUtil;
 import com.xionger.qcb.common.util.string.StringUtil;
@@ -466,6 +469,12 @@ public class StockServiceImpl implements StockService{
     	}
     }
     
+    /**
+     * 给异常股票设置值
+     * @param obj
+     * @param afterStock
+     * @param index
+     */
     private void setStockChangeForUpdate(StockChange obj,Stock afterStock,int index){
     	if(index==1){
 			obj.setPrice1(afterStock.getNewPrice());
@@ -487,5 +496,57 @@ public class StockServiceImpl implements StockService{
 			obj.setPrice5(afterStock.getNewPrice());
 			obj.setStockdate5(afterStock.getCreateDate());
 		}
+    }
+    
+    
+    /**
+     * 插入指定股票代码从start到end日期的数据信息
+     * @param codes
+     * @param start
+     * @param end
+     */
+    public void insertHistoryStock(String codes,String start,String end){
+    	String[] stockCodes=codes.split(",");
+    	if(stockCodes!=null){
+    		// 得到浏览器对象，直接New一个就能得到，现在就好比说你得到了一个浏览器了  
+            WebClient webclient = new WebClient();  
+    		for(String code:stockCodes){
+    			getHistoryStockInfo(webclient,code, start);
+        	}
+    	}
+    	
+    }
+    
+    /**
+     * 利用爬虫爬去新浪财经的股票历史数据
+     * @param code
+     * @param date
+     * @return
+     */
+    private Stock getHistoryStockInfo(WebClient webclient,String code,String date){
+    	try {
+    		String[] times=date.split("-");
+        	if(times[1].startsWith("0")){
+        		times[1]=times[1].replace("0", "");
+        	}
+        	if(times[2].startsWith("0")){
+        		times[2]=times[1].replace("0", "");
+        	}
+        	//String url="http://money.finance.sina.com.cn/quotes_service/view/vMS_tradehistory.php?symbol="+code+"&date="+times[0]+"-"+times[1]+"-"+times[2];
+        	final String url="http://money.finance.sina.com.cn/quotes_service/view/vMS_tradehistory.php?symbol=sz300303&date=2016-10-29";
+          
+            // 这里是配置一下不加载css和javaScript,配置起来很简单，是不是  
+            webclient.getOptions().setCssEnabled(false);  
+            webclient.getOptions().setJavaScriptEnabled(false);  
+          
+            // 做的第一件事，去拿到这个网页，只需要调用getPage这个方法即可  
+            HtmlPage htmlpage = webclient.getPage(url);  
+            DomElement domElement= htmlpage.getElementById("cOuter");
+            DomElement stockHtmlData=domElement.getNextElementSibling();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    	
+    	return null;
     }
 }

@@ -35,7 +35,7 @@ public class IndexController extends BaseController {
 	}
  
 	/**
-	 * app下载页
+	 * 加载本次保存的excel数据到股票信息表
 	 */
 	@RequestMapping("/test")
 	public ResultVo test(String fileName){
@@ -44,6 +44,11 @@ public class IndexController extends BaseController {
 		return new ResultVo();
 	}
 	
+	/**
+	 * 找出需要监控的股票信息数据
+	 * @param date
+	 * @return
+	 */
 	@RequestMapping("/insertStockChange")
 	@ResponseBody
 	public ResultVo insertStockChange(String date){
@@ -51,11 +56,25 @@ public class IndexController extends BaseController {
 		return new ResultVo();
 	}
 	
-	
+	/**
+	 * 对重点股票信息进行监控
+	 * @return
+	 */
 	@RequestMapping("/updateStockListenerChange")
 	@ResponseBody
 	public ResultVo updateStockListenerChange(){
 		this.stockService.updateStockListenerChange();
+		return new ResultVo();
+	}
+	
+	/**
+	 * 保存股票的历史数据
+	 * @return
+	 */
+	@RequestMapping("/insertHistoryStock")
+	@ResponseBody
+	public ResultVo insertHistoryStock(String codes,String start,String end){
+		this.stockService.insertHistoryStock(codes, start, end);
 		return new ResultVo();
 	}
 	

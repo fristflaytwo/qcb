@@ -33,8 +33,16 @@ public interface StockService{
     public void insertStockChange(String date);
     
     /**
-     * 对需要坚挺的股票进行指定日期的监听
+     * 对需要坚挺的股票进行监听
      */
     public void updateStockListenerChange();
+    
+    /**
+     * 插入指定股票代码从start到end日期的数据信息
+     * @param codes
+     * @param start
+     * @param end
+     */
+    public void insertHistoryStock(String codes,String start,String end);
 	
 }

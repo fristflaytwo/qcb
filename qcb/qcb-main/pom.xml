@@ -136,15 +136,16 @@
 			<artifactId>spring-session-data-redis</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.owasp.antisamy</groupId>
-			<artifactId>antisamy</artifactId>
-			<version>1.5.3</version>
-		</dependency>
-		<dependency>
 			<groupId>com.qcb</groupId>
 			<artifactId>qcb-service</artifactId>
 			<version>0.0.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.owasp.antisamy</groupId>
+			<artifactId>antisamy</artifactId>
+			<version>1.5.3</version>
+		</dependency>
+		
   </dependencies>
 
 <build>

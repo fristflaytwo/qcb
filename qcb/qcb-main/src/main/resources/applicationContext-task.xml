@@ -10,10 +10,14 @@
      
 	<task:scheduler id="trust-task" pool-size="20"/>
 	<task:scheduled-tasks scheduler="trust-task">
-		<task:scheduled ref="executorTimer" method="initStockData" cron="0 30 14 * * ?"/> <!-- 股票信息下载统计，截至收盘前突袭，常规01战法 -->
-		<task:scheduled ref="executorTimer" method="initStockListenerChange" cron="0 35 14 * * ?"/> <!-- 异动股票预判，-->
-		<task:scheduled ref="executorTimer" method="initStockData" cron="0 45 15 * * ?"/> <!-- 股票信息下载统计，当日数据修正 -->
-		<task:scheduled ref="executorTimer" method="initStockListenerChange" cron="0 55 15 * * ?"/> <!-- 异动股票判断修正 -->
-		<task:scheduled ref="executorTimer" method="initStockChange" cron="0 30 16 * * ?"/> <!-- 异动股票信息加入监控对象 -->
+		<task:scheduled ref="executorTimer" method="initStockData" cron="0 31 14 * * ?"/> <!-- 股票信息下载统计，截至收盘前突袭，常规01战法 -->
+		<task:scheduled ref="executorTimer" method="initStockListenerChange" cron="0 40 14 * * ?"/> <!-- 异动股票预判，-->
+		<task:scheduled ref="executorTimer" method="initStockChange" cron="0 45 14 * * ?"/> <!--异动股票信息加入监控对象 -->
+		
+		<task:scheduled ref="executorTimer" method="initStockData" cron="0 45 15 * * ?"/><!-- 股票信息下载统计，当日数据修正-->
+		<task:scheduled ref="executorTimer" method="initStockListenerChange" cron="0 0 16 * * ?"/> <!--异动股票判断修正-->
+ 		<task:scheduled ref="executorTimer" method="initStockChange" cron="0 30 16 * * ?"/> <!--异动股票信息加入监控对象 -->
+		
+		
 	</task:scheduled-tasks>
 </beans>
