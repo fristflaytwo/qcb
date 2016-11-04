@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.DomElement;
+import com.gargoylesoftware.htmlunit.html.DomNodeList;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.xionger.qcb.common.util.conllection.CollectionUtil;
 import com.xionger.qcb.common.util.date.DateUtil;
@@ -511,7 +513,7 @@ public class StockServiceImpl implements StockService{
     		// 得到浏览器对象，直接New一个就能得到，现在就好比说你得到了一个浏览器了  
             WebClient webclient = new WebClient();  
     		for(String code:stockCodes){
-    			getHistoryStockInfo(webclient,code, start);
+    			Stock stock=getHistoryStockInfo(webclient,code, start);
         	}
     	}
     	
@@ -524,7 +526,9 @@ public class StockServiceImpl implements StockService{
      * @return
      */
     private Stock getHistoryStockInfo(WebClient webclient,String code,String date){
+    	Stock stock=null;
     	try {
+    		stock=new Stock();
     		String[] times=date.split("-");
         	if(times[1].startsWith("0")){
         		times[1]=times[1].replace("0", "");
@@ -532,21 +536,58 @@ public class StockServiceImpl implements StockService{
         	if(times[2].startsWith("0")){
         		times[2]=times[1].replace("0", "");
         	}
-        	//String url="http://money.finance.sina.com.cn/quotes_service/view/vMS_tradehistory.php?symbol="+code+"&date="+times[0]+"-"+times[1]+"-"+times[2];
-        	final String url="http://money.finance.sina.com.cn/quotes_service/view/vMS_tradehistory.php?symbol=sz300303&date=2016-10-29";
+        	String url="http://money.finance.sina.com.cn/quotes_service/view/vMS_tradehistory.php?symbol="+code+"&date="+times[0]+"-"+times[1]+"-"+times[2];
+        	//final String url="http://money.finance.sina.com.cn/quotes_service/view/vMS_tradehistory.php?symbol=sz300303&date=2016-10-29";
           
             // 这里是配置一下不加载css和javaScript,配置起来很简单，是不是  
             webclient.getOptions().setCssEnabled(false);  
             webclient.getOptions().setJavaScriptEnabled(false);  
-          
+            
+            
             // 做的第一件事，去拿到这个网页，只需要调用getPage这个方法即可  
             HtmlPage htmlpage = webclient.getPage(url);  
             DomElement domElement= htmlpage.getElementById("cOuter");
             DomElement stockHtmlData=domElement.getNextElementSibling();
+            DomNodeList<HtmlElement> nodeList=stockHtmlData.getElementsByTagName("tr");
+            //如果停牌或非工作日，则不需要保存该数据
+            if("0.00".equals(nodeList.get(0).getElementsByTagName("td").get(1).asText().replaceAll(" ", ""))){
+        		return null;
+        	}
+            stock.generateId();
+            stock.setCreateDate(date.replaceAll("-", ""));
+            stock.setCode(code);
+           
+            for(HtmlElement node:nodeList){
+            	List<HtmlElement> tdList=node.getHtmlElementsByTagName("td");
+            	if("收盘价:".equals(tdList.get(0).asText().replaceAll(" ", ""))){
+            		stock.setNewPrice(new BigDecimal(tdList.get(1).asText().replaceAll(" ", "")));
+            	}
+            	if("涨跌幅:".equals(tdList.get(0).asText().replaceAll(" ", ""))){
+            		stock.setAmplitude(new BigDecimal(tdList.get(1).asText().replaceAll(" ", "").replace("%", "")).divide(new BigDecimal("100"), 4));
+            	}
+            	if("前收价:".equals(tdList.get(0).asText().replaceAll(" ", ""))){
+            		stock.setYeatedayClose(new BigDecimal(tdList.get(1).asText().replaceAll(" ", "")));
+            	}
+            	if("开盘价:".equals(tdList.get(0).asText().replaceAll(" ", ""))){
+            		stock.setTodayOpen(new BigDecimal(tdList.get(1).asText().replaceAll(" ", "")));
+            	}
+            	if("最高价:".equals(tdList.get(0).asText().replaceAll(" ", ""))){
+            		stock.setHeightPrice(new BigDecimal(tdList.get(1).asText().replaceAll(" ", "")));
+            	}
+            	if("最低价:".equals(tdList.get(0).asText().replaceAll(" ", ""))){
+            		stock.setLowPrice(new BigDecimal(tdList.get(1).asText().replaceAll(" ", "")));
+            	}
+            	if("成交量(手):".equals(tdList.get(0).asText().replaceAll(" ", ""))){
+            		stock.setDealVol(Long.parseLong((tdList.get(1).asText().replaceAll(" ", "").split("\\."))[0]));
+            	}
+            	if("成交额(千元):".equals(tdList.get(0).asText().replaceAll(" ", ""))){
+            		stock.setDealPrice(new BigDecimal(tdList.get(1).asText().replaceAll(" ", "")));
+            	}
+            }
+            return stock;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-    	
     	return null;
     }
 }

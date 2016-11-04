@@ -52,7 +52,7 @@
 		<spring.session.version>1.2.1.RELEASE</spring.session.version>
 		<dom4j.version>1.6.1</dom4j.version>
 		<joda.version>2.5</joda.version>
-		<net.sourceforge.htmlunit>2.23</net.sourceforge.htmlunit>
+		<net.sourceforge.htmlunit>2.19</net.sourceforge.htmlunit>
 	</properties>
   
   <dependencyManagement>
