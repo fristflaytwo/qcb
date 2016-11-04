@@ -503,18 +503,20 @@ public class StockServiceImpl implements StockService{
     
     /**
      * 插入指定股票代码从start到end日期的数据信息
-     * @param codes
+     * @param date 最新股票数据日期
      * @param start
      * @param end
      */
-    public void insertHistoryStock(String codes,String start,String end){
-    	String[] stockCodes=codes.split(",");
-    	if(stockCodes!=null){
+    public void insertHistoryStock(String date,String start,String end){
+    	List<Stock> stockList=this.stockDao.selectListByCreateDate(date);
+    	if(CollectionUtil.isNotEmpty(stockList)){
     		// 得到浏览器对象，直接New一个就能得到，现在就好比说你得到了一个浏览器了  
             WebClient webclient = new WebClient();  
+            
     		for(String code:stockCodes){
     			Stock stock=getHistoryStockInfo(webclient,code, start);
         	}
+    		webclient.closeAllWindows();
     	}
     	
     }

@@ -38,11 +38,11 @@ public interface StockService{
     public void updateStockListenerChange();
     
     /**
-     * 插入指定股票代码从start到end日期的数据信息
-     * @param codes
+     * 插入从start到end日期的股票数据信息
+     * @param date 最新股票数据日期
      * @param start
      * @param end
      */
-    public void insertHistoryStock(String codes,String start,String end);
+    public void insertHistoryStock(String date,String start,String end);
 	
 }
