@@ -144,7 +144,7 @@ public class DateUtil {
 	 * @param sEnd
 	 */
 	// java中怎样计算两个时间如：“21:57”和“08:20”相差的分钟数、小时数 java计算两个时间差小时 分钟 秒 .
-	public void timeSubtract(String sBegin, String sEnd) {
+	public static String timeSubtract(String sBegin, String sEnd) {
 		SimpleDateFormat dfs = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date begin = null;
 		Date end = null;
@@ -161,7 +161,7 @@ public class DateUtil {
 		long hour1 = between % (24 * 3600) / 3600;
 		long minute1 = between % 3600 / 60;
 		long second1 = between % 60;
-		System.out.println("" + day1 + "天" + hour1 + "小时" + minute1 + "分" + second1 + "秒");
+		return day1+"_"+hour1+"_"+minute1+"_"+second1;
 	}
 
 	/**

@@ -48,6 +48,106 @@
     )
   </insert>
   
+  <insert id="insertSelective" parameterType="com.xionger.qcb.model.Stock" >
+    insert into t_stock
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="code != null" >
+       code,
+      </if>
+      <if test="codeName != null" >
+       codeName,
+      </if>
+      <if test="newPrice != null" >
+       newPrice,
+      </if>
+      <if test="amplitude != null" >
+       amplitude,
+      </if>
+      <if test="amplitudePrice != null" >
+       amplitudePrice,
+      </if>
+      <if test="buyPrice != null" >
+       buyPrice,
+      </if>
+      <if test="salePrice != null" >
+       salePrice,
+      </if>
+      <if test="dealVol != null" >
+       dealVol,
+      </if>
+      <if test="dealPrice != null" >
+       dealPrice,
+      </if>
+      <if test="todayOpen != null" >
+       todayOpen,
+      </if>
+      <if test="yeatedayClose != null" >
+       yeatedayClose,
+      </if>
+      <if test="heightPrice != null" >
+       heightPrice,
+      </if>
+      <if test="lowPrice != null" >
+       lowPrice,
+      </if>
+      <if test="createDate != null" >
+       createDate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=CHAR},
+      </if>
+      <if test="code != null" >
+       #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="codeName != null" >
+        #{codeName,jdbcType=VARCHAR}, 
+      </if>
+      <if test="newPrice != null" >
+        #{newPrice,jdbcType=DECIMAL}, 
+      </if>
+      <if test="amplitude != null" >
+       #{amplitude,jdbcType=DECIMAL},
+      </if>
+      <if test="amplitudePrice != null" >
+        #{amplitudePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="buyPrice != null" >
+        #{buyPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="salePrice != null" >
+       #{salePrice,jdbcType=DECIMAL}, 
+      </if>
+      <if test="dealVol != null" >
+       #{dealVol,jdbcType=BIGINT},
+      </if>
+      <if test="dealPrice != null" >
+        #{dealPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="todayOpen != null" >
+       #{todayOpen,jdbcType=DECIMAL}, 
+      </if>
+      <if test="yeatedayClose != null" >
+       #{yeatedayClose,jdbcType=DECIMAL}, 
+      </if>
+      <if test="heightPrice != null" >
+        #{heightPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="lowPrice != null" >
+        #{lowPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="createDate != null" >
+       #{createDate,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  
+  
   <delete id="deleteStockListByDataDate" parameterType="java.lang.String" >
     delete from t_stock
     where createDate = #{dataDate,jdbcType=VARCHAR}

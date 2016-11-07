@@ -57,8 +57,8 @@ public class ExecutorTimer {
 		//调用server层进行数据保存
 		String dataDate=stockService.insertStockListByXlsdate(new Date(), path);//保存基本数据并返回数据日期
 		
-		//重新计算均线并得到最终过滤出来的股票
-		this.stockService.insertStockResultListByChannel01(dataDate);
+		//重新计算均线
+		this.stockService.insertStockMa(dataDate);
 	}
 	
 	

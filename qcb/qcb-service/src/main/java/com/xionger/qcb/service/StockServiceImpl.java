@@ -143,16 +143,15 @@ public class StockServiceImpl implements StockService{
     }
     
     /**
-     * 保存股票结果集，并进行均线统计，Channel01：量比昨天大，收盘大于昨天最高，（收盘-开盘）> (最高-收盘)，当前>5日均线
+     * 进行均线计算
      * @param date 股票信息表的股票数据日期
      */
-    public void insertStockResultListByChannel01(String date){
+    public void insertStockMa(String date){
     	List<Stock> list=this.stockDao.selectListByCreateDate(date);
     	if(CollectionUtil.isNotEmpty(list)){
-    		//先删除该天的均线数据和已经过滤好的结果集数据
+    		//先删除该天的均线数据
     		String createDate=DateUtil.dateToString(new Date(),DateUtil.formatPattern_Short);
     		this.stockMaDao.deleteByCreateDate(createDate);//删除均线
-    		this.stockResultDao.deleteByCreateDate(createDate,"01");//删除已经过滤出来的结果集
     		//均线和过滤适合条件的股票算法开始
     		List<Stock> stock100List=null;
     		for(Stock stock:list){
@@ -166,20 +165,9 @@ public class StockServiceImpl implements StockService{
     			BigDecimal week20=new BigDecimal("0.00");
     			BigDecimal maSum=new BigDecimal("0.00");
     			
-    			boolean isResult=false;//是否需要保存到result中，默认不符合规则，无需保存
     			if(CollectionUtil.isNotEmpty(stock100List)){
     				for(int i=0;i<stock100List.size();i++){
     					maSum=maSum.add(stock100List.get(i).getNewPrice());
-    					//判断是否符合结果集的过滤条件
-    					if(i==1){
-    						Stock tStock=stock100List.get(0);//今天数据对象
-    						Stock yStock=stock100List.get(1);//昨天数据对象
-    						if(tStock.getDealVol().compareTo(yStock.getDealVol())==1 
-    								&& tStock.getNewPrice().compareTo(yStock.getHeightPrice())==1
-    								&& ((tStock.getNewPrice().subtract(tStock.getTodayOpen())).compareTo(tStock.getHeightPrice().subtract(tStock.getNewPrice()))==1)){
-    							isResult=true;
-    						}
-    					}
     					//均线区间统计
     					if(stock100List.size()>50){
     						if(i==4){
@@ -277,7 +265,7 @@ public class StockServiceImpl implements StockService{
     			stockMa.generateId();
     			stockMa.setCode(stock.getCode());
     			stockMa.setCodename(stock.getCodeName());
-    			stockMa.setCreateDate(createDate);
+    			stockMa.setCreateDate(createDate);//正常日期，非数据日期
     			stockMa.setDay5(day5);
     			stockMa.setDay10(day10);
     			stockMa.setDay20(day20);
@@ -285,25 +273,6 @@ public class StockServiceImpl implements StockService{
     			stockMa.setWeek10(week10);
     			stockMa.setWeek20(week20);
     			stockMaDao.insertSelective(stockMa);
-    			
-    			//如果isResult=true,则初步确定为我想要的数据
-    			if(isResult){
-    				if(stock.getNewPrice().compareTo(day5)==1 && week5.compareTo(week10)>=0 && week5.compareTo(week20)>=0){//当前价大于5日均线,5周均线分别在10周和20周准线之上
-    					StockResult stockResult=new StockResult();
-    					stockResult.generateId();
-    					stockResult.setChanneltype("01");
-    					stockResult.setCode(stock.getCode());
-    					stockResult.setCodename(stock.getCodeName());
-    					stockResult.setCreateDate(createDate);
-    					stockResult.setHeightprice(stock.getHeightPrice());
-    					stockResult.setNewprice(stock.getNewPrice());
-    					stockResult.setMaday5(day5);
-    					stockResult.setMaday10(day10);
-    					stockResult.setMaday20(day20);
-    					this.stockResultDao.insertSelective(stockResult);
-    				}
-    			}
-    			
     		}
     	}
     }
@@ -504,17 +473,24 @@ public class StockServiceImpl implements StockService{
     /**
      * 插入指定股票代码从start到end日期的数据信息
      * @param date 最新股票数据日期
-     * @param start
-     * @param end
+     * @param start 需要时分秒yyyy-MM-dd HH:mm:ss
+     * @param end 需要时分秒yyyy-MM-dd HH:mm:ss
      */
     public void insertHistoryStock(String date,String start,String end){
     	List<Stock> stockList=this.stockDao.selectListByCreateDate(date);
     	if(CollectionUtil.isNotEmpty(stockList)){
     		// 得到浏览器对象，直接New一个就能得到，现在就好比说你得到了一个浏览器了  
             WebClient webclient = new WebClient();  
-            
-    		for(String code:stockCodes){
-    			Stock stock=getHistoryStockInfo(webclient,code, start);
+            String subTime=DateUtil.timeSubtract(start, end);
+            int subDay=Integer.parseInt(subTime.split("_")[0]);
+            Stock obj=null;
+    		for(Stock stock:stockList){
+    			for(int i=0;i<subDay;i++){
+    				obj=getHistoryStockInfo(webclient,stock.getCode(), DateUtil.dateToString(DateUtil.getAddTimeDate(DateUtil.DAY, DateUtil.getDate(start, DateUtil.formatPattern_14), i)));
+    				if(obj.getNewPrice().compareTo(new BigDecimal("0.00"))==1){
+    					this.stockDao.insertSelective(obj);
+    				}
+    			}
         	}
     		webclient.closeAllWindows();
     	}
@@ -539,7 +515,6 @@ public class StockServiceImpl implements StockService{
         		times[2]=times[1].replace("0", "");
         	}
         	String url="http://money.finance.sina.com.cn/quotes_service/view/vMS_tradehistory.php?symbol="+code+"&date="+times[0]+"-"+times[1]+"-"+times[2];
-        	//final String url="http://money.finance.sina.com.cn/quotes_service/view/vMS_tradehistory.php?symbol=sz300303&date=2016-10-29";
           
             // 这里是配置一下不加载css和javaScript,配置起来很简单，是不是  
             webclient.getOptions().setCssEnabled(false);  

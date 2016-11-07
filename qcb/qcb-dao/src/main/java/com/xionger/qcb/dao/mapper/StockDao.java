@@ -61,4 +61,11 @@ public interface StockDao {
      * @return
      */
     public Stock selectByCodeAndBeforCreateDateDescOne(Stock record);
+    
+    /**
+     * 保存股票信息
+     * @param record
+     * @return
+     */
+    public int insertSelective(Stock record);
 }
