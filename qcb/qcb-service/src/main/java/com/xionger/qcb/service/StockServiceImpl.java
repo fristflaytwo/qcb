@@ -487,7 +487,7 @@ public class StockServiceImpl implements StockService{
     		for(Stock stock:stockList){
     			for(int i=0;i<subDay;i++){
     				obj=getHistoryStockInfo(webclient,stock.getCode(), DateUtil.dateToString(DateUtil.getAddTimeDate(DateUtil.DAY, DateUtil.getDate(start, DateUtil.formatPattern_14), i)));
-    				if(obj.getNewPrice().compareTo(new BigDecimal("0.00"))==1){
+    				if(obj!=null&&obj.getNewPrice().compareTo(new BigDecimal("0.00"))==1){
     					this.stockDao.insertSelective(obj);
     				}
     			}
