@@ -1,6 +1,7 @@
 package com.xionger.qcb.dao.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import com.xionger.qcb.model.Stock;
 
@@ -68,4 +69,10 @@ public interface StockDao {
      * @return
      */
     public int insertSelective(Stock record);
+    
+    /**
+     * 删除时间段内的数据
+     * @param map
+     */
+    public void deleteStockListByStartAndEnd(Map<String, String> map);
 }

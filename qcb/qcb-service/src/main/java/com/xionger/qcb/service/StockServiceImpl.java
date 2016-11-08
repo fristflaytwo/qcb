@@ -6,8 +6,10 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -483,9 +485,13 @@ public class StockServiceImpl implements StockService{
             WebClient webclient = new WebClient();  
             String subTime=DateUtil.timeSubtract(start, end);
             int subDay=Integer.parseInt(subTime.split("_")[0]);
+            Map<String, String> map =new HashMap<String, String>();
+            map.put("start", (start.split(" ")[0]).replaceAll("-", ""));
+            map.put("end", (end.split(" ")[0]).replaceAll("-", ""));
+            this.stockDao.deleteStockListByStartAndEnd(map);
             Stock obj=null;
     		for(Stock stock:stockList){
-    			for(int i=0;i<subDay;i++){
+    			for(int i=0;i<=subDay;i++){
     				obj=getHistoryStockInfo(webclient,stock.getCode(), DateUtil.dateToString(DateUtil.getAddTimeDate(DateUtil.DAY, DateUtil.getDate(start, DateUtil.formatPattern_14), i)));
     				if(obj!=null&&obj.getNewPrice().compareTo(new BigDecimal("0.00"))==1){
     					this.stockDao.insertSelective(obj);
@@ -497,6 +503,7 @@ public class StockServiceImpl implements StockService{
     	
     }
     
+    
     /**
      * 利用爬虫爬去新浪财经的股票历史数据
      * @param code
@@ -506,6 +513,7 @@ public class StockServiceImpl implements StockService{
     private Stock getHistoryStockInfo(WebClient webclient,String code,String date){
     	Stock stock=null;
     	try {
+    		Thread.sleep(1000);
     		stock=new Stock();
     		String[] times=date.split("-");
         	if(times[1].startsWith("0")){

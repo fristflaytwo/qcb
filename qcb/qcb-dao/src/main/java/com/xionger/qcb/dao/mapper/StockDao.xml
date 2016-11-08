@@ -153,6 +153,12 @@
     where createDate = #{dataDate,jdbcType=VARCHAR}
   </delete>
   
+  <delete id="deleteStockListByStartAndEnd" parameterType="java.util.HashMap" >
+    delete from t_stock
+    where createDate <![CDATA[>=]]> #{start,jdbcType=VARCHAR} and createDate <![CDATA[<=]]> #{end,jdbcType=VARCHAR}
+  </delete>
+  
+  
   <select id="selectListByCreateDate" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
