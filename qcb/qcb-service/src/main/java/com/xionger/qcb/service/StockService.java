@@ -44,5 +44,11 @@ public interface StockService{
      * @param end
      */
     public void insertHistoryStock(String date,String start,String end);
+    
+    /**
+     * 批量下载历史股票数据信息
+     * @param date 指定参考日期的股票数据
+     */
+    public void downLoadHisData(String date);
 	
 }

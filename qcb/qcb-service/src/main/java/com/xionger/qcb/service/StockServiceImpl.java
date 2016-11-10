@@ -1,7 +1,9 @@
 package com.xionger.qcb.service;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -26,8 +28,10 @@ import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.DomNodeList;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.xionger.qcb.common.constants.Constants;
 import com.xionger.qcb.common.util.conllection.CollectionUtil;
 import com.xionger.qcb.common.util.date.DateUtil;
+import com.xionger.qcb.common.util.http.HttpClientUtils;
 import com.xionger.qcb.common.util.string.StringUtil;
 import com.xionger.qcb.dao.mapper.StockChangeDao;
 import com.xionger.qcb.dao.mapper.StockDao;
@@ -473,7 +477,7 @@ public class StockServiceImpl implements StockService{
     
     
     /**
-     * 插入指定股票代码从start到end日期的数据信息
+     * 插入指定股票代码从start到end日期的数据信息,此方式比较慢
      * @param date 最新股票数据日期
      * @param start 需要时分秒yyyy-MM-dd HH:mm:ss
      * @param end 需要时分秒yyyy-MM-dd HH:mm:ss
@@ -574,5 +578,54 @@ public class StockServiceImpl implements StockService{
 			e.printStackTrace();
 		}
     	return null;
+    }
+    
+    /**
+     * 批量下载历史股票数据信息
+     * @param date 指定参考日期的股票数据
+     */
+    public void downLoadHisData(String date){
+    	List<Stock> stockList=this.stockDao.selectListByCreateDate(date);
+    	if(CollectionUtil.isNotEmpty(stockList)){
+    		downLoadHisDataByCodeAndStartTimeAndEndTime("sz300303", "20161101", "20161109");
+    	}
+    }
+    
+    /**
+     * 下载该股票在该时间段内的历史数据
+     * @param code
+     * @param startTime
+     * @param endTime
+     */
+    private void downLoadHisDataByCodeAndStartTimeAndEndTime(String code,String startTime,String endTime){
+    	//先下载数据到本地磁盘
+		BufferedOutputStream bw = null;
+		String path="d:/luolonglong/work_cs/qcb/qcb/qcb-main/stock_csv/"+code+".csv";
+		// 创建文件对象
+		File f = new File(path);
+		// 创建文件路径
+		if (!f.getParentFile().exists()) f.getParentFile().mkdirs();
+		try {
+			String stockCode="";
+			if(code.startsWith("sz")){
+				stockCode=code.replaceAll("sz", "1");
+			}else{
+				stockCode=code.replaceAll("sh", "0");
+			}
+			String url="http://quotes.money.163.com/service/chddata.html?code="+stockCode+"&start="+startTime.replaceAll("-", "")+"&end="+endTime.replaceAll("-", "");
+			byte[] result=HttpClientUtils.doGetReturnBytes(url, Constants.UTF8);
+			// 写入文件
+			bw = new BufferedOutputStream(new FileOutputStream(path));
+			bw.write(result);
+		} catch (Exception e) {
+			LOGGER.error("下载"+code+"历史股票信息数据异常",e);
+		} finally {
+			try {
+				if (bw != null)
+					bw.close();
+			} catch (Exception e) {
+			}
+			bw=null;
+		}
     }
 }

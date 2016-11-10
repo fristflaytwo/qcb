@@ -33,7 +33,7 @@ public class ExecutorTimer {
 	public void initStockData() {
 		//先下载数据到本地磁盘
 		BufferedOutputStream bw = null;
-		String path="d:/stock_xls/"+DateUtil.dateToString(new Date(),DateUtil.formatPattern_Short)+".xls";
+		String path="d:/luolonglong/work_cs/qcb/qcb/qcb-main/stock_xls/"+DateUtil.dateToString(new Date(),DateUtil.formatPattern_Short)+".xls";
 		// 创建文件对象
 		File f = new File(path);
 		// 创建文件路径
