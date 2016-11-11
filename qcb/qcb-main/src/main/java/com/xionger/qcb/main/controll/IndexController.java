@@ -92,4 +92,13 @@ public class IndexController extends BaseController {
 		return new ResultVo();
 	}
 	
+	@RequestMapping("/downLoadHisData")
+	@ResponseBody
+	public ResultVo downLoadHisData(@RequestBody String data, HttpServletRequest req, HttpServletResponse res){
+		Map<String,String> map=(Map<String, String>) JsonUtil.jsonToMap(data);
+		this.stockService.downLoadHisData(map.get("date"),map.get("startTime"),map.get("endTime"));
+		return new ResultVo();
+	}
+	
+	
 }

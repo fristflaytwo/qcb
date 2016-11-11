@@ -48,7 +48,9 @@ public interface StockService{
     /**
      * 批量下载历史股票数据信息
      * @param date 指定参考日期的股票数据
+     * @param startTime 起始日期
+     * @param endTime 结束日期
      */
-    public void downLoadHisData(String date);
+    public void downLoadHisData(String date,String startTime,String endTime);
 	
 }
