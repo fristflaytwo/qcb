@@ -53,4 +53,8 @@ public interface StockService{
      */
     public void downLoadHisData(String date,String startTime,String endTime);
 	
+    /**
+     * 扫描下载csv目录下的txt文件并进行股票历史数据保存
+     */
+    public void insertScanStockTxt();
 }

@@ -1,9 +1,12 @@
 package com.xionger.qcb.service;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -632,4 +635,67 @@ public class StockServiceImpl implements StockService{
 			bw=null;
 		}
     }
+    
+    /**
+     * 扫描下载csv目录下的txt文件并进行股票历史数据保存
+     */
+    public void insertScanStockTxt(){
+    	String path="d:/stock_txt/";
+    	File dir = new File(path);
+    	File[] files=dir.listFiles();
+    	for(int i=0; i<files.length; i++){
+    		InputStream in=null;
+    		InputStreamReader read = null;
+    		BufferedReader bufferedReader =null;
+    		try {
+				in = new FileInputStream(files[i]);
+				read = new InputStreamReader(in,"GBK");//考虑到编码格式
+                bufferedReader = new BufferedReader(read);
+                String lineTxt = null;
+                while((lineTxt = bufferedReader.readLine()) != null){
+                    if(StringUtil.isNotBlank(lineTxt)&&!lineTxt.startsWith("日期")){
+                    	String[] values=lineTxt.split(",");
+                    	Stock stock=new Stock();
+                    	stock.generateId();
+                    	stock.setAmplitude(new BigDecimal(values[9].replaceAll(" ", "")).divide(new BigDecimal("100"), 4));
+                    	stock.setAmplitudePrice(amplitudePrice);
+//                    	stock.setBuyPrice(buyPrice);
+//                    	stock.setCode(code);
+//                    	stock.setCodeName(codeName);
+//                    	stock.setCreateDate(createDate);
+//                    	stock.setDealPrice(dealPrice);
+//                    	stock.setDealVol(dealVol);
+//                    	stock.setHeightPrice(heightPrice);
+//                    	stock.setLowPrice(lowPrice);
+//                    	stock.setNewPrice(newPrice);
+//                    	stock.setSalePrice(salePrice);
+//                    	stock.setTodayOpen(todayOpen);
+//                    	stock.setYeatedayClose(yeatedayClose);
+                    }
+                }
+			} catch (Exception e) {
+				e.printStackTrace();
+			}finally{
+				try {
+					if(in!=null){
+						in.close();
+					}
+					if(read!=null){
+						read.close();
+					}
+					if(bufferedReader!=null){
+						bufferedReader.close();
+					}
+					in=null;
+	                read=null;
+	                bufferedReader=null;
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+			}
+    	}
+    }
+    
+    
+    
 }

@@ -100,5 +100,14 @@ public class IndexController extends BaseController {
 		return new ResultVo();
 	}
 	
+	@RequestMapping("/insertScanStockTxt")
+	@ResponseBody
+	public ResultVo insertScanStockTxt(@RequestBody String data, HttpServletRequest req, HttpServletResponse res){
+		Map<String,String> map=(Map<String, String>) JsonUtil.jsonToMap(data);
+		this.stockService.insertScanStockTxt();
+		return new ResultVo();
+	}
+	
+	
 	
 }
