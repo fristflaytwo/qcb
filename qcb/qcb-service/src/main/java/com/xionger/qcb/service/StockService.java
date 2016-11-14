@@ -57,4 +57,10 @@ public interface StockService{
      * 扫描下载csv目录下的txt文件并进行股票历史数据保存
      */
     public void insertScanStockTxt();
+    
+    /**
+     * 测试类
+     * @return
+     */
+    public String getTest();
 }

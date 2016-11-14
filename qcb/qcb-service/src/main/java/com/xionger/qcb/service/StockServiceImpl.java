@@ -24,6 +24,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -48,6 +49,10 @@ import com.xionger.qcb.model.StockResult;
 @Service("userService")
 public class StockServiceImpl implements StockService{
 	private static final Logger LOGGER = LoggerFactory.getLogger(StockServiceImpl.class);
+	
+	@Value("${project.name}")
+	private String projectName;
+	
 	@Autowired
 	private StockDao stockDao;
 	@Autowired
@@ -655,22 +660,25 @@ public class StockServiceImpl implements StockService{
                 while((lineTxt = bufferedReader.readLine()) != null){
                     if(StringUtil.isNotBlank(lineTxt)&&!lineTxt.startsWith("日期")){
                     	String[] values=lineTxt.split(",");
+                    	System.out.println("#################:\t"+values[0]+"\t"+values[1]+"\t"+values[2]);
                     	Stock stock=new Stock();
                     	stock.generateId();
-                    	stock.setAmplitude(new BigDecimal(values[9].replaceAll(" ", "")).divide(new BigDecimal("100"), 4));
-                    	stock.setAmplitudePrice(amplitudePrice);
-//                    	stock.setBuyPrice(buyPrice);
-//                    	stock.setCode(code);
-//                    	stock.setCodeName(codeName);
-//                    	stock.setCreateDate(createDate);
-//                    	stock.setDealPrice(dealPrice);
-//                    	stock.setDealVol(dealVol);
-//                    	stock.setHeightPrice(heightPrice);
-//                    	stock.setLowPrice(lowPrice);
-//                    	stock.setNewPrice(newPrice);
-//                    	stock.setSalePrice(salePrice);
-//                    	stock.setTodayOpen(todayOpen);
-//                    	stock.setYeatedayClose(yeatedayClose);
+                    	stock.setAmplitude(new BigDecimal(values[9].replaceAll(" ", "").replace("None", "0")).divide(new BigDecimal("100"), 4));
+                    	stock.setAmplitudePrice(new BigDecimal(values[8].replaceAll(" ", "").replace("None", "0")));
+                    	stock.setBuyPrice(null);
+                    	values[1]=values[1].replace("'", "");
+                    	stock.setCode(values[1].startsWith("6")?("sh"+values[1]):("sz"+values[1]));
+                    	stock.setCodeName(values[2]);
+                    	stock.setCreateDate(values[0].replaceAll("-", ""));
+                    	stock.setDealPrice(new BigDecimal(values[12].replace("None", "0").trim()));
+                    	stock.setDealVol(Long.parseLong(Math.round(Long.parseLong(values[11].replace("None", "0").trim())/100)+""));//手
+                    	stock.setHeightPrice(new BigDecimal(values[4].replace("None", "0").trim()));
+                    	stock.setLowPrice(new BigDecimal(values[5].replace("None", "0").trim()));
+                    	stock.setNewPrice(new BigDecimal(values[3].replace("None", "0").trim()));
+                    	stock.setSalePrice(null);
+                    	stock.setTodayOpen(new BigDecimal(values[6].replace("None", "0").trim()));
+                    	stock.setYeatedayClose(new BigDecimal(values[7].replace("None", "0").trim()));
+                    	this.stockDao.insertSelective(stock);
                     }
                 }
 			} catch (Exception e) {
@@ -696,6 +704,11 @@ public class StockServiceImpl implements StockService{
     	}
     }
     
-    
-    
+    /**
+     * 测试类
+     * @return
+     */
+    public String getTest(){
+    	return this.projectName;
+    }
 }
