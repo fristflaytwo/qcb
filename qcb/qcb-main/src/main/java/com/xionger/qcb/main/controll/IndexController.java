@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +33,7 @@ public class IndexController extends BaseController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(IndexController.class);
 	
+	
 	@Autowired
 	private StockService stockService;
 	
@@ -43,8 +45,8 @@ public class IndexController extends BaseController {
 	/**
 	 * 加载本次保存的excel数据到股票信息表
 	 */
-	@RequestMapping("/test")
-	public ResultVo test(String fileName){
+	@RequestMapping("/insertStockListByXlsdate")
+	public ResultVo insertStockListByXlsdate(String fileName){
 		String path="d:/stock_xls/"+fileName+".xls";
 		stockService.insertStockListByXlsdate(new Date(), path);
 		return new ResultVo();
@@ -92,6 +94,13 @@ public class IndexController extends BaseController {
 		return new ResultVo();
 	}
 	
+	/**
+	 * 批量下载股票历史数据
+	 * @param data date:参考的股票信息日期 startTime:起始时间 endTime：结束时间
+	 * @param req
+	 * @param res
+	 * @return
+	 */
 	@RequestMapping("/downLoadHisData")
 	@ResponseBody
 	public ResultVo downLoadHisData(@RequestBody String data, HttpServletRequest req, HttpServletResponse res){
@@ -100,14 +109,34 @@ public class IndexController extends BaseController {
 		return new ResultVo();
 	}
 	
+	/**
+	 * 将股票历史数据通过扫描保存到数据库
+	 * @param data
+	 * @param req
+	 * @param res
+	 * @return
+	 */
 	@RequestMapping("/insertScanStockTxt")
 	@ResponseBody
 	public ResultVo insertScanStockTxt(@RequestBody String data, HttpServletRequest req, HttpServletResponse res){
-		Map<String,String> map=(Map<String, String>) JsonUtil.jsonToMap(data);
 		this.stockService.insertScanStockTxt();
 		return new ResultVo();
 	}
 	
 	
+	/**
+	 * 将股票历史数据通过扫描保存到数据库
+	 * @param data
+	 * @param req
+	 * @param res
+	 * @return
+	 */
+	@RequestMapping("/test")
+	@ResponseBody
+	public ResultVo test(@RequestBody String data, HttpServletRequest req, HttpServletResponse res){
+		ResultVo rv=new ResultVo();
+		rv.setMsg(this.stockService.getTest());
+		return rv;
+	}
 	
 }
