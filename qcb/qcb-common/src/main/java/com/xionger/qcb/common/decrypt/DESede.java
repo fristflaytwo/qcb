@@ -102,8 +102,8 @@ public class DESede {
 		//加密
 //		String mw = DESede.encrypt3DES(data, Constants.appKey);
 //		System.out.println(mw);
-		String destr = DESede.decrypt3DES("707c4c82b29303c80169214d33fd4bd1", Constants.appKey);
-		System.out.println(destr );
+		//String destr = DESede.decrypt3DES("707c4c82b29303c80169214d33fd4bd1", Constants.appKey);
+		//System.out.println(destr );
 		
 	}
 	

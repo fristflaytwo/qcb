@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.xionger.qcb.common.util.date.DateUtil;
 import com.xionger.qcb.common.util.json.JsonUtil;
 import com.xionger.qcb.model.vo.ResultVo;
 import com.xionger.qcb.service.StockService;
@@ -135,7 +136,7 @@ public class IndexController extends BaseController {
 	@ResponseBody
 	public ResultVo test(@RequestBody String data, HttpServletRequest req, HttpServletResponse res){
 		ResultVo rv=new ResultVo();
-		rv.setMsg(this.stockService.getTest());
+		this.stockService.insertStockDate(DateUtil.dateToString(new Date(),DateUtil.formatPattern_Short));
 		return rv;
 	}
 	

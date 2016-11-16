@@ -22,20 +22,7 @@ public class DateUtil {
 	public static final String MONTH = "MM";// 月
 	public static final String DAY = "dd";// 日
 
-	public static void main(String[] args) {
-		
-		Date a1 = null;
-		Date b1 = null;
-		try {
-			a1 = new SimpleDateFormat("yyyy-MM-dd").parse("2016-02-01");
-			b1 = new SimpleDateFormat("yyyy-MM-dd").parse("2016-01-10");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		long day = (a1.getTime()-b1.getTime())/(24*60*60*1000);
-		System.out.println(day);
-	}
+	
 	
 	public static long betweenDays(Date startDate,Date endDate) {
 		long day = 0;
@@ -230,6 +217,27 @@ public class DateUtil {
 			cal.add(Calendar.DAY_OF_MONTH, num);
 		}
 		return cal.getTime();
+	}
+	
+	/**
+	 * 获取date日期对应的星期
+	 * @param date
+	 * @return
+	 */
+	public static String getWeek(Date date){
+		String[] weeks = {"星期日","星期一","星期二","星期三","星期四","星期五","星期六"};
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		int week_index = cal.get(Calendar.DAY_OF_WEEK) - 1;
+		if(week_index<0){
+			week_index = 0;
+		} 
+		return weeks[week_index];
+	}
+	
+	public static void main(String[] args) {
+		long a=betweenDays(DateUtil.stringToDate("20160101",formatPattern_Short), DateUtil.stringToDate("20161116",formatPattern_Short));
+		System.out.println(a);
 	}
 
 }

@@ -33,16 +33,19 @@ import com.gargoylesoftware.htmlunit.html.DomNodeList;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.xionger.qcb.common.constants.Constants;
+import com.xionger.qcb.common.util.HolidayUtil;
 import com.xionger.qcb.common.util.conllection.CollectionUtil;
 import com.xionger.qcb.common.util.date.DateUtil;
 import com.xionger.qcb.common.util.http.HttpClientUtils;
 import com.xionger.qcb.common.util.string.StringUtil;
 import com.xionger.qcb.dao.mapper.StockChangeDao;
 import com.xionger.qcb.dao.mapper.StockDao;
+import com.xionger.qcb.dao.mapper.StockDateDao;
 import com.xionger.qcb.dao.mapper.StockMaDao;
 import com.xionger.qcb.dao.mapper.StockResultDao;
 import com.xionger.qcb.model.Stock;
 import com.xionger.qcb.model.StockChange;
+import com.xionger.qcb.model.StockDate;
 import com.xionger.qcb.model.StockMa;
 import com.xionger.qcb.model.StockResult;
 
@@ -50,8 +53,8 @@ import com.xionger.qcb.model.StockResult;
 public class StockServiceImpl implements StockService{
 	private static final Logger LOGGER = LoggerFactory.getLogger(StockServiceImpl.class);
 	
-	@Value("${project.name}")
-	private String projectName;
+	@Value("${stock.csv.path}")
+	private String stockCsvPath;//股票历史csv数据下载后保存本地磁盘路径
 	
 	@Autowired
 	private StockDao stockDao;
@@ -61,6 +64,8 @@ public class StockServiceImpl implements StockService{
 	private StockResultDao stockResultDao;
 	@Autowired
 	private StockChangeDao stockChangeDao;
+	@Autowired
+	private StockDateDao stockDateDao;
 	
 	/**
      * 从下载的excel冲将数据导入到数据库,调用次方法必须要求该日数据excel必须存在
@@ -134,7 +139,7 @@ public class StockServiceImpl implements StockService{
                 i++;
             }
         }catch(Exception e){
-        	LOGGER.error(">>>>>\t"+new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())+"\t 下载渠道类别模板文件是发生异常："+ ExceptionUtils.getMessage(e) + "\n" + ExceptionUtils.getStackTrace(e));
+        	LOGGER.error(">>>>>\t"+new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())+"\t 加载股票数据文件数据入库发生异常："+ ExceptionUtils.getMessage(e) + "\n" + ExceptionUtils.getStackTrace(e));
         }finally{
         	try {
         		if(fis!=null){
@@ -160,118 +165,49 @@ public class StockServiceImpl implements StockService{
      * 进行均线计算
      * @param date 股票信息表的股票数据日期
      */
-    public void insertStockMa(String date){
+    public void insertStockDayMa(String date){
     	List<Stock> list=this.stockDao.selectListByCreateDate(date);
     	if(CollectionUtil.isNotEmpty(list)){
     		//先删除该天的均线数据
     		String createDate=DateUtil.dateToString(new Date(),DateUtil.formatPattern_Short);
     		this.stockMaDao.deleteByCreateDate(createDate);//删除均线
     		//均线和过滤适合条件的股票算法开始
-    		List<Stock> stock100List=null;
+    		List<Stock> stock20List=null;
     		for(Stock stock:list){
-    			stock100List=this.stockDao.select100ListByCodeOrderCreateDateDesc(stock.getCode());//必须结果集倒序
+    			stock20List=this.stockDao.select20ListByCodeOrderCreateDateDesc(stock.getCode());//必须结果集倒序
     			//均线计算
     			BigDecimal day5=new BigDecimal("0.00");
     			BigDecimal day10=new BigDecimal("0.00");
     			BigDecimal day20=new BigDecimal("0.00");
-    			BigDecimal week5=new BigDecimal("0.00");
-    			BigDecimal week10=new BigDecimal("0.00");
-    			BigDecimal week20=new BigDecimal("0.00");
     			BigDecimal maSum=new BigDecimal("0.00");
     			
-    			if(CollectionUtil.isNotEmpty(stock100List)){
-    				for(int i=0;i<stock100List.size();i++){
-    					maSum=maSum.add(stock100List.get(i).getNewPrice());
+    			if(CollectionUtil.isNotEmpty(stock20List)){
+    				for(int i=0;i<stock20List.size();i++){
+    					maSum=maSum.add(stock20List.get(i).getNewPrice());
     					//均线区间统计
-    					if(stock100List.size()>50){
-    						if(i==4){
-    							day5=maSum.divide(new BigDecimal("5.00"),2);
-            				}
-            				if(i==9){
-            					day10=maSum.divide(new BigDecimal("10.00"),2);
-            				}
-            				if(i==19){
-            					day20=maSum.divide(new BigDecimal("20.00"),2);
-            				}
-            				if(i==24){
-            					week5=maSum.divide(new BigDecimal("25.00"),2);
-            				}
-            				if(i==49){
-            					week10=maSum.divide(new BigDecimal("50.00"),2);
-            				}
-            				if(i==(stock100List.size()-1)){
-            					week20=maSum.divide(new BigDecimal((stock100List.size()+"")),2);
-            				}
-            				continue;
-    					}else if(stock100List.size()>25 && stock100List.size()<=50){
+    					if(stock20List.size()>10 && stock20List.size()<=20){
     						if(i==4){
     							day5=maSum.divide(new BigDecimal("5.00"),2);
             				}
     						if(i==9){
             					day10=maSum.divide(new BigDecimal("10.00"),2);
             				}
-    						if(i==19){
-            					day20=maSum.divide(new BigDecimal("20.00"),2);
+    						if(i==(stock20List.size()-1)){
+    							day20=maSum.divide(new BigDecimal((stock20List.size()+"")),2);
             				}
-    						if(i==24){
-            					week5=maSum.divide(new BigDecimal("25.00"),2);
-            				}
-    						if(i==(stock100List.size()-1)){
-    							week10=maSum.divide(new BigDecimal((stock100List.size()+"")),2);
-            				}
-            				continue;
-    					}else if(stock100List.size()>20 && stock100List.size()<=25){
+    					}else if(stock20List.size()>5 && stock20List.size()<=10){
     						if(i==4){
     							day5=maSum.divide(new BigDecimal("5.00"),2);
             				}
-    						if(i==9){
-            					day10=maSum.divide(new BigDecimal("10.00"),2);
-            				}
-    						if(i==19){
-            					day20=maSum.divide(new BigDecimal("20.00"),2);
-            				}
-    						if(i==(stock100List.size()-1)){
-    							week5=maSum.divide(new BigDecimal((stock100List.size()+"")),2);
-            				}
-    					}else if(stock100List.size()>10 && stock100List.size()<=20){
-    						if(i==4){
-    							day5=maSum.divide(new BigDecimal("5.00"),2);
-            				}
-    						if(i==9){
-            					day10=maSum.divide(new BigDecimal("10.00"),2);
-            				}
-    						if(i==(stock100List.size()-1)){
-    							day20=maSum.divide(new BigDecimal((stock100List.size()+"")),2);
-            				}
-    					}else if(stock100List.size()>5 && stock100List.size()<=10){
-    						if(i==4){
-    							day5=maSum.divide(new BigDecimal("5.00"),2);
-            				}
-    						if(i==(stock100List.size()-1)){
-    							day10=maSum.divide(new BigDecimal((stock100List.size()+"")),2);
+    						if(i==(stock20List.size()-1)){
+    							day10=maSum.divide(new BigDecimal((stock20List.size()+"")),2);
             				}
     					}else{
-    						if(i==(stock100List.size()-1)){
-    							day5=maSum.divide(new BigDecimal((stock100List.size()+"")),2);
+    						if(i==(stock20List.size()-1)){
+    							day5=maSum.divide(new BigDecimal((stock20List.size()+"")),2);
             				}
     					}
         			}
-    			}
-    			
-    			if(day10.doubleValue()<1){
-    				day10=day5;
-    			}
-    			if(day20.doubleValue()<1){
-    				day20=day10;
-    			}
-    			if(week5.doubleValue()<1){
-    				week5=day20;
-    			}
-    			if(week10.doubleValue()<1){
-    				week10=week5;
-    			}
-    			if(week20.doubleValue()<1){
-    				week20=week10;
     			}
     			
     			//保存均线数据
@@ -283,9 +219,6 @@ public class StockServiceImpl implements StockService{
     			stockMa.setDay5(day5);
     			stockMa.setDay10(day10);
     			stockMa.setDay20(day20);
-    			stockMa.setWeek5(week5);
-    			stockMa.setWeek10(week10);
-    			stockMa.setWeek20(week20);
     			stockMaDao.insertSelective(stockMa);
     		}
     	}
@@ -534,7 +467,7 @@ public class StockServiceImpl implements StockService{
         	if(times[2].startsWith("0")){
         		times[2]=times[1].replace("0", "");
         	}
-        	String url="http://money.finance.sina.com.cn/quotes_service/view/vMS_tradehistory.php?symbol="+code+"&date="+times[0]+"-"+times[1]+"-"+times[2];
+        	String url=Constants.STOCK_HISTORY_ONES_PATH+"symbol="+code+"&date="+times[0]+"-"+times[1]+"-"+times[2];
           
             // 这里是配置一下不加载css和javaScript,配置起来很简单，是不是  
             webclient.getOptions().setCssEnabled(false);  
@@ -612,7 +545,7 @@ public class StockServiceImpl implements StockService{
     private void downLoadHisDataByCodeAndStartTimeAndEndTime(String code,String startTime,String endTime){
     	//先下载数据到本地磁盘
 		BufferedOutputStream bw = null;
-		String path="d:/luolonglong/work_cs/qcb/qcb/qcb-main/stock_csv/"+code+".csv";
+		String path=stockCsvPath+code+".csv";
 		// 创建文件对象
 		File f = new File(path);
 		// 创建文件路径
@@ -624,7 +557,7 @@ public class StockServiceImpl implements StockService{
 			}else{
 				stockCode=code.replaceAll("sh", "0");
 			}
-			String url="http://quotes.money.163.com/service/chddata.html?code="+stockCode+"&start="+startTime.replaceAll("-", "")+"&end="+endTime.replaceAll("-", "");
+			String url=Constants.STOCK_CSV_DOWNLOAD_HISTORY_PATH+"code="+stockCode+"&start="+startTime.replaceAll("-", "")+"&end="+endTime.replaceAll("-", "");
 			byte[] result=HttpClientUtils.doGetReturnBytes(url, Constants.UTF8);
 			// 写入文件
 			bw = new BufferedOutputStream(new FileOutputStream(path));
@@ -703,12 +636,52 @@ public class StockServiceImpl implements StockService{
 			}
     	}
     }
-    
+
     /**
-     * 测试类
-     * @return
+     * 股票日期保存
+     * @param date yyyyMMdd格式
      */
-    public String getTest(){
-    	return this.projectName;
+    public void insertStockDate(String date){
+    	String startDate="20160101";
+    	StockDate stockDate= stockDateDao.selectByIstrueEndWeekDay(date);
+    	if(stockDate!=null){
+    		startDate=stockDate.getStockDate();
+    	}
+    	long days=DateUtil.betweenDays(DateUtil.stringToDate(startDate,DateUtil.formatPattern_Short), DateUtil.stringToDate(date,DateUtil.formatPattern_Short));
+    	int flag=-1;//锁标识，星期天解锁，星期六加锁，星期天记录上周的起始时间
+    	String startTime="";//周的起始日期
+    	for(int i=0;i<days;i++){
+    		StockDate sd=new StockDate();
+    		sd.generateId();
+    		sd.setIsTradeDate("99");
+			sd.setIsStartWeekDay("99");
+			sd.setIsEndWeekDay("99");
+    		Date day=DateUtil.getAddTimeDate(DateUtil.DAY, DateUtil.stringToDate(date,DateUtil.formatPattern_Short), (i*-1));
+    		sd.setStockDate(DateUtil.dateToString(day, DateUtil.formatPattern_Short));
+    		if("星期六".equals(DateUtil.getWeek(day))){
+    			flag=0;
+    		}
+    		if("星期日".equals(DateUtil.getWeek(day))){
+    			if(flag==1){
+    				StockDate obj=this.stockDateDao.selectByStockDate(startTime);
+    				obj.setIsStartWeekDay("00");
+    				this.stockDateDao.updateByPrimaryKeySelective(obj);
+    			}
+    			flag=-1;
+    		}
+    		if("0".equals(HolidayUtil.request(DateUtil.dateToString(day,DateUtil.formatPattern_Short)).replace("\r\n",""))
+    				&&!"星期日".equals(DateUtil.getWeek(day))&&!"星期六".equals(DateUtil.getWeek(day))){
+    			sd.setIsTradeDate("00");
+    			if(flag==0){
+    				flag=1;
+    				sd.setIsEndWeekDay("00");
+    			}
+    			startTime=DateUtil.dateToString(day, DateUtil.formatPattern_Short);
+    		}
+    		this.stockDateDao.deleteByStockDate(sd.getStockDate());
+    		this.stockDateDao.insertSelective(sd);
+    	}
     }
+    
+    
 }

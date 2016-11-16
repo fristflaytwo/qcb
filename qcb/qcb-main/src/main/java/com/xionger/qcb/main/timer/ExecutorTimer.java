@@ -9,6 +9,7 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.xionger.qcb.common.constants.Constants;
@@ -24,6 +25,10 @@ import com.xionger.qcb.service.StockService;
 @Component
 public class ExecutorTimer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ExecutorTimer.class);
+	
+	@Value("${stock.xls.path}")
+	private String stockXlsPath;//股票数据文件存放路径
+	
 	@Autowired
 	private StockService stockService;
 	
@@ -33,13 +38,13 @@ public class ExecutorTimer {
 	public void initStockData() {
 		//先下载数据到本地磁盘
 		BufferedOutputStream bw = null;
-		String path="d:/luolonglong/work_cs/qcb/qcb/qcb-main/stock_xls/"+DateUtil.dateToString(new Date(),DateUtil.formatPattern_Short)+".xls";
+		String path=stockXlsPath+DateUtil.dateToString(new Date(),DateUtil.formatPattern_Short)+".xls";
 		// 创建文件对象
 		File f = new File(path);
 		// 创建文件路径
 		if (!f.getParentFile().exists()) f.getParentFile().mkdirs();
 		try {
-			byte[] result=HttpClientUtils.doGetReturnBytes("http://stock.gtimg.cn/data/get_hs_xls.php?id=ranka&type=1&metric=chr", Constants.UTF8);
+			byte[] result=HttpClientUtils.doGetReturnBytes(Constants.STOCK_XLS_DOWNLOAD_PATH, Constants.UTF8);
 			// 写入文件
 			bw = new BufferedOutputStream(new FileOutputStream(path));
 			bw.write(result);
@@ -55,10 +60,14 @@ public class ExecutorTimer {
 		}
 		
 		//调用server层进行数据保存
-		String dataDate=stockService.insertStockListByXlsdate(new Date(), path);//保存基本数据并返回数据日期
-		
-		//重新计算均线
-		this.stockService.insertStockMa(dataDate);
+		stockService.insertStockListByXlsdate(new Date(), path);//保存基本数据并返回数据日期
+	}
+	
+	/**
+	 * 初始化每天的日均线
+	 */
+	public void initStockDayMa(){
+		this.stockService.insertStockDayMa(DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short));
 	}
 	
 	
@@ -70,11 +79,17 @@ public class ExecutorTimer {
 	}
 	
 	/**
-	 * 对移动股票数据进行监控
+	 * 对异动股票数据进行监控
 	 */
 	public void initStockListenerChange(){
 		this.stockService.updateStockListenerChange();
 	}
 	
+	/**
+	 * 初始化股票交易日期数据
+	 */
+	public void initStockDate(){
+		this.stockService.insertStockDate(DateUtil.dateToString(new Date(),DateUtil.formatPattern_Short));
+	}
 	
 }
