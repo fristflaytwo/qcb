@@ -126,18 +126,76 @@ public class IndexController extends BaseController {
 	
 	
 	/**
-	 * 将股票历史数据通过扫描保存到数据库
+	 * 计算股票的交易日期
 	 * @param data
 	 * @param req
 	 * @param res
 	 * @return
 	 */
-	@RequestMapping("/test")
+	@RequestMapping("/insertStockDate")
 	@ResponseBody
-	public ResultVo test(@RequestBody String data, HttpServletRequest req, HttpServletResponse res){
+	public ResultVo insertStockDate(@RequestBody String data, HttpServletRequest req, HttpServletResponse res){
 		ResultVo rv=new ResultVo();
 		this.stockService.insertStockDate(DateUtil.dateToString(new Date(),DateUtil.formatPattern_Short));
 		return rv;
 	}
+	
+	/**
+	 * 周均线统计
+	 * @param data
+	 * @param req
+	 * @param res
+	 * @return
+	 */
+	@RequestMapping("/insertStockWeekMa")
+	@ResponseBody
+	public ResultVo insertStockWeekMa(@RequestBody String data, HttpServletRequest req, HttpServletResponse res){
+		Map<String,String> map=(Map<String, String>) JsonUtil.jsonToMap(data);
+		ResultVo rv=new ResultVo();
+		this.stockService.insertStockWeekMa(map.get("date"));
+		return rv;
+	}
+	
+	/**
+	 * 日均线统计
+	 * @param data
+	 * @param req
+	 * @param res
+	 * @return
+	 */
+	@RequestMapping("/insertStockDayMa")
+	@ResponseBody
+	public ResultVo insertStockDayMa(@RequestBody String data, HttpServletRequest req, HttpServletResponse res){
+		Map<String,String> map=(Map<String, String>) JsonUtil.jsonToMap(data);
+		ResultVo rv=new ResultVo();
+		this.stockService.insertStockDayMa(map.get("date"));
+		return rv;
+	}
+	
+	/**
+	 * 批量执行均线统计
+	 * @param data
+	 * @param req
+	 * @param res
+	 * @return
+	 */
+	@RequestMapping("/stockMa")
+	@ResponseBody
+	public ResultVo stockMa(@RequestBody String data, HttpServletRequest req, HttpServletResponse res){
+		Map<String,String> map=(Map<String, String>) JsonUtil.jsonToMap(data);
+		ResultVo rv=new ResultVo();
+		int size=Integer.parseInt(map.get("size"));
+		for(int i=0;i<size;i++){
+			Date day=DateUtil.getAddTimeDate(DateUtil.DAY, DateUtil.stringToDate(map.get("date"),DateUtil.formatPattern_Short), i);
+			System.out.println(DateUtil.dateToString(day, DateUtil.formatPattern_Short)+"日开始");
+			this.stockService.insertStockDayMa(DateUtil.dateToString(day, DateUtil.formatPattern_Short));
+			System.out.println(DateUtil.dateToString(day, DateUtil.formatPattern_Short)+"日结束");
+			System.out.println(DateUtil.dateToString(day, DateUtil.formatPattern_Short)+"周开始");
+			this.stockService.insertStockWeekMa(DateUtil.dateToString(day, DateUtil.formatPattern_Short));
+			System.out.println(DateUtil.dateToString(day, DateUtil.formatPattern_Short)+"周结束");
+		}
+		return rv;
+	}
+	
 	
 }

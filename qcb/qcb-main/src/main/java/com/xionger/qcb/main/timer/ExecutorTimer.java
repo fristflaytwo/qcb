@@ -70,6 +70,13 @@ public class ExecutorTimer {
 		this.stockService.insertStockDayMa(DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short));
 	}
 	
+	/**
+	 * 初始化每周的周均线,需要放在日均线之后执行
+	 */
+	public void initStockWeekMa(){
+		this.stockService.insertStockWeekMa(DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short));
+	}
+	
 	
 	/**
 	 * 每天异动股票信息记录

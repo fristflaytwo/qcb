@@ -155,4 +155,10 @@
     where createDate = #{createDate,jdbcType=VARCHAR}
   </delete>
   
+  <select id="selectByCreateDate" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_stock_ma
+    where createDate = #{date,jdbcType=VARCHAR}
+  </select>
 </mapper>

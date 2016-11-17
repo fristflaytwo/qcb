@@ -1,5 +1,7 @@
 package com.xionger.qcb.dao.mapper;
 
+import java.util.List;
+
 import com.xionger.qcb.model.StockMa;
 
 public interface StockMaDao {
@@ -21,4 +23,11 @@ public interface StockMaDao {
      * @return
      */
     int deleteByCreateDate(String createDate);
+    
+    /**
+     * 查询改天的均线数据
+     * @param date
+     * @return
+     */
+    List<StockMa> selectByCreateDate(String date);
 }

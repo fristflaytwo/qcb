@@ -10,6 +10,8 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -168,13 +170,14 @@ public class StockServiceImpl implements StockService{
     public void insertStockDayMa(String date){
     	List<Stock> list=this.stockDao.selectListByCreateDate(date);
     	if(CollectionUtil.isNotEmpty(list)){
-    		//先删除该天的均线数据
-    		String createDate=DateUtil.dateToString(new Date(),DateUtil.formatPattern_Short);
-    		this.stockMaDao.deleteByCreateDate(createDate);//删除均线
+    		this.stockMaDao.deleteByCreateDate(date);//删除均线
     		//均线和过滤适合条件的股票算法开始
     		List<Stock> stock20List=null;
     		for(Stock stock:list){
-    			stock20List=this.stockDao.select20ListByCodeOrderCreateDateDesc(stock.getCode());//必须结果集倒序
+    			Map<String, String> map=new HashMap<String, String>();
+    			map.put("code", stock.getCode());
+    			map.put("createDate", date);
+    			stock20List=this.stockDao.select20ListByCodeAndCreateDateOrderCreateDateDesc(map);//必须结果集倒序
     			//均线计算
     			BigDecimal day5=new BigDecimal("0.00");
     			BigDecimal day10=new BigDecimal("0.00");
@@ -215,11 +218,94 @@ public class StockServiceImpl implements StockService{
     			stockMa.generateId();
     			stockMa.setCode(stock.getCode());
     			stockMa.setCodename(stock.getCodeName());
-    			stockMa.setCreateDate(createDate);//正常日期，非数据日期
+    			stockMa.setCreateDate(date);//数据日期
     			stockMa.setDay5(day5);
     			stockMa.setDay10(day10);
     			stockMa.setDay20(day20);
     			stockMaDao.insertSelective(stockMa);
+    		}
+    	}
+    }
+    
+    /**
+     * 周均线统计,需要放在日均线之后执行
+     * @param date 自然日
+     */
+    public void insertStockWeekMa(String date){
+    	//查询改天的均线数据
+    	List<StockMa> stockMaList= this.stockMaDao.selectByCreateDate(date);
+    	if(CollectionUtil.isNotEmpty(stockMaList)){
+    		for(StockMa maObj:stockMaList){
+    			Stock stock=null;//当date不是本周交易最后一天时，该值指向当日数据
+    			Map<String, String> map=new HashMap<String, String>();
+    			map.put("code", maObj.getCode());
+    			map.put("createDate", date);
+    			List<Stock> stockList= this.stockDao.select20WeekListByCodeAndCreateDateOrderCreateDateDesc(map);
+    			if(CollectionUtil.isNotEmpty(stockList)){
+    				if(!stockList.get(0).getCreateDate().equals(date)){
+    					stock=new Stock();
+    					stock.setCode(maObj.getCode());
+    					stock.setCreateDate(DateUtil.dateToString(DateUtil.getAddTimeDate(DateUtil.DAY, DateUtil.stringToDate(date,DateUtil.formatPattern_Short), -1), DateUtil.formatPattern_Short));
+    					stock =this.stockDao.selectListByCodeAndCreateDateAsc(stock).get(0);
+    				}
+    			}else{
+    				continue;
+    			}
+    			BigDecimal week5=new BigDecimal("0.00");
+    			BigDecimal week10=new BigDecimal("0.00");
+    			BigDecimal week20=new BigDecimal("0.00");
+    			BigDecimal maSum=new BigDecimal("0.00");
+    			if(stock!=null){
+    				stockList.remove(stockList.size()-1);
+    				stockList.add(stock);
+    				Collections.sort(stockList, new Comparator<Stock>() {
+    					public int compare(Stock o1, Stock o2) {
+    						int ret = 0;
+    						try {
+    							Date d1 = DateUtil.stringToDate(o1.getCreateDate(), DateUtil.formatPattern_Short);
+    							Date d2 = DateUtil.stringToDate(o2.getCreateDate(), DateUtil.formatPattern_Short);
+    							if (d1.before(d2)) {
+    								ret = 1;
+    							} else {
+    								ret = -1;
+    							}
+    						} catch (Exception e) {
+    							e.printStackTrace();
+    						}
+    						return ret;
+    					}
+    				});
+    			}
+    			for(int i=0;i<stockList.size();i++){
+					maSum=maSum.add(stockList.get(i).getNewPrice());
+					//均线区间统计
+					if(stockList.size()>10 && stockList.size()<=20){
+						if(i==4){
+							week5=maSum.divide(new BigDecimal("5.00"),2);
+        				}
+						if(i==9){
+							week10=maSum.divide(new BigDecimal("10.00"),2);
+        				}
+						if(i==(stockList.size()-1)){
+							week20=maSum.divide(new BigDecimal((stockList.size()+"")),2);
+        				}
+					}else if(stockList.size()>5 && stockList.size()<=10){
+						if(i==4){
+							week5=maSum.divide(new BigDecimal("5.00"),2);
+        				}
+						if(i==(stockList.size()-1)){
+							week10=maSum.divide(new BigDecimal((stockList.size()+"")),2);
+        				}
+					}else{
+						if(i==(stockList.size()-1)){
+							week5=maSum.divide(new BigDecimal((stockList.size()+"")),2);
+        				}
+					}
+    			}
+    			maObj.setWeek5(week5);
+    			maObj.setWeek10(week10);
+    			maObj.setWeek20(week20);
+    			this.stockMaDao.updateByPrimaryKeySelective(maObj);
     		}
     	}
     }

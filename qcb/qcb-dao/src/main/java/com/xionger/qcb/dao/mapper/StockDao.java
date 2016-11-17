@@ -43,11 +43,11 @@ public interface StockDao {
     
     
     /**
-     * 根据code查询某只股票近20天的数据，按照数据日期进行倒序排列
-     * @param code
+     * 根据code和数据日期查询某只股票近20天的数据，按照数据日期进行倒序排列
+     * @param map
      * @return
      */
-    public List<Stock> select20ListByCodeOrderCreateDateDesc(String code);
+    public List<Stock> select20ListByCodeAndCreateDateOrderCreateDateDesc(Map<String, String> map);
     
     /**
      * 根据股票代码和数据日期，查询大于这天的该股票的数据结果集，并按照正序排列
@@ -75,4 +75,11 @@ public interface StockDao {
      * @param map
      */
     public void deleteStockListByStartAndEnd(Map<String, String> map);
+    
+    /**
+     * 得到最近20周的每周最后一个交易日的数据
+     * @param map
+     * @return
+     */
+    public List<Stock> select20WeekListByCodeAndCreateDateOrderCreateDateDesc(Map<String, String> map);
 }
