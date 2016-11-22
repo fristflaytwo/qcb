@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -251,31 +252,72 @@ public class StockServiceImpl implements StockService{
     			}else{
     				continue;
     			}
-    			BigDecimal week5=new BigDecimal("0.00");
+    			if(stock!=null){
+    				stockList.remove(stockList.size()-1);
+    				stockList.add(0, stock);
+    			}
+    			//存在停牌，需要特殊处理,可以找出没有在对应日期出现的数据，这样通过，号分割替换日期找出停牌的数据，然后取该日期之前的一次有效数据判断是否在map中存在，如果存在不处理，不存在加入list
+    			Map<String, String> dateStockMap=new HashMap<String, String>();
+    			dateStockMap.put("startDate", stockList.get(stockList.size()-1).getCreateDate());
+    			dateStockMap.put("endDate", stockList.get(0).getCreateDate());
+    			String dateStock=this.stockDateDao.selectByWeekEndStockDateRegion(dateStockMap);
+    			if(StringUtil.isBlank(dateStock)){
+    				continue;
+    			}
+    			dateStock=dateStock+",";
+    			Map<String, Stock> stockListMap=new HashMap<String, Stock>();
+    			for(Stock obj:stockList){
+    				stockListMap.put(obj.getCreateDate(), obj);
+    				if(dateStock.indexOf(obj.getCreateDate()+",")>-1){
+    					dateStock=dateStock.replace(obj.getCreateDate()+",", "");
+    				}
+    			}
+    			if(dateStock.endsWith(",")){
+    				dateStock=dateStock.substring(0, dateStock.length()-1);
+    			}
+    			if(StringUtil.isNotBlank(dateStock)){
+    				String[] tingPaiDate=dateStock.split(",");
+        			for(int i=0;i<tingPaiDate.length;i++){
+        				Map<String, String> beforStockMap=new HashMap<String, String>();
+        				beforStockMap.put("code", maObj.getCode());
+        				beforStockMap.put("createDate",tingPaiDate[i]);
+        				Stock beforStock=this.stockDao.select1ByCreateDateDesc(beforStockMap);
+        				if(beforStock!=null && !stockListMap.containsKey(beforStock.getCreateDate())){
+        					stockListMap.put(beforStock.getCreateDate(), beforStock);
+        					stockList.add(beforStock);
+        				}
+        			}
+    			}
+				Collections.sort(stockList, new Comparator<Stock>() {
+					public int compare(Stock o1, Stock o2) {
+						int ret = 0;
+						try {
+							Date d1 = DateUtil.stringToDate(o1.getCreateDate(), DateUtil.formatPattern_Short);
+							Date d2 = DateUtil.stringToDate(o2.getCreateDate(), DateUtil.formatPattern_Short);
+							if (d1.before(d2)) {
+								ret = 1;
+							} else {
+								ret = -1;
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						return ret;
+					}
+				});
+				
+				//最多只计算20周的数据
+				if(stockList.size()>20){
+					for(int i=20;i<stockList.size();i++){
+						stockList.remove(i);
+					}
+				}
+    			
+				BigDecimal week5=new BigDecimal("0.00");
     			BigDecimal week10=new BigDecimal("0.00");
     			BigDecimal week20=new BigDecimal("0.00");
     			BigDecimal maSum=new BigDecimal("0.00");
-    			if(stock!=null){
-    				stockList.remove(stockList.size()-1);
-    				stockList.add(stock);
-    				Collections.sort(stockList, new Comparator<Stock>() {
-    					public int compare(Stock o1, Stock o2) {
-    						int ret = 0;
-    						try {
-    							Date d1 = DateUtil.stringToDate(o1.getCreateDate(), DateUtil.formatPattern_Short);
-    							Date d2 = DateUtil.stringToDate(o2.getCreateDate(), DateUtil.formatPattern_Short);
-    							if (d1.before(d2)) {
-    								ret = 1;
-    							} else {
-    								ret = -1;
-    							}
-    						} catch (Exception e) {
-    							e.printStackTrace();
-    						}
-    						return ret;
-    					}
-    				});
-    			}
+    			
     			for(int i=0;i<stockList.size();i++){
 					maSum=maSum.add(stockList.get(i).getNewPrice());
 					//均线区间统计
@@ -769,5 +811,13 @@ public class StockServiceImpl implements StockService{
     	}
     }
     
-    
+  public static void main(String[] args) {
+	  System.out.println("".split(",")==null);
+	  System.out.println("".split(",").length);
+	  long days=DateUtil.betweenDays(DateUtil.stringToDate("20161104",DateUtil.formatPattern_Short), DateUtil.stringToDate("20161111",DateUtil.formatPattern_Short));
+	  
+	  System.out.println(days);
+	  
+	 System.out.println(DateUtil.dateToString(DateUtil.getAddTimeDate(DateUtil.DAY, DateUtil.stringToDate("20161104",DateUtil.formatPattern_Short), 7), DateUtil.formatPattern_Short));
+  }
 }

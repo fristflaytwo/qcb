@@ -82,4 +82,12 @@ public interface StockDao {
      * @return
      */
     public List<Stock> select20WeekListByCodeAndCreateDateOrderCreateDateDesc(Map<String, String> map);
+    
+    /**
+     * 查询该code股票再改日期包括该日期的只一次非停牌数据
+     * 
+     * @param map
+     * @return
+     */
+    public Stock select1ByCreateDateDesc(Map<String, String> map);
 }

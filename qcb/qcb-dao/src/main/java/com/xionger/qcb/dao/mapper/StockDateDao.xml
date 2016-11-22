@@ -111,4 +111,10 @@
     delete from t_stock_date
     where stock_date = #{date,jdbcType=VARCHAR} 
   </delete>
+  
+  
+  <select id="selectByWeekEndStockDateRegion" resultType="java.lang.String" parameterType="java.util.Map" >
+        select GROUP_CONCAT(t.stock_date) from t_stock_date t where t.is_end_week_day='00' and t.stock_date <![CDATA[<=]]> #{endDate,jdbcType=VARCHAR} and  t.stock_date <![CDATA[>=]]> #{startDate,jdbcType=VARCHAR}
+  </select>
+  
 </mapper>

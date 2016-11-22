@@ -1,5 +1,7 @@
 package com.xionger.qcb.dao.mapper;
 
+import java.util.Map;
+
 import com.xionger.qcb.model.StockDate;
 
 public interface StockDateDao {
@@ -34,4 +36,11 @@ public interface StockDateDao {
      * @param date
      */
     void deleteByStockDate(String date);
+    
+    /**
+     * 查询交易日期在某个区间之内的所有周的最后一个交易日，该区间包含2端
+     * @param map
+     * @return
+     */
+    public String selectByWeekEndStockDateRegion(Map<String,String> map);
 }
