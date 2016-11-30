@@ -810,13 +810,5 @@ public class StockServiceImpl implements StockService{
     	}
     }
     
-  public static void main(String[] args) {
-	  System.out.println("".split(",")==null);
-	  System.out.println("".split(",").length);
-	  long days=DateUtil.betweenDays(DateUtil.stringToDate("20161104",DateUtil.formatPattern_Short), DateUtil.stringToDate("20161111",DateUtil.formatPattern_Short));
-	  
-	  System.out.println(days);
-	  
-	 System.out.println(DateUtil.dateToString(DateUtil.getAddTimeDate(DateUtil.DAY, DateUtil.stringToDate("20161104",DateUtil.formatPattern_Short), 7), DateUtil.formatPattern_Short));
-  }
+  
 }
