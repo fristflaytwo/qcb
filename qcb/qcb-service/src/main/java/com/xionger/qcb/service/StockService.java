@@ -33,13 +33,13 @@ public interface StockService{
     public void insertStockWeekMa(String date);
     
     /**
-     * 保存该日期的股票数据存在移动的数据 02:涨停；03：跳高；04：回缺
+     * 保存该日期的股票数据存在异动的数据
      * @param date
      */
     public void insertStockChange(String date);
     
     /**
-     * 对需要坚挺的股票进行监听
+     * 对需要监控的股票进行监听
      */
     public void updateStockListenerChange();
     

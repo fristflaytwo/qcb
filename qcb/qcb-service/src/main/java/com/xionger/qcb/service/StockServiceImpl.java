@@ -40,16 +40,12 @@ import com.xionger.qcb.common.util.conllection.CollectionUtil;
 import com.xionger.qcb.common.util.date.DateUtil;
 import com.xionger.qcb.common.util.http.HttpClientUtils;
 import com.xionger.qcb.common.util.string.StringUtil;
-import com.xionger.qcb.dao.mapper.StockChangeDao;
 import com.xionger.qcb.dao.mapper.StockDao;
 import com.xionger.qcb.dao.mapper.StockDateDao;
 import com.xionger.qcb.dao.mapper.StockMaDao;
-import com.xionger.qcb.dao.mapper.StockResultDao;
 import com.xionger.qcb.model.Stock;
-import com.xionger.qcb.model.StockChange;
 import com.xionger.qcb.model.StockDate;
 import com.xionger.qcb.model.StockMa;
-import com.xionger.qcb.model.StockResult;
 
 @Service("userService")
 public class StockServiceImpl implements StockService{
@@ -63,11 +59,9 @@ public class StockServiceImpl implements StockService{
 	@Autowired
 	private StockMaDao stockMaDao;
 	@Autowired
-	private StockResultDao stockResultDao;
-	@Autowired
-	private StockChangeDao stockChangeDao;
-	@Autowired
 	private StockDateDao stockDateDao;
+	
+	
 	
 	/**
      * 从下载的excel冲将数据导入到数据库,调用次方法必须要求该日数据excel必须存在
@@ -351,197 +345,8 @@ public class StockServiceImpl implements StockService{
     	}
     }
     
-    /**
-     * 保存该日期的股票数据存在异动的数据 02:涨停；
-     * 							 03：跳高；
-     * 							 04：回缺;
-     * 							 05单阳不破(未开发);
-     * 							 06常规战法庄家吸筹上传散户，需要注意仓位（抓去短中线，未开发）
-     * 							 07中线上升趋势，日线均线支撑15日内有涨停或跳空5点之上最好，创新高一定要放量，周线要过滤创新高但上影大于红柱，或大阴线（未开发）
-     * @param date 股票数据日期
-     */
-    public void insertStockChange(String date){
-    	//先判断当天是否存在数据
-    	List<Stock> stockList=this.stockDao.selectListByCreateDate(date);
-    	if(CollectionUtil.isNotEmpty(stockList)){//如果存在数据
-    		
-    		//如果统计异常的日期存在数据则先删除
-    		stockChangeDao.deleteByStockDate(date);
-    		
-    		StockChange stockChange=null;
-    		for(Stock stock:stockList){
-    			stockChange=new StockChange();
-    			stockChange.generateId();
-    			stockChange.setCode(stock.getCode());
-    			stockChange.setCodename(stock.getCodeName());
-    			stockChange.setStockdate(stock.getCreateDate());
-    			stockChange.setPrice(stock.getNewPrice());
-    			
-    			//03跳高
-    			if(stock.getTodayOpen().compareTo(stock.getYeatedayClose())==1 
-    					&& stock.getNewPrice().compareTo(stock.getYeatedayClose())==1
-    					&& stock.getAmplitude().compareTo(new BigDecimal("0.0500"))>=0){
-    				Stock filterStock=new Stock();
-    				filterStock.setCode(stock.getCode());
-    				filterStock.setCreateDate(date);
-    				filterStock=this.stockDao.selectByCodeAndBeforCreateDateDescOne(filterStock);
-    				if(filterStock!=null){//此处逻辑最好保留，因为表示特别强势
-    					if(stock.getTodayOpen().compareTo(filterStock.getTodayOpen())==1){
-        					stockChange.setChangetype("03");
-            				stockChange.setPrice(stock.getYeatedayClose());
-        				}
-    				}
-    				
-    			}
-    			
-    			//02判断涨停
-    			if(stock.getAmplitude().compareTo(new BigDecimal("0.0995"))>=0){
-    				stockChange.setChangetype("02");
-    				stockChange.setPrice(stock.getNewPrice());
-    			}
-    			
-    			//04跳空低开，后面监控缺口回补
-    			if(stock.getTodayOpen().compareTo(stock.getYeatedayClose())==-1 
-    					&& stock.getNewPrice().compareTo(stock.getYeatedayClose())==-1
-    					&& stock.getAmplitude().compareTo(new BigDecimal("-0.0300"))<=0){//比较重要低开缺口，此处的监控对象比较合理，但具体的监控过程逻辑需要优化，目的抓去大牛股，一定注意需要注意量能，压力、支撑
-    				stockChange.setChangetype("04");
-    				stockChange.setPrice(stock.getYeatedayClose());
-    			}
-    			
-    			//保存需要监控的对象
-    			if(StringUtil.isNotBlank(stockChange.getChangetype())){
-    				this.stockChangeDao.deleteByCodeAndChangeType(stockChange);//先根据code和type删除之前已经产生的监控对象
-    				this.stockChangeDao.insertSelective(stockChange);//保存新的监控对象
-    			}
-    			
-    		}
-    	}
-    }
     
     
-    /**
-     * 对需要监控的股票进行监听
-     * 
-     */
-    public void updateStockListenerChange(){
-    	List<StockChange> needList=this.stockChangeDao.selectChangeStockList();//需要异常监控的数据
-    	if(CollectionUtil.isNotEmpty(needList)){
-    		String date=DateUtil.dateToString(new Date(),DateUtil.formatPattern_Short);
-    		this.stockResultDao.deleteByCreateDate(date,"02");//删除已经过滤出来的结果集
-    		this.stockResultDao.deleteByCreateDate(date,"03");//删除已经过滤出来的结果集
-    		this.stockResultDao.deleteByCreateDate(date,"04");//删除已经过滤出来的结果集
-    		List<Stock> list=null;
-    		for(StockChange obj:needList){
-    			Stock stock=new Stock();
-    			stock.setCode(obj.getCode());
-    			stock.setCreateDate(obj.getStockdate());
-    			list=this.stockDao.selectListByCodeAndCreateDateAsc(stock);
-    			if(CollectionUtil.isNotEmpty(list)){
-    				stock=list.get(list.size()-1);//将最后一条记录赋值最新的股票信息对象
-    				if(list.size()>5){//超过监控期限，释放监控对象
-    					this.stockChangeDao.deleteByPrimaryKey(obj.getId());
-    					continue;
-    				}
-    				if("02".equals(obj.getChangetype())||"03".equals(obj.getChangetype())){//02:涨停；03：跳高；
-    					int i=1;//当前循环记录数
-    					for(Stock afterStock:list){
-    						if(afterStock.getNewPrice().compareTo(obj.getPrice())<=0){
-    							i=0;//表示删除该异动数据
-    							if(new Date().getTime()>DateUtil.stringToDate(DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short)+"153000", DateUtil.formatPattern_rand).getTime()){
-    								this.stockChangeDao.deleteByPrimaryKey(obj.getId());
-    							}
-    							break;
-    						}else{
-    							setStockChangeForUpdate(obj, afterStock, i);
-    						}
-    						i++;
-    					}
-    					if(i>0){
-    						this.stockChangeDao.updateByPrimaryKeySelective(obj);
-    						if(i==6){
-    							StockResult stockResult=new StockResult();
-    	    					stockResult.generateId();
-    	    					stockResult.setChanneltype(obj.getChangetype());
-    	    					stockResult.setCode(stock.getCode());
-    	    					stockResult.setCodename(stock.getCodeName());
-    	    					stockResult.setCreateDate(date);//因为基本每天跑，所以这里是数据日期
-    	    					stockResult.setHeightprice(stock.getHeightPrice());
-    	    					stockResult.setNewprice(stock.getNewPrice());
-    	    					this.stockResultDao.insertSelective(stockResult);
-    						}
-    					}
-    					continue;
-    				}else if("04".equals(obj.getChangetype())){//04：回缺;
-    					int i=1;//当前循环记录数
-    					for(Stock afterStock:list){
-    						if(afterStock.getNewPrice().compareTo(obj.getPrice())<=0){
-    							setStockChangeForUpdate(obj, afterStock, i);
-    						}else{
-    							Stock filterStock=new Stock();
-    		    				filterStock.setCode(stock.getCode());
-    		    				filterStock.setCreateDate(afterStock.getCreateDate());
-    		    				filterStock=this.stockDao.selectByCodeAndBeforCreateDateDescOne(filterStock);
-    		    				if(filterStock!=null && afterStock.getDealVol()>filterStock.getDealVol()){
-    		    					i=0;
-    		    					break;
-    		    				}else{
-    		    					setStockChangeForUpdate(obj, afterStock, i);
-    		    				}
-    						}
-    						i++;
-    					}
-    					if(i==0){
-    						if(new Date().getTime()>DateUtil.stringToDate(DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short)+"153000", DateUtil.formatPattern_rand).getTime()){
-        						this.stockChangeDao.deleteByPrimaryKey(obj.getId());
-    						}
-    						StockResult stockResult=new StockResult();
-	    					stockResult.generateId();
-	    					stockResult.setChanneltype(obj.getChangetype());
-	    					stockResult.setCode(stock.getCode());
-	    					stockResult.setCodename(stock.getCodeName());
-	    					stockResult.setCreateDate(date);//因为基本每天跑，所以这里是数据日期
-	    					stockResult.setHeightprice(stock.getHeightPrice());
-	    					stockResult.setNewprice(stock.getNewPrice());
-	    					this.stockResultDao.insertSelective(stockResult);
-    					}else{
-    						this.stockChangeDao.updateByPrimaryKeySelective(obj);
-    					}
-    					continue;
-    				}
-    			}
-    		}
-    		
-    	}
-    }
-    
-    /**
-     * 给异常股票设置值
-     * @param obj
-     * @param afterStock
-     * @param index
-     */
-    private void setStockChangeForUpdate(StockChange obj,Stock afterStock,int index){
-    	if(index==1){
-			obj.setPrice1(afterStock.getNewPrice());
-			obj.setStockdate1(afterStock.getCreateDate());
-		}
-		if(index==2){
-			obj.setPrice2(afterStock.getNewPrice());
-			obj.setStockdate2(afterStock.getCreateDate());
-		}
-		if(index==3){
-			obj.setPrice3(afterStock.getNewPrice());
-			obj.setStockdate3(afterStock.getCreateDate());								
-		}
-		if(index==4){
-			obj.setPrice4(afterStock.getNewPrice());
-			obj.setStockdate4(afterStock.getCreateDate());
-		}
-		if(index==5){
-			obj.setPrice5(afterStock.getNewPrice());
-			obj.setStockdate5(afterStock.getCreateDate());
-		}
-    }
     
     
     /**
@@ -810,5 +615,14 @@ public class StockServiceImpl implements StockService{
     	}
     }
     
-  
+    /**
+     * 保存该日期的股票数据存在异动的数据
+     * @param date
+     */
+    public void insertStockChange(String date){}
+    
+    /**
+     * 对需要监控的股票进行监听
+     */
+    public void updateStockListenerChange(){}
 }

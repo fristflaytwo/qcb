@@ -33,6 +33,13 @@ public class ExecutorTimer {
 	private StockService stockService;
 	
 	/**
+	 * 初始化股票交易日期数据
+	 */
+	public void initStockDate(){
+		this.stockService.insertStockDate(DateUtil.dateToString(new Date(),DateUtil.formatPattern_Short));
+	}
+	
+	/**
 	 * 利用httpclient获取股票信息数据
 	 */
 	public void initStockData() {
@@ -78,25 +85,5 @@ public class ExecutorTimer {
 	}
 	
 	
-	/**
-	 * 每天异动股票信息记录
-	 */
-	public void initStockChange(){
-		this.stockService.insertStockChange(DateUtil.dateToString(new Date(),DateUtil.formatPattern_Short));
-	}
-	
-	/**
-	 * 对异动股票数据进行监控
-	 */
-	public void initStockListenerChange(){
-		this.stockService.updateStockListenerChange();
-	}
-	
-	/**
-	 * 初始化股票交易日期数据
-	 */
-	public void initStockDate(){
-		this.stockService.insertStockDate(DateUtil.dateToString(new Date(),DateUtil.formatPattern_Short));
-	}
 	
 }
