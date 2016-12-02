@@ -203,4 +203,169 @@
     where t.`code`=#{code,jdbcType=VARCHAR} and t.newPrice <![CDATA[>]]> 0.00 and t.createDate <![CDATA[<=]]> #{createDate,jdbcType=VARCHAR} ORDER BY t.createDate desc LIMIT 1
   </select>
   
+  <select id="selectStockChangeBy01" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    SELECT
+		t.*
+	FROM
+		t_stock y,
+		t_stock t
+	WHERE
+		y.createDate = #{lastTradeDate,jdbcType=VARCHAR}
+	AND t.createDate = #{todayTradeDate,jdbcType=VARCHAR}
+	AND y.`code` = t.`code`
+	and (t.dealVol/y.dealVol) <![CDATA[>=]]> 2
+	and t.newPrice <![CDATA[>]]> t.todayOpen
+	and t.todayOpen <![CDATA[>]]> t.yeatedayClose
+	and (t.newPrice-t.todayOpen) <![CDATA[>]]> ((t.heightPrice-t.newPrice)*5)
+	and (t.newPrice-t.todayOpen) <![CDATA[>]]> ((t.todayOpen-t.lowPrice)*5)
+	AND t.codeName not like '%st%'
+	and y.newPrice <![CDATA[>]]> y.todayOpen
+  </select>
+  
+  
+  <select id="selectStockChangeBy02" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+	SELECT
+		t.*
+	FROM
+		t_stock y,
+		t_stock t
+	WHERE
+		y.createDate = #{lastTradeDate,jdbcType=VARCHAR}
+	AND t.createDate = #{todayTradeDate,jdbcType=VARCHAR}
+	AND y.`code` = t.`code`
+	and (t.dealVol/y.dealVol)<![CDATA[>=]]> 2
+	and t.newPrice <![CDATA[<]]> t.todayOpen
+	and t.todayOpen <![CDATA[>]]> t.yeatedayClose
+	and (t.todayOpen-t.newPrice) <![CDATA[>]]> ((t.heightPrice-t.todayOpen)*5)
+	and (t.todayOpen-t.newPrice) <![CDATA[>]]> ((t.newPrice-t.lowPrice)*5)
+	AND t.codeName not like '%st%'
+	and y.newPrice <![CDATA[>]]> y.todayOpen
+  </select>
+  
+  <select id="selectStockChangeBy04" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+	SELECT
+		t.*
+	FROM
+		t_stock y,
+		t_stock t
+	WHERE
+		y.createDate = #{lastTradeDate,jdbcType=VARCHAR}
+	AND t.createDate = #{todayTradeDate,jdbcType=VARCHAR}
+	AND y.`code` = t.`code`
+	and t.codeName not like '%st%'
+	and t.dealVol <![CDATA[>]]> y.dealVol
+    and t.newPrice <![CDATA[>=]]> y.newPrice
+	and (
+			(y.newPrice <![CDATA[>]]> y.todayOpen and ((y.todayOpen-y.lowPrice) <![CDATA[>]]> ((y.newPrice-y.todayOpen)*2)) and ((y.newPrice-y.todayOpen) <![CDATA[>]]> (y.heightPrice-y.newPrice))) 
+		or 
+			(y.newPrice <![CDATA[<]]> y.todayOpen and ((y.newPrice-y.lowPrice) <![CDATA[>]]> ((y.todayOpen-y.newPrice)*2)) and ((y.todayOpen-y.newPrice) <![CDATA[>]]> (y.heightPrice-y.todayOpen)))
+		)
+	and (
+			(t.newPrice <![CDATA[>]]> t.todayOpen and ((t.heightPrice-t.newPrice) <![CDATA[>]]> ((t.newPrice-t.todayOpen)*2)) and ((t.newPrice-t.todayOpen) <![CDATA[>]]> (t.todayOpen-t.lowPrice)))
+		or
+			(t.newPrice <![CDATA[<]]> t.todayOpen and ((t.heightPrice-t.todayOpen) <![CDATA[>]]> ((t.todayOpen-t.newPrice)*2)) and ((t.todayOpen-t.newPrice) <![CDATA[>]]> (t.newPrice-t.lowPrice)))
+		)
+  </select>
+  
+  <select id="selectStockChangeBy05" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+	SELECT
+		t.*
+	FROM
+		t_stock y,
+		t_stock t
+	WHERE
+		y.createDate = #{lastTradeDate,jdbcType=VARCHAR}
+	AND t.createDate = #{todayTradeDate,jdbcType=VARCHAR}
+	AND y.`code` = t.`code`
+	and t.codeName not like '%st%'
+	and (
+				(y.newPrice <![CDATA[>]]> y.todayOpen and ((y.heightPrice-y.newPrice) <![CDATA[>]]> ((y.newPrice-y.todayOpen)*5)) and ((y.heightPrice-y.newPrice) <![CDATA[>]]> (y.todayOpen-y.lowPrice))) 
+		or 
+				(y.newPrice <![CDATA[<]]> y.todayOpen and ((y.heightPrice-y.todayOpen) <![CDATA[>]]> ((y.todayOpen-y.newPrice)*5)) and ((y.heightPrice-y.todayOpen) <![CDATA[>]]> (y.newPrice-y.lowPrice)))
+			)
+	and (
+				(t.newPrice <![CDATA[>]]> t.todayOpen and ((t.todayOpen-t.lowPrice) <![CDATA[>]]> ((t.newPrice-t.todayOpen)*5)) and ((t.todayOpen-t.lowPrice) <![CDATA[>]]> (t.heightPrice-t.newPrice)))
+		or
+				(t.newPrice <![CDATA[<]]> t.todayOpen and ((t.newPrice-t.lowPrice) <![CDATA[>]]> ((t.todayOpen-t.newPrice)*5)) and ((t.newPrice-t.lowPrice) <![CDATA[>]]> (t.heightPrice-t.todayOpen)))
+			)
+  </select>
+  
+  <select id="selectStockChangeBy03" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+	SELECT
+		g.*
+	FROM
+		t_stock a,
+		t_stock b,
+		t_stock c,
+		t_stock d,
+		t_stock e,
+		t_stock f,
+		t_stock g
+	WHERE
+		a.createDate = #{last6TradeDate,jdbcType=VARCHAR}
+	AND b.createDate = #{last5TradeDate,jdbcType=VARCHAR}
+	AND c.createDate = #{last4TradeDate,jdbcType=VARCHAR}
+	AND d.createDate = #{last3TradeDate,jdbcType=VARCHAR}
+	AND e.createDate = #{last2TradeDate,jdbcType=VARCHAR}
+	AND f.createDate = #{lastTradeDate,jdbcType=VARCHAR}
+	AND g.createDate = #{todayTradeDate,jdbcType=VARCHAR}
+	AND a.`code` = b.`code`
+	AND b.`code` = c.`code`
+	AND c.`code` = d.`code`
+	AND d.`code` = e.`code`
+	AND e.`code` = f.`code`
+	AND f.`code` = g.`code`
+	AND g.codeName NOT LIKE '%st%'
+	AND(a.newPrice - a.todayOpen)<![CDATA[>]]> 0
+	AND(
+		(b.newPrice - b.todayOpen)<![CDATA[>]]> 0
+		OR b.heightPrice <![CDATA[>]]> a.heightPrice
+	)
+	AND(
+		(c.newPrice - c.todayOpen)<![CDATA[>]]> 0
+		OR(
+			c.heightPrice <![CDATA[>]]> b.heightPrice
+			AND b.heightPrice <![CDATA[>]]> a.heightPrice
+		)
+	)
+	AND(
+		(d.newPrice - d.todayOpen)<![CDATA[>]]> 0
+		OR(
+			d.heightPrice <![CDATA[>]]> c.heightPrice
+			AND c.heightPrice <![CDATA[>]]> b.heightPrice
+			AND b.heightPrice <![CDATA[>]]> a.heightPrice
+		)
+	)
+	AND(
+		(e.newPrice - e.todayOpen)<![CDATA[>]]> 0
+		OR(
+			e.heightPrice <![CDATA[>]]> d.heightPrice
+			AND d.heightPrice <![CDATA[>]]> c.heightPrice
+			AND c.heightPrice <![CDATA[>]]> b.heightPrice
+			AND b.heightPrice <![CDATA[>]]> a.heightPrice
+		)
+	)
+	AND(
+		(f.newPrice - f.todayOpen) <![CDATA[>]]> 0
+		OR(
+			f.heightPrice <![CDATA[>]]> e.heightPrice
+			AND e.heightPrice <![CDATA[>]]> d.heightPrice
+			AND d.heightPrice <![CDATA[>]]> c.heightPrice
+			AND c.heightPrice <![CDATA[>]]> b.heightPrice
+			AND b.heightPrice <![CDATA[>]]> a.heightPrice
+		)
+	)
+	AND(
+		(g.newPrice - g.todayOpen) <![CDATA[>]]> 0
+		OR(
+			g.heightPrice <![CDATA[>]]> f.heightPrice
+			AND f.heightPrice <![CDATA[>]]> e.heightPrice
+			AND e.heightPrice <![CDATA[>]]> d.heightPrice
+			AND d.heightPrice <![CDATA[>]]> c.heightPrice
+			AND c.heightPrice <![CDATA[>]]> b.heightPrice
+			AND b.heightPrice <![CDATA[>]]> a.heightPrice
+		)
+	)
+  </select>
+  
 </mapper>

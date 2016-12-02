@@ -90,4 +90,39 @@ public interface StockDao {
      * @return
      */
     public Stock select1ByCreateDateDesc(Map<String, String> map);
+    
+    /**
+     * 异动形态：跳空长阳
+     * @param map
+     * @return
+     */
+    public List<Stock> selectStockChangeBy01(Map<String, Object> map);
+    
+    /**
+     * 异动形态：跳空长阴
+     * @param map
+     * @return
+     */
+    public List<Stock> selectStockChangeBy02(Map<String, Object> map);
+    
+    /**
+     * 异动形态：上吊流星
+     * @param map
+     * @return
+     */
+    public List<Stock> selectStockChangeBy04(Map<String, Object> map);
+    
+    /**
+     * 异动形态：揉搓线
+     * @param map
+     * @return
+     */
+    public List<Stock> selectStockChangeBy05(Map<String, Object> map);
+    
+    /**
+     * 异动形态：7连阳
+     * @param map
+     * @return
+     */
+    public List<Stock> selectStockChangeBy03(Map<String, Object> map);
 }

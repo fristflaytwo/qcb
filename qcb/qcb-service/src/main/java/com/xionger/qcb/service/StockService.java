@@ -38,10 +38,7 @@ public interface StockService{
      */
     public void insertStockChange(String date);
     
-    /**
-     * 对需要监控的股票进行监听
-     */
-    public void updateStockListenerChange();
+   
     
     /**
      * 插入从start到end日期的股票数据信息

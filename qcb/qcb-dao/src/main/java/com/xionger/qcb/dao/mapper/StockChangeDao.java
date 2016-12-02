@@ -14,4 +14,6 @@ public interface StockChangeDao {
 	int updateByPrimaryKeySelective(StockChange record);
 
 	int updateByPrimaryKey(StockChange record);
+	
+	int deleteByCreateDate(String createDate);
 }

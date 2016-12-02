@@ -117,4 +117,11 @@
         select GROUP_CONCAT(t.stock_date) from t_stock_date t where t.is_end_week_day='00' and t.stock_date <![CDATA[<=]]> #{endDate,jdbcType=VARCHAR} and  t.stock_date <![CDATA[>=]]> #{startDate,jdbcType=VARCHAR}
   </select>
   
+  <select id="selectByTradStockDateDescLimit" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_stock_date t
+    where t.stock_date <![CDATA[<=]]> #{stockDate,jdbcType=VARCHAR} and t.is_trade_date='00' order by t.stock_date desc limit #{limitSize,jdbcType=INTEGER}
+  </select>
+  
 </mapper>

@@ -1,5 +1,6 @@
 package com.xionger.qcb.dao.mapper;
 
+import java.util.List;
 import java.util.Map;
 
 import com.xionger.qcb.model.StockDate;
@@ -43,4 +44,11 @@ public interface StockDateDao {
      * @return
      */
     public String selectByWeekEndStockDateRegion(Map<String,String> map);
+    
+    /**
+     * 查询某日之前的交易日期，倒序排列，需要传入需要查询的条数
+     * @param map
+     * @return
+     */
+    public List<StockDate> selectByTradStockDateDescLimit(Map<String,Object> map);
 }

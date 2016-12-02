@@ -53,28 +53,6 @@ public class IndexController extends BaseController {
 		return new ResultVo();
 	}
 	
-	/**
-	 * 找出需要监控的股票信息数据
-	 * @param date
-	 * @return
-	 */
-	@RequestMapping("/insertStockChange")
-	@ResponseBody
-	public ResultVo insertStockChange(String date){
-		this.stockService.insertStockChange(date);
-		return new ResultVo();
-	}
-	
-	/**
-	 * 对重点股票信息进行监控
-	 * @return
-	 */
-	@RequestMapping("/updateStockListenerChange")
-	@ResponseBody
-	public ResultVo updateStockListenerChange(){
-		this.stockService.updateStockListenerChange();
-		return new ResultVo();
-	}
 	
 	/**
 	 * 保存股票的历史数据
@@ -197,5 +175,19 @@ public class IndexController extends BaseController {
 		return rv;
 	}
 	
-	
+	/**
+	 * 找出异动信息票子
+	 * @param data
+	 * @param req
+	 * @param res
+	 * @return
+	 */
+	@RequestMapping("/insertStockChange")
+	@ResponseBody
+	public ResultVo insertStockChange(@RequestBody String data, HttpServletRequest req, HttpServletResponse res){
+		Map<String,String> map=(Map<String, String>) JsonUtil.jsonToMap(data);
+		ResultVo rv=new ResultVo();
+		this.stockService.insertStockChange(map.get("date"));
+		return rv;
+	}
 }

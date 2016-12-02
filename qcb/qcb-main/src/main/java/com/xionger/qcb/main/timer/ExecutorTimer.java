@@ -84,6 +84,11 @@ public class ExecutorTimer {
 		this.stockService.insertStockWeekMa(DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short));
 	}
 	
-	
+	/**
+	 * 查找异动股票数据
+	 */
+	public void initStockChange(){
+		this.stockService.insertStockChange(DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short));
+	}
 	
 }
