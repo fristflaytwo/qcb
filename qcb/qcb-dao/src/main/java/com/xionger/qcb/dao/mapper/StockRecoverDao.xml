@@ -48,7 +48,7 @@
       <if test="recoverTypeName != null" >
         recover_type_name,
       </if>
-      <if test="createdate != null" >
+      <if test="createDate != null" >
         create_date,
       </if>
     </trim>
@@ -68,7 +68,7 @@
       <if test="recoverTypeName != null" >
         #{recoverTypeName,jdbcType=VARCHAR},
       </if>
-      <if test="createdate != null" >
+      <if test="createDate != null" >
         #{createDate,jdbcType=VARCHAR},
       </if>
     </trim>
@@ -88,7 +88,7 @@
       <if test="recoverTypeName != null" >
         recover_type_name = #{recoverTypeName,jdbcType=VARCHAR},
       </if>
-      <if test="createdate != null" >
+      <if test="createDate != null" >
         create_date = #{createDate,jdbcType=VARCHAR},
       </if>
     </set>

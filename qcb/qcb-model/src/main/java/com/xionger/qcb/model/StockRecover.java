@@ -1,6 +1,5 @@
 package com.xionger.qcb.model;
 
-import com.xionger.qcb.model.StockChange.ChangeType;
 
 public class StockRecover extends BaseEntity {
 
