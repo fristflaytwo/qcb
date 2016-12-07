@@ -125,4 +125,53 @@ public interface StockDao {
      * @return
      */
     public List<Stock> selectStockChangeBy03(Map<String, Object> map);
+    
+    /**
+     * 反转形态：底部锤子线
+     * @param map
+     * @return
+     */
+    public List<Stock> selectStockRecoverBy01(Map<String, Object> map);
+    
+    /**
+     * 反转形态：底部到锤子线
+     * @param map
+     * @return
+     */
+    public List<Stock> selectStockRecoverBy02(Map<String, Object> map);
+    
+    /**
+     * 反转形态：组合锤子线
+     * @param map
+     * @return
+     */
+    public List<Stock> selectStockRecoverBy03(Map<String, Object> map);
+    
+    /**
+     * 反转形态：长腿十字
+     * @param map
+     * @return
+     */
+    public List<Stock> selectStockRecoverBy04(Map<String, Object> map);
+    
+    /**
+     * 反转形态：螺旋桨
+     * @param map
+     * @return
+     */
+    public List<Stock> selectStockRecoverBy05(Map<String, Object> map);
+    
+    /**
+     * 反转形态：孕线
+     * @param map
+     * @return
+     */
+    public List<Stock> selectStockRecoverBy06(Map<String, Object> map);
+    
+    /**
+     * 反转形态：吞没形态，阳包阴
+     * @param map
+     * @return
+     */
+    public List<Stock> selectStockRecoverBy07(Map<String, Object> map);
 }

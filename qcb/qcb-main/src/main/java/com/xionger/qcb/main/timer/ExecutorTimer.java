@@ -91,4 +91,11 @@ public class ExecutorTimer {
 		this.stockService.insertStockChange(DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short));
 	}
 	
+	/**
+	 * 查找底部反转股票数据
+	 */
+	public void initStockRecover(){
+		this.stockService.insertStockRecover(DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short));
+	}
+	
 }

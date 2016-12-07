@@ -14,4 +14,6 @@ public interface StockRecoverDao {
     int updateByPrimaryKeySelective(StockRecover record);
 
     int updateByPrimaryKey(StockRecover record);
+    
+    int deleteByCreateDate(String createDate);
 }

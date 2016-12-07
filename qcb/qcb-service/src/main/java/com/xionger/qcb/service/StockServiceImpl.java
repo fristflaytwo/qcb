@@ -44,11 +44,14 @@ import com.xionger.qcb.dao.mapper.StockChangeDao;
 import com.xionger.qcb.dao.mapper.StockDao;
 import com.xionger.qcb.dao.mapper.StockDateDao;
 import com.xionger.qcb.dao.mapper.StockMaDao;
+import com.xionger.qcb.dao.mapper.StockRecoverDao;
 import com.xionger.qcb.model.Stock;
 import com.xionger.qcb.model.StockChange;
 import com.xionger.qcb.model.StockChange.ChangeType;
 import com.xionger.qcb.model.StockDate;
 import com.xionger.qcb.model.StockMa;
+import com.xionger.qcb.model.StockRecover;
+import com.xionger.qcb.model.StockRecover.RecoverType;
 
 @Service("userService")
 public class StockServiceImpl implements StockService{
@@ -65,6 +68,8 @@ public class StockServiceImpl implements StockService{
 	private StockDateDao stockDateDao;
 	@Autowired
 	private StockChangeDao stockChangeDao;
+	@Autowired
+	private StockRecoverDao stockRecoverDao;
 	
 	/**
      * 从下载的excel冲将数据导入到数据库,调用次方法必须要求该日数据excel必须存在
@@ -635,80 +640,109 @@ public class StockServiceImpl implements StockService{
     			map.put("lastTradeDate", list.get(1).getStockDate());
     			map.put("todayTradeDate",list.get(0).getStockDate());
     			List<Stock> stock01List=this.stockDao.selectStockChangeBy01(map);
-    			if(CollectionUtil.isNotEmpty(stock01List)){
-    				for(Stock stock:stock01List){
-    					StockChange stockChange=new StockChange();
-    					stockChange.generateId();
-    					stockChange.setCode(stock.getCode());
-    					stockChange.setCodeName(stock.getCodeName());
-    					stockChange.setChangeType(ChangeType.CHANGETYPE_01.getKey());
-    					stockChange.setChangeTypeName(ChangeType.CHANGETYPE_01.getVal());
-    					stockChange.setCreateDate(stock.getCreateDate());
-    					this.stockChangeDao.insertSelective(stockChange);
-    				}
-    			}
+    			saveStockChange(stock01List, ChangeType.CHANGETYPE_01);
     			
     			//02异动
     			List<Stock> stock02List=this.stockDao.selectStockChangeBy02(map);
-    			if(CollectionUtil.isNotEmpty(stock02List)){
-    				for(Stock stock:stock02List){
-    					StockChange stockChange=new StockChange();
-    					stockChange.generateId();
-    					stockChange.setCode(stock.getCode());
-    					stockChange.setCodeName(stock.getCodeName());
-    					stockChange.setChangeType(ChangeType.CHANGETYPE_02.getKey());
-    					stockChange.setChangeTypeName(ChangeType.CHANGETYPE_02.getVal());
-    					stockChange.setCreateDate(stock.getCreateDate());
-    					this.stockChangeDao.insertSelective(stockChange);
-    				}
-    			}
+    			saveStockChange(stock02List, ChangeType.CHANGETYPE_02);
     			
     			//04异动
     			List<Stock> stock04List=this.stockDao.selectStockChangeBy04(map);
-    			if(CollectionUtil.isNotEmpty(stock04List)){
-    				for(Stock stock:stock04List){
-    					StockChange stockChange=new StockChange();
-    					stockChange.generateId();
-    					stockChange.setCode(stock.getCode());
-    					stockChange.setCodeName(stock.getCodeName());
-    					stockChange.setChangeType(ChangeType.CHANGETYPE_04.getKey());
-    					stockChange.setChangeTypeName(ChangeType.CHANGETYPE_04.getVal());
-    					stockChange.setCreateDate(stock.getCreateDate());
-    					this.stockChangeDao.insertSelective(stockChange);
-    				}
-    			}
+    			saveStockChange(stock04List, ChangeType.CHANGETYPE_04);
     			
     			//05异动
     			List<Stock> stock05List=this.stockDao.selectStockChangeBy05(map);
-    			if(CollectionUtil.isNotEmpty(stock05List)){
-    				for(Stock stock:stock05List){
-    					StockChange stockChange=new StockChange();
-    					stockChange.generateId();
-    					stockChange.setCode(stock.getCode());
-    					stockChange.setCodeName(stock.getCodeName());
-    					stockChange.setChangeType(ChangeType.CHANGETYPE_05.getKey());
-    					stockChange.setChangeTypeName(ChangeType.CHANGETYPE_05.getVal());
-    					stockChange.setCreateDate(stock.getCreateDate());
-    					this.stockChangeDao.insertSelective(stockChange);
-    				}
-    			}
+    			saveStockChange(stock05List, ChangeType.CHANGETYPE_05);
+    			
     			//03异动
     			List<Stock> stock03List=this.stockDao.selectStockChangeBy03(map);
-    			if(CollectionUtil.isNotEmpty(stock03List)){
-    				for(Stock stock:stock03List){
-    					StockChange stockChange=new StockChange();
-    					stockChange.generateId();
-    					stockChange.setCode(stock.getCode());
-    					stockChange.setCodeName(stock.getCodeName());
-    					stockChange.setChangeType(ChangeType.CHANGETYPE_03.getKey());
-    					stockChange.setChangeTypeName(ChangeType.CHANGETYPE_03.getVal());
-    					stockChange.setCreateDate(stock.getCreateDate());
-    					this.stockChangeDao.insertSelective(stockChange);
-    				}
-    			}
+    			saveStockChange(stock03List, ChangeType.CHANGETYPE_03);
     		}
     	}
     }
     
+    /**
+     * 保存异动股票数据公共设置方法
+     */
+    private void saveStockChange(List<Stock> list, ChangeType changeType){
+    	if(CollectionUtil.isNotEmpty(list)){
+    		for(Stock stock:list){
+				StockChange stockChange=new StockChange();
+				stockChange.generateId();
+				stockChange.setCode(stock.getCode());
+				stockChange.setCodeName(stock.getCodeName());
+				stockChange.setChangeType(changeType.getKey());
+				stockChange.setChangeTypeName(changeType.getVal());
+				stockChange.setCreateDate(stock.getCreateDate());
+				this.stockChangeDao.insertSelective(stockChange);
+			}
+    	}
+    }
     
+    
+    /**
+     * 保存该日期的股票数据存在反转形态的数据
+     * @param date
+     */
+    public void insertStockRecover(String date){
+    	Map<String,Object> map=new HashMap<String,Object>();
+    	map.put("stockDate", date);
+    	map.put("limitSize", 7);//查询最近7条交易日期数据
+    	List<StockDate> list=this.stockDateDao.selectByTradStockDateDescLimit(map);
+    	if(CollectionUtil.isNotEmpty(list)){
+    		if(date.equals(list.get(0).getStockDate())){
+    			//先删除当天已经存在的数据
+    			this.stockRecoverDao.deleteByCreateDate(date);
+    			//01反转
+    			map.put("lastTradeDate", list.get(1).getStockDate());
+    			map.put("todayTradeDate",list.get(0).getStockDate());
+    			List<Stock> stock01List=this.stockDao.selectStockRecoverBy01(map);
+    			saveStockRecover(stock01List, RecoverType.RECOVER_01);
+    			
+    			//02反转
+    			List<Stock> stock02List=this.stockDao.selectStockRecoverBy02(map);
+    			saveStockRecover(stock02List, RecoverType.RECOVER_02);
+    			
+    			//03反转
+    			List<Stock> stock03List=this.stockDao.selectStockRecoverBy03(map);
+    			saveStockRecover(stock03List, RecoverType.RECOVER_03);
+    			
+    			//04反转
+    			List<Stock> stock04List=this.stockDao.selectStockRecoverBy04(map);
+    			saveStockRecover(stock04List, RecoverType.RECOVER_04);
+    			
+    			//05反转
+    			List<Stock> stock05List=this.stockDao.selectStockRecoverBy05(map);
+    			saveStockRecover(stock05List, RecoverType.RECOVER_05);
+    			
+    			//06反转
+    			List<Stock> stock06List=this.stockDao.selectStockRecoverBy06(map);
+    			saveStockRecover(stock06List, RecoverType.RECOVER_06);
+    			
+    			//07反转
+    			List<Stock> stock07List=this.stockDao.selectStockRecoverBy07(map);
+    			saveStockRecover(stock07List, RecoverType.RECOVER_07);
+    		}
+    	}
+    }
+    
+    /**
+     * 保存底部开始反转的股票信息
+     * @param list
+     * @param recoverType
+     */
+    private void saveStockRecover(List<Stock> list,RecoverType recoverType){
+    	if(CollectionUtil.isNotEmpty(list)){
+			for(Stock stock:list){
+				StockRecover stockRecover=new StockRecover();
+				stockRecover.generateId();
+				stockRecover.setCode(stock.getCode());
+				stockRecover.setCodeName(stock.getCodeName());
+				stockRecover.setRecoverType(recoverType.getKey());
+				stockRecover.setRecoverTypeName(recoverType.getVal());
+				stockRecover.setCreateDate(stock.getCreateDate());
+				this.stockRecoverDao.insertSelective(stockRecover);
+			}
+		}
+    }
 }

@@ -67,5 +67,9 @@ public interface StockService{
      */
     public void insertStockDate(String date);
     
-    
+    /**
+     * 保存该日期的股票数据存在反转形态的数据
+     * @param date
+     */
+    public void insertStockRecover(String date);
 }

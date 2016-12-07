@@ -216,8 +216,8 @@
 	and (t.dealVol/y.dealVol) <![CDATA[>=]]> 2
 	and t.newPrice <![CDATA[>]]> t.todayOpen
 	and t.todayOpen <![CDATA[>]]> t.yeatedayClose
-	and (t.newPrice-t.todayOpen) <![CDATA[>]]> ((t.heightPrice-t.newPrice)*5)
-	and (t.newPrice-t.todayOpen) <![CDATA[>]]> ((t.todayOpen-t.lowPrice)*5)
+	and t.todayOpen=t.lowPrice
+	and t.newPrice=t.heightPrice 
 	AND t.codeName not like '%st%'
 	and y.newPrice <![CDATA[>]]> y.todayOpen
   </select>
@@ -236,7 +236,7 @@
 	and (t.dealVol/y.dealVol)<![CDATA[>=]]> 2
 	and t.newPrice <![CDATA[<]]> t.todayOpen
 	and t.todayOpen <![CDATA[>]]> t.yeatedayClose
-	and (t.todayOpen-t.newPrice) <![CDATA[>]]> ((t.heightPrice-t.todayOpen)*5)
+	and t.todayOpen=t.heightPrice 
 	and (t.todayOpen-t.newPrice) <![CDATA[>]]> ((t.newPrice-t.lowPrice)*5)
 	AND t.codeName not like '%st%'
 	and y.newPrice <![CDATA[>]]> y.todayOpen
@@ -366,6 +366,189 @@
 			AND b.heightPrice <![CDATA[>]]> a.heightPrice
 		)
 	)
+  </select>
+  
+  
+  <select id="selectStockRecoverBy01" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    SELECT
+		t.*
+	FROM
+		t_stock y,
+		t_stock t
+	WHERE
+		y.createDate = #{lastTradeDate,jdbcType=VARCHAR}
+	AND t.createDate = #{todayTradeDate,jdbcType=VARCHAR}
+	and y.`code`=t.`code`
+	and t.codeName not like '%st%'
+	and t.todayOpen <![CDATA[<]]> t.yeatedayClose
+	and t.newPrice <![CDATA[<]]> t.yeatedayClose
+	and (
+	(t.newPrice <![CDATA[>]]> t.todayOpen and (t.todayOpen-t.lowPrice) <![CDATA[>]]> ((t.newPrice-t.todayOpen)*3) and (t.newPrice-t.todayOpen) <![CDATA[>]]> ((t.heightPrice-t.newPrice)*5))
+	OR
+	(t.newPrice <![CDATA[<]]> t.todayOpen and (t.newPrice-t.lowPrice) <![CDATA[>]]> ((t.todayOpen-t.newPrice)*3) and (t.todayOpen-t.newPrice) <![CDATA[>]]> ((t.heightPrice-t.todayOpen)*5))
+	)
+  </select>
+  
+  
+  <select id="selectStockRecoverBy02" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    SELECT
+		t.*
+	FROM
+		t_stock y,
+		t_stock t
+	WHERE
+		y.createDate = #{lastTradeDate,jdbcType=VARCHAR}
+	AND t.createDate = #{todayTradeDate,jdbcType=VARCHAR}
+	AND y.`code` = t.`code`
+	AND t.codeName NOT LIKE '%st%'
+	AND t.todayOpen <![CDATA[<]]> t.yeatedayClose
+	AND t.newPrice <![CDATA[<]]> t.yeatedayClose
+	AND t.todayOpen = t.lowPrice
+	AND t.newPrice <![CDATA[>]]> t.todayOpen
+	AND t.dealVol <![CDATA[>]]> y.dealVol
+	AND(t.heightPrice - t.newPrice) <![CDATA[>]]> ((t.newPrice - t.todayOpen) * 2)
+  </select>
+  
+  <select id="selectStockRecoverBy03" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    SELECT
+		t.*
+	FROM
+		t_stock y,
+		t_stock t
+	WHERE
+		y.createDate = #{lastTradeDate,jdbcType=VARCHAR}
+	AND t.createDate = #{todayTradeDate,jdbcType=VARCHAR}
+	AND y.`code` = t.`code`
+	AND t.codeName NOT LIKE '%st%'
+	AND t.newPrice <![CDATA[>]]> y.todayOpen
+	AND t.newPrice <![CDATA[>]]> y.newPrice
+	AND t.dealVol <![CDATA[>]]> y.dealVol
+	AND t.newPrice <![CDATA[>]]> t.todayOpen
+	AND t.todayOpen = t.lowPrice
+	AND(t.heightPrice - t.newPrice) <![CDATA[>]]> ((t.newPrice - t.todayOpen) * 2)
+	AND(
+		(
+			y.newPrice <![CDATA[>]]> y.todayOpen
+			AND(y.todayOpen - y.lowPrice) <![CDATA[>]]> ((y.newPrice - y.todayOpen) * 3)
+			AND(y.newPrice - y.todayOpen) <![CDATA[>]]> (
+				(y.heightPrice - y.newPrice)* 5
+			)
+		)
+		OR(
+			y.newPrice <![CDATA[<]]> y.todayOpen
+			AND(y.newPrice - y.lowPrice) <![CDATA[>]]> ((y.todayOpen - y.newPrice) * 3)
+			AND(y.todayOpen - y.newPrice) <![CDATA[>]]> (
+				(y.heightPrice - y.todayOpen)* 5
+			)
+		)
+	)
+  </select>
+  
+  <select id="selectStockRecoverBy04" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    SELECT
+		t.*
+	FROM
+		t_stock y,
+		t_stock t
+	WHERE
+		y.createDate = #{lastTradeDate,jdbcType=VARCHAR}
+	AND t.createDate = #{todayTradeDate,jdbcType=VARCHAR}
+	AND y.`code` = t.`code`
+	AND t.codeName NOT LIKE '%st%'
+	AND t.todayOpen <![CDATA[<]]> t.yeatedayClose
+	AND t.newPrice <![CDATA[<]]> t.yeatedayClose
+	AND t.heightPrice <![CDATA[<>]]> t.todayOpen
+	AND t.heightPrice <![CDATA[<>]]> t.newPrice
+	AND(
+		t.todayOpen = t.newPrice
+		OR(t.todayOpen - t.newPrice)= 0.01
+		OR(t.newPrice - t.todayOpen)= 0.01
+	)
+	AND t.dealVol <![CDATA[>]]> y.dealVol
+	AND(
+		(
+			t.newPrice <![CDATA[>=]]> t.todayOpen
+			AND(t.todayOpen - t.lowPrice) <![CDATA[>]]> (
+				(t.heightPrice - t.newPrice)* 3
+			)
+		)
+		OR(
+			t.newPrice <![CDATA[<]]> t.todayOpen
+			AND(t.newPrice - t.lowPrice) <![CDATA[>]]> (
+				(t.heightPrice - t.todayOpen)* 3
+			)
+		)
+	)
+  </select>
+  
+  <select id="selectStockRecoverBy05" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    SELECT
+		t.*
+	FROM
+		t_stock y,
+		t_stock t
+	WHERE
+		y.createDate = #{lastTradeDate,jdbcType=VARCHAR}
+	AND t.createDate = #{todayTradeDate,jdbcType=VARCHAR}
+	AND y.`code` = t.`code`
+	AND t.codeName NOT LIKE '%st%'
+	AND y.newPrice <![CDATA[<]]> y.todayOpen
+	AND t.newPrice <![CDATA[<]]> t.yeatedayClose
+	AND t.todayOpen <![CDATA[<]]> t.yeatedayClose
+	AND t.newPrice <![CDATA[<>]]> t.todayOpen
+	AND t.dealVol <![CDATA[>]]> y.dealVol
+	AND t.heightPrice <![CDATA[>=]]> (
+		y.newPrice +(y.todayOpen - y.newPrice)/ 2
+	)
+	AND(
+		(
+			t.newPrice <![CDATA[>]]> t.todayOpen
+			AND(t.heightPrice - t.newPrice) <![CDATA[>]]> (t.newPrice - t.todayOpen)
+			AND(t.todayOpen - t.lowPrice) <![CDATA[>]]> (t.heightPrice - t.newPrice)
+		)
+		OR(
+			t.newPrice <![CDATA[<]]> t.todayOpen
+			AND(t.heightPrice - t.todayOpen) <![CDATA[>]]> (t.todayOpen - t.newPrice)
+			AND(t.newPrice - t.lowPrice) <![CDATA[>]]> (t.heightPrice - t.todayOpen)
+		)
+	)
+  </select>
+  
+  <select id="selectStockRecoverBy06" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    SELECT
+		t.*
+	FROM
+		t_stock y,
+		t_stock t
+	WHERE
+		y.createDate = #{lastTradeDate,jdbcType=VARCHAR}
+	AND t.createDate = #{todayTradeDate,jdbcType=VARCHAR}
+	AND y.`code` = t.`code`
+	AND t.codeName NOT LIKE '%st%'
+	AND y.newPrice <![CDATA[<]]> t.todayOpen
+	AND y.lowPrice <![CDATA[<]]> y.newPrice
+	AND t.newPrice <![CDATA[>]]> t.todayOpen
+	AND t.lowPrice <![CDATA[>]]> y.lowPrice
+	AND t.heightPrice <![CDATA[<]]> y.todayOpen
+	AND t.dealVol <![CDATA[<]]> y.dealVol
+	AND(y.newPrice - y.lowPrice) <![CDATA[>]]> (t.newPrice - t.todayOpen)
+	AND(y.newPrice - y.lowPrice) <![CDATA[>]]> (y.heightPrice - y.todayOpen)
+  </select>
+  
+  <select id="selectStockRecoverBy07" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    SELECT
+		t.*
+	FROM
+		t_stock y,
+		t_stock t
+	WHERE
+		y.createDate = #{lastTradeDate,jdbcType=VARCHAR}
+	AND t.createDate = #{todayTradeDate,jdbcType=VARCHAR}
+	AND y.`code` = t.`code`
+	AND t.codeName NOT LIKE '%st%'
+	AND t.todayOpen <![CDATA[<]]> y.lowPrice
+	AND t.newPrice <![CDATA[>]]> y.heightPrice
+	AND t.dealVol <![CDATA[>]]> (y.dealVol * 1.5)
   </select>
   
 </mapper>

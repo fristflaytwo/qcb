@@ -190,4 +190,20 @@ public class IndexController extends BaseController {
 		this.stockService.insertStockChange(map.get("date"));
 		return rv;
 	}
+	
+	/**
+	 * 找出底部开始反转的票子
+	 * @param data
+	 * @param req
+	 * @param res
+	 * @return
+	 */
+	@RequestMapping("/insertStockRecover")
+	@ResponseBody
+	public ResultVo insertStockRecover(@RequestBody String data, HttpServletRequest req, HttpServletResponse res){
+		Map<String,String> map=(Map<String, String>) JsonUtil.jsonToMap(data);
+		ResultVo rv=new ResultVo();
+		this.stockService.insertStockRecover(map.get("date"));
+		return rv;
+	}
 }
