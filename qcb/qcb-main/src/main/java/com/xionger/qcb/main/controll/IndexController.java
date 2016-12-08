@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.xionger.qcb.common.constants.Constants;
 import com.xionger.qcb.common.util.date.DateUtil;
+import com.xionger.qcb.common.util.http.HttpClientUtils;
 import com.xionger.qcb.common.util.json.JsonUtil;
 import com.xionger.qcb.model.vo.ResultVo;
 import com.xionger.qcb.service.StockService;
@@ -203,6 +205,26 @@ public class IndexController extends BaseController {
 		Map<String,String> map=(Map<String, String>) JsonUtil.jsonToMap(data);
 		ResultVo rv=new ResultVo();
 		this.stockService.insertStockRecover(map.get("date"));
+		return rv;
+	}
+	
+	
+	/**
+	 * 查询个股的数据
+	 * @param data
+	 * @param req
+	 * @param res
+	 * @return
+	 */
+	@RequestMapping("/queryStockByCode")
+	@ResponseBody
+	public ResultVo queryStockByCode(@RequestBody String data, HttpServletRequest req, HttpServletResponse res){
+		Map<String,String> map=(Map<String, String>) JsonUtil.jsonToMap(data);
+		ResultVo rv=new ResultVo();
+		String code=map.get("code");
+		String info=HttpClientUtils.doGet("http://hq.sinajs.cn/?list="+code, Constants.UTF8);
+		String [] contents=info.split(",");
+		rv.setData(contents[0]+"\t今开\t:"+contents[1]+"\t 昨收\t:"+contents[2] +"\t 现在\t:"+contents[3] +"\t 今日最高价\t:"+contents[4] +"\t 今日最低价\t:"+contents[5]);
 		return rv;
 	}
 }

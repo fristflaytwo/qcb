@@ -525,7 +525,7 @@
 	AND t.createDate = #{todayTradeDate,jdbcType=VARCHAR}
 	AND y.`code` = t.`code`
 	AND t.codeName NOT LIKE '%st%'
-	AND y.newPrice <![CDATA[<]]> t.todayOpen
+	AND y.newPrice <![CDATA[<]]> y.todayOpen
 	AND y.lowPrice <![CDATA[<]]> y.newPrice
 	AND t.newPrice <![CDATA[>]]> t.todayOpen
 	AND t.lowPrice <![CDATA[>]]> y.lowPrice
