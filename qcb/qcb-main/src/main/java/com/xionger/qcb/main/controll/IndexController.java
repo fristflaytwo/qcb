@@ -1,6 +1,8 @@
 package com.xionger.qcb.main.controll;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +20,7 @@ import com.xionger.qcb.common.constants.Constants;
 import com.xionger.qcb.common.util.date.DateUtil;
 import com.xionger.qcb.common.util.http.HttpClientUtils;
 import com.xionger.qcb.common.util.json.JsonUtil;
+import com.xionger.qcb.common.util.string.StringUtil;
 import com.xionger.qcb.model.vo.ResultVo;
 import com.xionger.qcb.service.StockService;
 
@@ -221,10 +224,19 @@ public class IndexController extends BaseController {
 	public ResultVo queryStockByCode(@RequestBody String data, HttpServletRequest req, HttpServletResponse res){
 		Map<String,String> map=(Map<String, String>) JsonUtil.jsonToMap(data);
 		ResultVo rv=new ResultVo();
-		String code=map.get("code");
-		String info=HttpClientUtils.doGet("http://hq.sinajs.cn/?list="+code, Constants.UTF8);
-		String [] contents=info.split(",");
-		rv.setData(contents[0]+"\t今开\t:"+contents[1]+"\t 昨收\t:"+contents[2] +"\t 现在\t:"+contents[3] +"\t 今日最高价\t:"+contents[4] +"\t 今日最低价\t:"+contents[5]);
+		List<String> list=new ArrayList<String>();
+		if(StringUtil.isBlank(map.get("code"))){
+			rv.setMsg("codes值不能为空");
+			return rv;
+		}
+		String[] codes=map.get("code").split(",");
+		
+		for(String code:codes){
+			String info=HttpClientUtils.doGet("http://hq.sinajs.cn/?list="+code, Constants.UTF8);
+			String [] contents=info.split(",");
+			list.add(contents[0].replace("var hq_str_", "").replaceAll("\"", "")+" 今开:"+contents[1]+" 昨收:"+contents[2] +" 现在:"+contents[3] +" 今日最高价:"+contents[4] +" 今日最低价:"+contents[5]);
+		}
+		rv.setList(list);
 		return rv;
 	}
 }
