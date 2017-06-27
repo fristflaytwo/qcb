@@ -2,9 +2,13 @@ package com.xionger.qcb.model;
 
 public class StockDate extends BaseEntity {
 
-	private static final long serialVersionUID = -4790717668754004100L;
 
-    private String stockDate;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private String stockDate;
 
     private String isTradeDate;
 

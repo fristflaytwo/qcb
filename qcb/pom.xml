@@ -384,7 +384,7 @@
 				<artifactId>jta</artifactId>
 				<version>${jta.version}</version>
 			</dependency>
-			<!-- 验证码 -->
+			<!-- 验证�?-->
 			<dependency>
 				<groupId>com.google.code</groupId>
 				<artifactId>kaptcha</artifactId>
@@ -530,6 +530,7 @@
     <module>qcb-service</module>
     <module>qcb-model</module>
     <module>qcb-common</module>
+    <module>qcb-console</module>
   </modules>
   
   
@@ -571,7 +572,7 @@
 			<url>http://192.168.101.2:8081/nexus/content/groups/public</url>
 		</repository>
 	</repositories>
-    //maven远程插件库配置 
+    //maven远程插件库配�?
 	<pluginRepositories>
 		<pluginRepository>
 			<id>nexus</id>
@@ -585,7 +586,7 @@
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
-   //分发构件至远程仓库
+   //分发构件至远程仓�?
 	<distributionManagement>
 		<repository>
 			<id>releases</id>

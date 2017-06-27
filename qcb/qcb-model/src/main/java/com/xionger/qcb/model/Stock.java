@@ -10,8 +10,11 @@ import java.math.BigDecimal;
  */
 public class Stock extends BaseEntity {
 
-	private static final long serialVersionUID = 4768497167455456227L;
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String code; // 股票代码
 	private String codeName; // 股票名称
 	private BigDecimal newPrice; // 最新价

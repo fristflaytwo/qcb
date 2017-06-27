@@ -10,7 +10,7 @@
     <result column="create_date" property="createDate" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, code, code_name, recover_type, recover_type_name, createDate
+    id, code, code_name, recover_type, recover_type_name, create_date
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 

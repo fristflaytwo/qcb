@@ -4,17 +4,17 @@
   <resultMap id="BaseResultMap" type="com.xionger.qcb.model.StockMa" >
     <id column="id" property="id" jdbcType="CHAR" />
     <result column="code" property="code" jdbcType="VARCHAR" />
-    <result column="codeName" property="codename" jdbcType="VARCHAR" />
+    <result column="code_Name" property="codeName" jdbcType="VARCHAR" />
     <result column="day5" property="day5" jdbcType="DECIMAL" />
     <result column="day10" property="day10" jdbcType="DECIMAL" />
     <result column="day20" property="day20" jdbcType="DECIMAL" />
     <result column="week5" property="week5" jdbcType="DECIMAL" />
     <result column="week10" property="week10" jdbcType="DECIMAL" />
     <result column="week20" property="week20" jdbcType="DECIMAL" />
-    <result column="createDate" property="createDate" jdbcType="VARCHAR" />
+    <result column="create_Date" property="createDate" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, code, codeName, day5, day10, day20, week5, week10, week20, createDate
+    id, code, code_Name, day5, day10, day20, week5, week10, week20, create_Date
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -27,11 +27,11 @@
     where id = #{id,jdbcType=CHAR}
   </delete>
   <insert id="insert" parameterType="com.xionger.qcb.model.StockMa" >
-    insert into t_stock_ma (id, code, codeName, 
+    insert into t_stock_ma (id, code, code_Name, 
       day5, day10, day20, 
       week5, week10, week20, 
-      createDate)
-    values (#{id,jdbcType=CHAR}, #{code,jdbcType=VARCHAR}, #{codename,jdbcType=VARCHAR}, 
+      create_Date)
+    values (#{id,jdbcType=CHAR}, #{code,jdbcType=VARCHAR}, #{codeName,jdbcType=VARCHAR}, 
       #{day5,jdbcType=DECIMAL}, #{day10,jdbcType=DECIMAL}, #{day20,jdbcType=DECIMAL}, 
       #{week5,jdbcType=DECIMAL}, #{week10,jdbcType=DECIMAL}, #{week20,jdbcType=DECIMAL}, 
       #{createDate,jdbcType=VARCHAR})
@@ -45,8 +45,8 @@
       <if test="code != null" >
         code,
       </if>
-      <if test="codename != null" >
-        codeName,
+      <if test="codeName != null" >
+        code_Name,
       </if>
       <if test="day5 != null" >
         day5,
@@ -67,7 +67,7 @@
         week20,
       </if>
       <if test="createDate != null" >
-        createDate,
+        create_Date,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -77,8 +77,8 @@
       <if test="code != null" >
         #{code,jdbcType=VARCHAR},
       </if>
-      <if test="codename != null" >
-        #{codename,jdbcType=VARCHAR},
+      <if test="codeName != null" >
+        #{codeName,jdbcType=VARCHAR},
       </if>
       <if test="day5 != null" >
         #{day5,jdbcType=DECIMAL},
@@ -109,8 +109,8 @@
       <if test="code != null" >
         code = #{code,jdbcType=VARCHAR},
       </if>
-      <if test="codename != null" >
-        codeName = #{codename,jdbcType=VARCHAR},
+      <if test="codeName != null" >
+        code_Name = #{codeName,jdbcType=VARCHAR},
       </if>
       <if test="day5 != null" >
         day5 = #{day5,jdbcType=DECIMAL},
@@ -131,7 +131,7 @@
         week20 = #{week20,jdbcType=DECIMAL},
       </if>
       <if test="createDate != null" >
-        createDate = #{createDate,jdbcType=VARCHAR},
+        create_Date = #{createDate,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=CHAR}
@@ -139,26 +139,26 @@
   <update id="updateByPrimaryKey" parameterType="com.xionger.qcb.model.StockMa" >
     update t_stock_ma
     set code = #{code,jdbcType=VARCHAR},
-      codeName = #{codename,jdbcType=VARCHAR},
+      code_Name = #{codeName,jdbcType=VARCHAR},
       day5 = #{day5,jdbcType=DECIMAL},
       day10 = #{day10,jdbcType=DECIMAL},
       day20 = #{day20,jdbcType=DECIMAL},
       week5 = #{week5,jdbcType=DECIMAL},
       week10 = #{week10,jdbcType=DECIMAL},
       week20 = #{week20,jdbcType=DECIMAL},
-      createDate = #{createDate,jdbcType=VARCHAR}
+      create_Date = #{createDate,jdbcType=VARCHAR}
     where id = #{id,jdbcType=CHAR}
   </update>
   
   <delete id="deleteByCreateDate" parameterType="java.lang.String" >
     delete from t_stock_ma
-    where createDate = #{createDate,jdbcType=VARCHAR}
+    where create_Date = #{createDate,jdbcType=VARCHAR}
   </delete>
   
   <select id="selectByCreateDate" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
     from t_stock_ma
-    where createDate = #{date,jdbcType=VARCHAR}
+    where create_Date = #{date,jdbcType=VARCHAR}
   </select>
 </mapper>

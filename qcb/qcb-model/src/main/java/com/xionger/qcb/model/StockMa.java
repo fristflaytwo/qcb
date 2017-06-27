@@ -10,14 +10,14 @@ import java.math.BigDecimal;
 public class StockMa  extends BaseEntity {
    
 
-    /**
+	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6179480177841137870L;
+	private static final long serialVersionUID = 1L;
 
 	private String code;
 
-    private String codename;
+    private String codeName;
 
     private BigDecimal day5;
 
@@ -43,15 +43,17 @@ public class StockMa  extends BaseEntity {
         this.code = code == null ? null : code.trim();
     }
 
-    public String getCodename() {
-        return codename;
-    }
+    
 
-    public void setCodename(String codename) {
-        this.codename = codename == null ? null : codename.trim();
-    }
+    public String getCodeName() {
+		return codeName;
+	}
 
-    public BigDecimal getDay5() {
+	public void setCodeName(String codeName) {
+		this.codeName = codeName;
+	}
+
+	public BigDecimal getDay5() {
         return day5;
     }
 

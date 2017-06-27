@@ -1,0 +1,72 @@
+"id","api_id","user_id","api_type","api_method","serial_no","token","account_name","account_pwd","mobile","real_name","id_card","province","channel","request_data","request_time","response_data","response_time","status","remark","create_date","update_date","ip","position","identity_card_no","identity_name","plate_no","policy_no","user_operator_id"
+"0764b767fd7643d1888cfdad79d25d1f","fab9d65162db11e68fa36c92bf314c23","f971999bae6c45d4860cdb1a2732bb2d","mobile","api.common.getResult","s_be586c2f836c47eb8681f40a1655c499","0f088d9911654f89bab018b4d3e865ce","13167968449","","","","","","WEB","{""apiKey"":""2922819020804281"",""bizType"":""mobile"",""channel"":""WEB"",""method"":""api.common.getResult"",""token"":""0f088d9911654f89bab018b4d3e865ce"",""uid"":""f971999bae6c45d4860cdb1a2732bb2d"",""version"":""1.0.0""}","2016-12-20 14:54:38","{
+  ""statusInfo"": ""查询结果缺少关键数据"",
+  ""code"": ""1114"",
+  ""data"": null
+}","2016-12-20 14:54:41","99","mobile结果查询","2016-12-20 14:54:41","2016-12-20 14:54:41","","","","","","",""
+"c02a16d86cbe406b83586462f6fa6551","fab93d8062db11e68fa36c92bf314c23","f971999bae6c45d4860cdb1a2732bb2d","status","api.common.getStatus","s_0b4ca856748742a888b83c079ad021b5","0f088d9911654f89bab018b4d3e865ce","","","","","","","WEB","{""apiKey"":""2922819020804281"",""channel"":""WEB"",""method"":""api.common.getStatus"",""token"":""0f088d9911654f89bab018b4d3e865ce"",""uid"":""f971999bae6c45d4860cdb1a2732bb2d"",""version"":""1.0.0""}","2016-12-20 14:54:38","{
+  ""token"": ""0f088d9911654f89bab018b4d3e865ce"",
+  ""website"": null,
+  ""statusInfo"": """",
+  ""code"": """"
+}","2016-12-20 14:54:38","00","状态查询","2016-12-20 14:54:38","2016-12-20 14:54:38","","","","","","",""
+"eaf4ae47473c46e6a88939e3b6a37509","fab93d8062db11e68fa36c92bf314c23","f971999bae6c45d4860cdb1a2732bb2d","status","api.common.getStatus","s_723bed8f3a664d46987ba3ab30395a2c","0f088d9911654f89bab018b4d3e865ce","","","","","","","WEB","{""apiKey"":""2922819020804281"",""channel"":""WEB"",""method"":""api.common.getStatus"",""token"":""0f088d9911654f89bab018b4d3e865ce"",""uid"":""f971999bae6c45d4860cdb1a2732bb2d"",""version"":""1.0.0""}","2016-12-20 14:54:31","{
+  ""token"": ""0f088d9911654f89bab018b4d3e865ce"",
+  ""website"": null,
+  ""statusInfo"": """",
+  ""code"": """"
+}","2016-12-20 14:54:31","00","状态查询","2016-12-20 14:54:31","2016-12-20 14:54:31","","","","","","",""
+"fecac06a51f64b9cb4469e813c5e35da","fab93d8062db11e68fa36c92bf314c23","f971999bae6c45d4860cdb1a2732bb2d","status","api.common.getStatus","s_44fc5b0df080449c9910945c2e236e5a","0f088d9911654f89bab018b4d3e865ce","","","","","","","WEB","{""apiKey"":""2922819020804281"",""channel"":""WEB"",""method"":""api.common.getStatus"",""token"":""0f088d9911654f89bab018b4d3e865ce"",""uid"":""f971999bae6c45d4860cdb1a2732bb2d"",""version"":""1.0.0""}","2016-12-20 14:54:23","{
+  ""token"": ""0f088d9911654f89bab018b4d3e865ce"",
+  ""website"": null,
+  ""statusInfo"": """",
+  ""code"": """"
+}","2016-12-20 14:54:23","00","状态查询","2016-12-20 14:54:23","2016-12-20 14:54:23","","","","","","",""
+"901eabe362f848008152d5f53bde66ff","fab93d8062db11e68fa36c92bf314c23","f971999bae6c45d4860cdb1a2732bb2d","status","api.common.getStatus","s_04a29d1d6c4e4b4ab0b8d12cddb976de","0f088d9911654f89bab018b4d3e865ce","","","","","","","WEB","{""apiKey"":""2922819020804281"",""channel"":""WEB"",""method"":""api.common.getStatus"",""token"":""0f088d9911654f89bab018b4d3e865ce"",""uid"":""f971999bae6c45d4860cdb1a2732bb2d"",""version"":""1.0.0""}","2016-12-20 14:54:16","{
+  ""token"": ""0f088d9911654f89bab018b4d3e865ce"",
+  ""website"": null,
+  ""statusInfo"": """",
+  ""code"": """"
+}","2016-12-20 14:54:16","00","状态查询","2016-12-20 14:54:16","2016-12-20 14:54:16","","","","","","",""
+"1b958beef38f48fe8f48c7514d201f86","fab93d8062db11e68fa36c92bf314c23","f971999bae6c45d4860cdb1a2732bb2d","status","api.common.getStatus","s_6a1acc01be754756bc47d35c5ac10a03","0f088d9911654f89bab018b4d3e865ce","","","","","","","WEB","{""apiKey"":""2922819020804281"",""channel"":""WEB"",""method"":""api.common.getStatus"",""token"":""0f088d9911654f89bab018b4d3e865ce"",""uid"":""f971999bae6c45d4860cdb1a2732bb2d"",""version"":""1.0.0""}","2016-12-20 14:54:09","{
+  ""token"": ""0f088d9911654f89bab018b4d3e865ce"",
+  ""website"": null,
+  ""statusInfo"": """",
+  ""code"": """"
+}","2016-12-20 14:54:09","00","状态查询","2016-12-20 14:54:09","2016-12-20 14:54:09","","","","","","",""
+"9f9e20fef450479ca4dd419591f01d73","fab93d8062db11e68fa36c92bf314c23","f971999bae6c45d4860cdb1a2732bb2d","status","api.common.getStatus","s_406c602653b44f8c97f2ba7cbe5e0b58","0f088d9911654f89bab018b4d3e865ce","","","","","","","WEB","{""apiKey"":""2922819020804281"",""channel"":""WEB"",""method"":""api.common.getStatus"",""token"":""0f088d9911654f89bab018b4d3e865ce"",""uid"":""f971999bae6c45d4860cdb1a2732bb2d"",""version"":""1.0.0""}","2016-12-20 14:54:02","{
+  ""token"": ""0f088d9911654f89bab018b4d3e865ce"",
+  ""website"": null,
+  ""statusInfo"": """",
+  ""code"": """"
+}","2016-12-20 14:54:02","00","状态查询","2016-12-20 14:54:02","2016-12-20 14:54:02","","","","","","",""
+"a039e425c0d3494fbedd3b979c934cd0","fab93d8062db11e68fa36c92bf314c23","f971999bae6c45d4860cdb1a2732bb2d","status","api.common.getStatus","s_0420a19b477c4d239b48ab1914930269","0f088d9911654f89bab018b4d3e865ce","","","","","","","WEB","{""apiKey"":""2922819020804281"",""channel"":""WEB"",""method"":""api.common.getStatus"",""token"":""0f088d9911654f89bab018b4d3e865ce"",""uid"":""f971999bae6c45d4860cdb1a2732bb2d"",""version"":""1.0.0""}","2016-12-20 14:53:54","{
+  ""token"": ""0f088d9911654f89bab018b4d3e865ce"",
+  ""website"": null,
+  ""statusInfo"": """",
+  ""code"": """"
+}","2016-12-20 14:53:54","00","状态查询","2016-12-20 14:53:54","2016-12-20 14:53:54","","","","","","",""
+"98fc37204e0341369111e183ad86c461","fab93d8062db11e68fa36c92bf314c23","f971999bae6c45d4860cdb1a2732bb2d","status","api.common.getStatus","s_d8c5eb776afc47908a653a127c7eaf97","0f088d9911654f89bab018b4d3e865ce","","","","","","","WEB","{""apiKey"":""2922819020804281"",""channel"":""WEB"",""method"":""api.common.getStatus"",""token"":""0f088d9911654f89bab018b4d3e865ce"",""uid"":""f971999bae6c45d4860cdb1a2732bb2d"",""version"":""1.0.0""}","2016-12-20 14:53:47","{
+  ""token"": ""0f088d9911654f89bab018b4d3e865ce"",
+  ""website"": null,
+  ""statusInfo"": """",
+  ""code"": """"
+}","2016-12-20 14:53:47","00","状态查询","2016-12-20 14:53:47","2016-12-20 14:53:47","","","","","","",""
+"c9f67a8fb0ed43d2990b00f41aa93c3d","fab93d8062db11e68fa36c92bf314c23","f971999bae6c45d4860cdb1a2732bb2d","status","api.common.getStatus","s_9fa3dfb91af94e7d8631ebd848fa2156","0f088d9911654f89bab018b4d3e865ce","","","","","","","WEB","{""apiKey"":""2922819020804281"",""channel"":""WEB"",""method"":""api.common.getStatus"",""token"":""0f088d9911654f89bab018b4d3e865ce"",""uid"":""f971999bae6c45d4860cdb1a2732bb2d"",""version"":""1.0.0""}","2016-12-20 14:53:40","{
+  ""token"": ""0f088d9911654f89bab018b4d3e865ce"",
+  ""website"": null,
+  ""statusInfo"": """",
+  ""code"": """"
+}","2016-12-20 14:53:40","00","状态查询","2016-12-20 14:53:40","2016-12-20 14:53:40","","","","","","",""
+"d0e97bdc7fcc4560a898e66aa32738d7","fab93d8062db11e68fa36c92bf314c23","f971999bae6c45d4860cdb1a2732bb2d","status","api.common.getStatus","s_05fb88edd3514027bddd3ddcdeee8edc","0f088d9911654f89bab018b4d3e865ce","","","","","","","WEB","{""apiKey"":""2922819020804281"",""channel"":""WEB"",""method"":""api.common.getStatus"",""token"":""0f088d9911654f89bab018b4d3e865ce"",""uid"":""f971999bae6c45d4860cdb1a2732bb2d"",""version"":""1.0.0""}","2016-12-20 14:53:33","{
+  ""token"": ""0f088d9911654f89bab018b4d3e865ce"",
+  ""website"": null,
+  ""statusInfo"": """",
+  ""code"": """"
+}","2016-12-20 14:53:33","00","状态查询","2016-12-20 14:53:33","2016-12-20 14:53:33","","","","","","",""
+"d0b80d0f9b464f3a8b1e12b869a261d3","fab337f162db11e68fa36c92bf314c23","f971999bae6c45d4860cdb1a2732bb2d","mobile","api.mobile.get","s_6c2ebbe3ab614ee6bdcef68fac3f6091","0f088d9911654f89bab018b4d3e865ce","13167968449","","","","","","WEB","{""apiKey"":""2922819020804281"",""channel"":""WEB"",""method"":""api.mobile.get"",""otherInfo"":"""",""password"":"""",""token"":""0f088d9911654f89bab018b4d3e865ce"",""uid"":""f971999bae6c45d4860cdb1a2732bb2d"",""username"":""13167968449"",""version"":""1.0.0""}","2016-12-20 14:53:25","{
+  ""token"": ""0f088d9911654f89bab018b4d3e865ce"",
+  ""website"": ""ChinaLianTong"",
+  ""statusInfo"": ""受理成功"",
+  ""code"": ""0010""
+}","2016-12-20 14:53:25","00","运营商-查询","2016-12-20 14:53:25","2016-12-20 14:53:25","","","","","","",""

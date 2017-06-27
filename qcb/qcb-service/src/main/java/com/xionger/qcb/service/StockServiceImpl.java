@@ -219,7 +219,7 @@ public class StockServiceImpl implements StockService{
     			StockMa stockMa=new StockMa();
     			stockMa.generateId();
     			stockMa.setCode(stock.getCode());
-    			stockMa.setCodename(stock.getCodeName());
+    			stockMa.setCodeName(stock.getCodeName());
     			stockMa.setCreateDate(date);//数据日期
     			stockMa.setDay5(day5);
     			stockMa.setDay10(day10);
@@ -744,5 +744,67 @@ public class StockServiceImpl implements StockService{
 				this.stockRecoverDao.insertSelective(stockRecover);
 			}
 		}
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    /**
+     * 从下载的excel冲将数据导入到数据库,调用次方法必须要求该日数据excel必须存在
+     * @param xlsDate
+     */
+    public void jisuan(String path){
+    	
+    	HSSFWorkbook wb=null;
+    	POIFSFileSystem pfs=null;
+    	FileInputStream fis=null;
+        try{
+        	File file = new File(path);
+        	fis=new FileInputStream(file);
+        	pfs = new POIFSFileSystem(fis);  
+            wb = new HSSFWorkbook(pfs);
+            HSSFSheet  sheet = wb.getSheetAt(0);
+            Iterator<Row> rows=sheet.rowIterator();
+            Row row=null;
+            int i=0;
+            while(rows.hasNext()){
+            	row=rows.next();
+            	if(i>0){
+            		String code=row.getCell(0).getStringCellValue().replace(".SZ", "").replace(".SH", "");
+            		code=code.startsWith("6")?("sh"+code):("sz"+code);
+            		String codeDate=DateUtil.dateToString(DateUtil.stringToDate(row.getCell(4).getStringCellValue()+"235959", DateUtil.formatPattern_rand), DateUtil.formatPattern_14);
+            	}
+            }
+        }catch(Exception e){
+        	e.printStackTrace();
+        }finally{
+        	try {
+        		if(fis!=null){
+        			fis.close();
+                }
+        		if(pfs!=null){
+        			pfs.close();
+                }
+        		if(wb!=null){
+        			wb.close();
+        		}
+        		fis=null;
+        		pfs=null;
+        		wb=null;
+			} catch (Exception e) {
+				
+			}
+        }
     }
 }

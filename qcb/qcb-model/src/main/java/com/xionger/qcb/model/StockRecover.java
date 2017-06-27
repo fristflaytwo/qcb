@@ -3,10 +3,11 @@ package com.xionger.qcb.model;
 
 public class StockRecover extends BaseEntity {
 
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 224365562208328344L;
+	private static final long serialVersionUID = 1L;
 
 	private String code;
 

@@ -4,23 +4,24 @@
   <resultMap id="BaseResultMap" type="com.xionger.qcb.model.Stock" >
     <id column="id" property="id" jdbcType="CHAR" />
     <result column="code" property="code" jdbcType="VARCHAR" />
-    <result column="codeName" property="codeName" jdbcType="VARCHAR" />
-    <result column="newPrice" property="newPrice" jdbcType="DECIMAL" />
+    <result column="code_name" property="codeName" jdbcType="VARCHAR" />
+    <result column="new_price" property="newPrice" jdbcType="DECIMAL" />
     <result column="amplitude" property="amplitude" jdbcType="DECIMAL" />
-    <result column="amplitudePrice" property="amplitudePrice" jdbcType="DECIMAL" />
-    <result column="buyPrice" property="buyPrice" jdbcType="DECIMAL" />
-    <result column="salePrice" property="salePrice" jdbcType="DECIMAL" />
-    <result column="dealVol" property="dealVol" jdbcType="BIGINT" />
-    <result column="dealPrice" property="dealPrice" jdbcType="DECIMAL" />
-    <result column="todayOpen" property="todayOpen" jdbcType="DECIMAL" />
-    <result column="yeatedayClose" property="yeatedayClose" jdbcType="DECIMAL" />
-    <result column="heightPrice" property="heightPrice" jdbcType="DECIMAL" />
-    <result column="lowPrice" property="lowPrice" jdbcType="DECIMAL" />
-    <result column="createDate" property="createDate" jdbcType="VARCHAR" />
+    <result column="amplitude_price" property="amplitudePrice" jdbcType="DECIMAL" />
+    <result column="buy_price" property="buyPrice" jdbcType="DECIMAL" />
+    <result column="sale_price" property="salePrice" jdbcType="DECIMAL" />
+    <result column="deal_vol" property="dealVol" jdbcType="BIGINT" />
+    <result column="deal_price" property="dealPrice" jdbcType="DECIMAL" />
+    <result column="today_open" property="todayOpen" jdbcType="DECIMAL" />
+    <result column="yeateday_close" property="yeatedayClose" jdbcType="DECIMAL" />
+    <result column="height_price" property="heightPrice" jdbcType="DECIMAL" />
+    <result column="low_price" property="lowPrice" jdbcType="DECIMAL" />
+    <result column="create_date" property="createDate" jdbcType="VARCHAR" />
   </resultMap>
   
   <sql id="Base_Column_List" >
-    id,code,codeName,newPrice,amplitude,amplitudePrice,buyPrice,salePrice,dealVol,dealPrice,todayOpen,yeatedayClose,heightPrice,lowPrice,createDate
+    id, code, code_name, new_price, amplitude, amplitude_price, buy_price, sale_price, 
+    deal_vol, deal_price, today_open, yeateday_close, height_price, low_price, create_date
   </sql>
   
   <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
@@ -35,17 +36,19 @@
     where id = #{id,jdbcType=CHAR}
   </delete>
   
-  <insert id="insert" parameterType="com.xionger.qcb.model.Stock" >
-    insert into t_stock (
-    	id,code,codeName,newPrice,amplitude,amplitudePrice,buyPrice,salePrice,dealVol,dealPrice,todayOpen,yeatedayClose,heightPrice,lowPrice,createDate
-    )
-    values (
-    	#{id,jdbcType=CHAR}, #{code,jdbcType=VARCHAR}, #{codeName,jdbcType=VARCHAR}, 
-        #{newPrice,jdbcType=DECIMAL}, #{amplitude,jdbcType=DECIMAL}, #{amplitudePrice,jdbcType=DECIMAL}, 
-        #{buyPrice,jdbcType=DECIMAL},#{salePrice,jdbcType=DECIMAL}, #{dealVol,jdbcType=BIGINT}, 
-        #{dealPrice,jdbcType=DECIMAL},#{todayOpen,jdbcType=DECIMAL}, #{yeatedayClose,jdbcType=DECIMAL}, 
-        #{heightPrice,jdbcType=DECIMAL}, #{lowPrice,jdbcType=DECIMAL},#{createDate,jdbcType=VARCHAR}
-    )
+   <insert id="insert" parameterType="com.xionger.qcb.model.Stock" >
+    insert into t_stock (id, code, code_name, 
+      new_price, amplitude, amplitude_price, 
+      buy_price, sale_price, deal_vol, 
+      deal_price, today_open, yeateday_close, 
+      height_price, low_price, create_date
+      )
+    values (#{id,jdbcType=CHAR}, #{code,jdbcType=VARCHAR}, #{codeName,jdbcType=VARCHAR}, 
+      #{newPrice,jdbcType=DECIMAL}, #{amplitude,jdbcType=DECIMAL}, #{amplitudePrice,jdbcType=DECIMAL}, 
+      #{buyPrice,jdbcType=DECIMAL}, #{salePrice,jdbcType=DECIMAL}, #{dealVol,jdbcType=BIGINT}, 
+      #{dealPrice,jdbcType=DECIMAL}, #{todayOpen,jdbcType=DECIMAL}, #{yeatedayClose,jdbcType=DECIMAL}, 
+      #{heightPrice,jdbcType=DECIMAL}, #{lowPrice,jdbcType=DECIMAL}, #{createDate,jdbcType=VARCHAR}
+      )
   </insert>
   
   <insert id="insertSelective" parameterType="com.xionger.qcb.model.Stock" >
@@ -55,46 +58,46 @@
         id,
       </if>
       <if test="code != null" >
-       code,
+        code,
       </if>
       <if test="codeName != null" >
-       codeName,
+        code_name,
       </if>
       <if test="newPrice != null" >
-       newPrice,
+        new_price,
       </if>
       <if test="amplitude != null" >
-       amplitude,
+        amplitude,
       </if>
       <if test="amplitudePrice != null" >
-       amplitudePrice,
+        amplitude_price,
       </if>
       <if test="buyPrice != null" >
-       buyPrice,
+        buy_price,
       </if>
       <if test="salePrice != null" >
-       salePrice,
+        sale_price,
       </if>
       <if test="dealVol != null" >
-       dealVol,
+        deal_vol,
       </if>
       <if test="dealPrice != null" >
-       dealPrice,
+        deal_price,
       </if>
       <if test="todayOpen != null" >
-       todayOpen,
+        today_open,
       </if>
       <if test="yeatedayClose != null" >
-       yeatedayClose,
+        yeateday_close,
       </if>
       <if test="heightPrice != null" >
-       heightPrice,
+        height_price,
       </if>
       <if test="lowPrice != null" >
-       lowPrice,
+        low_price,
       </if>
       <if test="createDate != null" >
-       createDate,
+        create_date,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -102,16 +105,16 @@
         #{id,jdbcType=CHAR},
       </if>
       <if test="code != null" >
-       #{code,jdbcType=VARCHAR},
+        #{code,jdbcType=VARCHAR},
       </if>
       <if test="codeName != null" >
-        #{codeName,jdbcType=VARCHAR}, 
+        #{codeName,jdbcType=VARCHAR},
       </if>
       <if test="newPrice != null" >
-        #{newPrice,jdbcType=DECIMAL}, 
+        #{newPrice,jdbcType=DECIMAL},
       </if>
       <if test="amplitude != null" >
-       #{amplitude,jdbcType=DECIMAL},
+        #{amplitude,jdbcType=DECIMAL},
       </if>
       <if test="amplitudePrice != null" >
         #{amplitudePrice,jdbcType=DECIMAL},
@@ -120,19 +123,19 @@
         #{buyPrice,jdbcType=DECIMAL},
       </if>
       <if test="salePrice != null" >
-       #{salePrice,jdbcType=DECIMAL}, 
+        #{salePrice,jdbcType=DECIMAL},
       </if>
       <if test="dealVol != null" >
-       #{dealVol,jdbcType=BIGINT},
+        #{dealVol,jdbcType=BIGINT},
       </if>
       <if test="dealPrice != null" >
         #{dealPrice,jdbcType=DECIMAL},
       </if>
       <if test="todayOpen != null" >
-       #{todayOpen,jdbcType=DECIMAL}, 
+        #{todayOpen,jdbcType=DECIMAL},
       </if>
       <if test="yeatedayClose != null" >
-       #{yeatedayClose,jdbcType=DECIMAL}, 
+        #{yeatedayClose,jdbcType=DECIMAL},
       </if>
       <if test="heightPrice != null" >
         #{heightPrice,jdbcType=DECIMAL},
@@ -141,21 +144,68 @@
         #{lowPrice,jdbcType=DECIMAL},
       </if>
       <if test="createDate != null" >
-       #{createDate,jdbcType=VARCHAR},
+        #{createDate,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
-
+	<update id="updateByPrimaryKeySelective" parameterType="com.xionger.qcb.model.Stock" >
+	    update t_stock
+	    <set >
+	      <if test="code != null" >
+	        code = #{code,jdbcType=VARCHAR},
+	      </if>
+	      <if test="codeName != null" >
+	        code_name = #{codeName,jdbcType=VARCHAR},
+	      </if>
+	      <if test="newPrice != null" >
+	        new_price = #{newPrice,jdbcType=DECIMAL},
+	      </if>
+	      <if test="amplitude != null" >
+	        amplitude = #{amplitude,jdbcType=DECIMAL},
+	      </if>
+	      <if test="amplitudePrice != null" >
+	        amplitude_price = #{amplitudePrice,jdbcType=DECIMAL},
+	      </if>
+	      <if test="buyPrice != null" >
+	        buy_price = #{buyPrice,jdbcType=DECIMAL},
+	      </if>
+	      <if test="salePrice != null" >
+	        sale_price = #{salePrice,jdbcType=DECIMAL},
+	      </if>
+	      <if test="dealVol != null" >
+	        deal_vol = #{dealVol,jdbcType=BIGINT},
+	      </if>
+	      <if test="dealPrice != null" >
+	        deal_price = #{dealPrice,jdbcType=DECIMAL},
+	      </if>
+	      <if test="todayOpen != null" >
+	        today_open = #{todayOpen,jdbcType=DECIMAL},
+	      </if>
+	      <if test="yeatedayClose != null" >
+	        yeateday_close = #{yeatedayClose,jdbcType=DECIMAL},
+	      </if>
+	      <if test="heightPrice != null" >
+	        height_price = #{heightPrice,jdbcType=DECIMAL},
+	      </if>
+	      <if test="lowPrice != null" >
+	        low_price = #{lowPrice,jdbcType=DECIMAL},
+	      </if>
+	      <if test="createDate != null" >
+	        create_date = #{createDate,jdbcType=VARCHAR},
+	      </if>
+	    </set>
+	    where id = #{id,jdbcType=CHAR}
+	  </update>
   
   
   <delete id="deleteStockListByDataDate" parameterType="java.lang.String" >
     delete from t_stock
-    where createDate = #{dataDate,jdbcType=VARCHAR}
+    where create_date = #{dataDate,jdbcType=VARCHAR}
   </delete>
   
   <delete id="deleteStockListByStartAndEnd" parameterType="java.util.HashMap" >
     delete from t_stock
-    where createDate <![CDATA[>=]]> #{start,jdbcType=VARCHAR} and createDate <![CDATA[<=]]> #{end,jdbcType=VARCHAR}
+    where create_date <![CDATA[>=]]> #{start,jdbcType=VARCHAR} and create_date <![CDATA[<=]]> #{end,jdbcType=VARCHAR}
   </delete>
   
   
@@ -163,36 +213,36 @@
     select 
     <include refid="Base_Column_List" />
     from t_stock
-    where createDate = #{createDate,jdbcType=VARCHAR}
+    where create_date = #{createDate,jdbcType=VARCHAR}
   </select>
   
   <select id="select20ListByCodeAndCreateDateOrderCreateDateDesc" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
     select 
 	<include refid="Base_Column_List" /> 
-	from t_stock t where t.`code`=#{code,jdbcType=VARCHAR} and t.newPrice <![CDATA[>]]> 0.00 and t.createDate <![CDATA[<=]]> #{createDate,jdbcType=VARCHAR} ORDER BY t.createDate desc LIMIT 20
+	from t_stock t where t.`code`=#{code,jdbcType=VARCHAR} and t.new_price <![CDATA[>]]> 0.00 and t.create_date <![CDATA[<=]]> #{createDate,jdbcType=VARCHAR} ORDER BY t.create_date desc LIMIT 20
   </select>
   
   
   <select id="selectListByCodeAndCreateDateAsc" resultMap="BaseResultMap" parameterType="com.xionger.qcb.model.Stock" >
     select 
 	<include refid="Base_Column_List" /> 
-	from t_stock t where t.`code`=#{code,jdbcType=VARCHAR} and t.createDate <![CDATA[>]]> #{createDate,jdbcType=VARCHAR} ORDER BY t.createDate asc
+	from t_stock t where t.`code`=#{code,jdbcType=VARCHAR} and t.create_date <![CDATA[>]]> #{createDate,jdbcType=VARCHAR} ORDER BY t.create_date asc
   </select>
   
   <select id="selectByCodeAndBeforCreateDateDescOne" resultMap="BaseResultMap" parameterType="com.xionger.qcb.model.Stock" >
     select 
 	<include refid="Base_Column_List" /> 
-	from t_stock t where t.`code`=#{code,jdbcType=VARCHAR} and t.createDate <![CDATA[<]]> #{createDate,jdbcType=VARCHAR} ORDER BY t.createDate desc LIMIT 1
+	from t_stock t where t.`code`=#{code,jdbcType=VARCHAR} and t.create_date <![CDATA[<]]> #{createDate,jdbcType=VARCHAR} ORDER BY t.create_date desc LIMIT 1
   </select>
   
   <select id="select20WeekListByCodeAndCreateDateOrderCreateDateDesc" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
     select 
 	<include refid="Base_Column_List" /> 
 	from t_stock t where t.`code`=#{code,jdbcType=VARCHAR} 
-					and  t.newPrice <![CDATA[>]]> 0.00  
-					and  t.createDate <![CDATA[<=]]> #{createDate,jdbcType=VARCHAR}
-					and  exists (select 1 from t_stock_date a where a.is_end_week_day='00' and t.createDate=a.stock_date)
-					ORDER BY t.createDate desc LIMIT 20
+					and  t.new_price <![CDATA[>]]> 0.00  
+					and  t.create_date <![CDATA[<=]]> #{createDate,jdbcType=VARCHAR}
+					and  exists (select 1 from t_stock_date a where a.is_end_week_day='00' and t.create_date=a.stock_date)
+					ORDER BY t.create_date desc LIMIT 20
   </select>
   
   
@@ -200,7 +250,7 @@
     select 
     <include refid="Base_Column_List" />
     from t_stock t
-    where t.`code`=#{code,jdbcType=VARCHAR} and t.newPrice <![CDATA[>]]> 0.00 and t.createDate <![CDATA[<=]]> #{createDate,jdbcType=VARCHAR} ORDER BY t.createDate desc LIMIT 1
+    where t.`code`=#{code,jdbcType=VARCHAR} and t.new_price <![CDATA[>]]> 0.00 and t.create_date <![CDATA[<=]]> #{createDate,jdbcType=VARCHAR} ORDER BY t.create_date desc LIMIT 1
   </select>
   
   <select id="selectStockChangeBy01" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
@@ -210,16 +260,16 @@
 		t_stock y,
 		t_stock t
 	WHERE
-		y.createDate = #{lastTradeDate,jdbcType=VARCHAR}
-	AND t.createDate = #{todayTradeDate,jdbcType=VARCHAR}
+		y.create_date = #{lastTradeDate,jdbcType=VARCHAR}
+	AND t.create_date = #{todayTradeDate,jdbcType=VARCHAR}
 	AND y.`code` = t.`code`
-	and (t.dealVol/y.dealVol) <![CDATA[>=]]> 2
-	and t.newPrice <![CDATA[>]]> t.todayOpen
-	and t.todayOpen <![CDATA[>]]> t.yeatedayClose
-	and t.todayOpen=t.lowPrice
-	and t.newPrice=t.heightPrice 
-	AND t.codeName not like '%st%'
-	and y.newPrice <![CDATA[>]]> y.todayOpen
+	and (t.deal_vol/y.deal_vol) <![CDATA[>=]]> 2
+	and t.new_price <![CDATA[>]]> t.today_open
+	and t.today_open <![CDATA[>]]> t.yeateday_close
+	and t.today_open=t.low_price
+	and t.new_price=t.height_price 
+	AND t.code_name not like '%st%'
+	and y.new_price <![CDATA[>]]> y.today_open
   </select>
   
   
@@ -230,16 +280,16 @@
 		t_stock y,
 		t_stock t
 	WHERE
-		y.createDate = #{lastTradeDate,jdbcType=VARCHAR}
-	AND t.createDate = #{todayTradeDate,jdbcType=VARCHAR}
+		y.create_Date = #{lastTradeDate,jdbcType=VARCHAR}
+	AND t.create_Date = #{todayTradeDate,jdbcType=VARCHAR}
 	AND y.`code` = t.`code`
-	and (t.dealVol/y.dealVol)<![CDATA[>=]]> 2
-	and t.newPrice <![CDATA[<]]> t.todayOpen
-	and t.todayOpen <![CDATA[>]]> t.yeatedayClose
-	and t.todayOpen=t.heightPrice 
-	and (t.todayOpen-t.newPrice) <![CDATA[>]]> ((t.newPrice-t.lowPrice)*5)
-	AND t.codeName not like '%st%'
-	and y.newPrice <![CDATA[>]]> y.todayOpen
+	and (t.deal_Vol/y.deal_Vol)<![CDATA[>=]]> 2
+	and t.new_Price <![CDATA[<]]> t.today_Open
+	and t.today_Open <![CDATA[>]]> t.yeateday_Close
+	and t.today_Open=t.height_Price 
+	and (t.today_Open-t.new_Price) <![CDATA[>]]> ((t.new_Price-t.low_Price)*5)
+	AND t.code_Name not like '%st%'
+	and y.new_Price <![CDATA[>]]> y.today_Open
   </select>
   
   <select id="selectStockChangeBy04" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
@@ -249,21 +299,21 @@
 		t_stock y,
 		t_stock t
 	WHERE
-		y.createDate = #{lastTradeDate,jdbcType=VARCHAR}
-	AND t.createDate = #{todayTradeDate,jdbcType=VARCHAR}
+		y.create_Date = #{lastTradeDate,jdbcType=VARCHAR}
+	AND t.create_Date = #{todayTradeDate,jdbcType=VARCHAR}
 	AND y.`code` = t.`code`
-	and t.codeName not like '%st%'
-	and t.dealVol <![CDATA[>]]> y.dealVol
-    and t.newPrice <![CDATA[>=]]> y.newPrice
+	and t.code_Name not like '%st%'
+	and t.deal_Vol <![CDATA[>]]> y.deal_Vol
+    and t.new_Price <![CDATA[>=]]> y.new_Price
 	and (
-			(y.newPrice <![CDATA[>]]> y.todayOpen and ((y.todayOpen-y.lowPrice) <![CDATA[>]]> ((y.newPrice-y.todayOpen)*2)) and ((y.newPrice-y.todayOpen) <![CDATA[>]]> (y.heightPrice-y.newPrice))) 
+			(y.new_Price <![CDATA[>]]> y.today_Open and ((y.today_Open-y.low_Price) <![CDATA[>]]> ((y.new_Price-y.today_Open)*2)) and ((y.new_Price-y.today_Open) <![CDATA[>]]> (y.height_Price-y.new_Price))) 
 		or 
-			(y.newPrice <![CDATA[<]]> y.todayOpen and ((y.newPrice-y.lowPrice) <![CDATA[>]]> ((y.todayOpen-y.newPrice)*2)) and ((y.todayOpen-y.newPrice) <![CDATA[>]]> (y.heightPrice-y.todayOpen)))
+			(y.new_Price <![CDATA[<]]> y.today_Open and ((y.new_Price-y.low_Price) <![CDATA[>]]> ((y.today_Open-y.new_Price)*2)) and ((y.today_Open-y.new_Price) <![CDATA[>]]> (y.height_Price-y.today_Open)))
 		)
 	and (
-			(t.newPrice <![CDATA[>]]> t.todayOpen and ((t.heightPrice-t.newPrice) <![CDATA[>]]> ((t.newPrice-t.todayOpen)*2)) and ((t.newPrice-t.todayOpen) <![CDATA[>]]> (t.todayOpen-t.lowPrice)))
+			(t.new_Price <![CDATA[>]]> t.today_Open and ((t.height_Price-t.new_Price) <![CDATA[>]]> ((t.new_Price-t.today_Open)*2)) and ((t.new_Price-t.today_Open) <![CDATA[>]]> (t.today_Open-t.low_Price)))
 		or
-			(t.newPrice <![CDATA[<]]> t.todayOpen and ((t.heightPrice-t.todayOpen) <![CDATA[>]]> ((t.todayOpen-t.newPrice)*2)) and ((t.todayOpen-t.newPrice) <![CDATA[>]]> (t.newPrice-t.lowPrice)))
+			(t.new_Price <![CDATA[<]]> t.today_Open and ((t.height_Price-t.today_Open) <![CDATA[>]]> ((t.today_Open-t.new_Price)*2)) and ((t.today_Open-t.new_Price) <![CDATA[>]]> (t.new_Price-t.low_Price)))
 		)
   </select>
   
@@ -274,19 +324,19 @@
 		t_stock y,
 		t_stock t
 	WHERE
-		y.createDate = #{lastTradeDate,jdbcType=VARCHAR}
-	AND t.createDate = #{todayTradeDate,jdbcType=VARCHAR}
+		y.create_Date = #{lastTradeDate,jdbcType=VARCHAR}
+	AND t.create_Date = #{todayTradeDate,jdbcType=VARCHAR}
 	AND y.`code` = t.`code`
-	and t.codeName not like '%st%'
+	and t.code_Name not like '%st%'
 	and (
-				(y.newPrice <![CDATA[>]]> y.todayOpen and ((y.heightPrice-y.newPrice) <![CDATA[>]]> ((y.newPrice-y.todayOpen)*5)) and ((y.heightPrice-y.newPrice) <![CDATA[>]]> (y.todayOpen-y.lowPrice))) 
+				(y.new_Price <![CDATA[>]]> y.today_Open and ((y.height_Price-y.new_Price) <![CDATA[>]]> ((y.new_Price-y.today_Open)*5)) and ((y.height_Price-y.new_Price) <![CDATA[>]]> (y.today_Open-y.low_Price))) 
 		or 
-				(y.newPrice <![CDATA[<]]> y.todayOpen and ((y.heightPrice-y.todayOpen) <![CDATA[>]]> ((y.todayOpen-y.newPrice)*5)) and ((y.heightPrice-y.todayOpen) <![CDATA[>]]> (y.newPrice-y.lowPrice)))
+				(y.new_Price <![CDATA[<]]> y.today_Open and ((y.height_Price-y.today_Open) <![CDATA[>]]> ((y.today_Open-y.new_Price)*5)) and ((y.height_Price-y.today_Open) <![CDATA[>]]> (y.new_Price-y.low_Price)))
 			)
 	and (
-				(t.newPrice <![CDATA[>]]> t.todayOpen and ((t.todayOpen-t.lowPrice) <![CDATA[>]]> ((t.newPrice-t.todayOpen)*5)) and ((t.todayOpen-t.lowPrice) <![CDATA[>]]> (t.heightPrice-t.newPrice)))
+				(t.new_Price <![CDATA[>]]> t.today_Open and ((t.today_Open-t.low_Price) <![CDATA[>]]> ((t.new_Price-t.today_Open)*5)) and ((t.today_Open-t.low_Price) <![CDATA[>]]> (t.height_Price-t.new_Price)))
 		or
-				(t.newPrice <![CDATA[<]]> t.todayOpen and ((t.newPrice-t.lowPrice) <![CDATA[>]]> ((t.todayOpen-t.newPrice)*5)) and ((t.newPrice-t.lowPrice) <![CDATA[>]]> (t.heightPrice-t.todayOpen)))
+				(t.new_Price <![CDATA[<]]> t.today_Open and ((t.new_Price-t.low_Price) <![CDATA[>]]> ((t.today_Open-t.new_Price)*5)) and ((t.new_Price-t.low_Price) <![CDATA[>]]> (t.height_Price-t.today_Open)))
 			)
   </select>
   
@@ -302,68 +352,68 @@
 		t_stock f,
 		t_stock g
 	WHERE
-		a.createDate = #{last6TradeDate,jdbcType=VARCHAR}
-	AND b.createDate = #{last5TradeDate,jdbcType=VARCHAR}
-	AND c.createDate = #{last4TradeDate,jdbcType=VARCHAR}
-	AND d.createDate = #{last3TradeDate,jdbcType=VARCHAR}
-	AND e.createDate = #{last2TradeDate,jdbcType=VARCHAR}
-	AND f.createDate = #{lastTradeDate,jdbcType=VARCHAR}
-	AND g.createDate = #{todayTradeDate,jdbcType=VARCHAR}
+		a.create_Date = #{last6TradeDate,jdbcType=VARCHAR}
+	AND b.create_Date = #{last5TradeDate,jdbcType=VARCHAR}
+	AND c.create_Date = #{last4TradeDate,jdbcType=VARCHAR}
+	AND d.create_Date = #{last3TradeDate,jdbcType=VARCHAR}
+	AND e.create_Date = #{last2TradeDate,jdbcType=VARCHAR}
+	AND f.create_Date = #{lastTradeDate,jdbcType=VARCHAR}
+	AND g.create_Date = #{todayTradeDate,jdbcType=VARCHAR}
 	AND a.`code` = b.`code`
 	AND b.`code` = c.`code`
 	AND c.`code` = d.`code`
 	AND d.`code` = e.`code`
 	AND e.`code` = f.`code`
 	AND f.`code` = g.`code`
-	AND g.codeName NOT LIKE '%st%'
-	AND(a.newPrice - a.todayOpen)<![CDATA[>]]> 0
+	AND g.code_Name NOT LIKE '%st%'
+	AND(a.new_Price - a.todayOpen)<![CDATA[>]]> 0
 	AND(
-		(b.newPrice - b.todayOpen)<![CDATA[>]]> 0
-		OR b.heightPrice <![CDATA[>]]> a.heightPrice
+		(b.new_Price - b.today_Open)<![CDATA[>]]> 0
+		OR b.height_Price <![CDATA[>]]> a.height_Price
 	)
 	AND(
-		(c.newPrice - c.todayOpen)<![CDATA[>]]> 0
+		(c.new_Price - c.today_Open)<![CDATA[>]]> 0
 		OR(
-			c.heightPrice <![CDATA[>]]> b.heightPrice
-			AND b.heightPrice <![CDATA[>]]> a.heightPrice
+			c.height_Price <![CDATA[>]]> b.height_Price
+			AND b.height_Price <![CDATA[>]]> a.height_Price
 		)
 	)
 	AND(
-		(d.newPrice - d.todayOpen)<![CDATA[>]]> 0
+		(d.new_Price - d.today_Open)<![CDATA[>]]> 0
 		OR(
-			d.heightPrice <![CDATA[>]]> c.heightPrice
-			AND c.heightPrice <![CDATA[>]]> b.heightPrice
-			AND b.heightPrice <![CDATA[>]]> a.heightPrice
+			d.height_Price <![CDATA[>]]> c.height_Price
+			AND c.height_Price <![CDATA[>]]> b.height_Price
+			AND b.height_Price <![CDATA[>]]> a.height_Price
 		)
 	)
 	AND(
-		(e.newPrice - e.todayOpen)<![CDATA[>]]> 0
+		(e.new_Price - e.today_Open)<![CDATA[>]]> 0
 		OR(
-			e.heightPrice <![CDATA[>]]> d.heightPrice
-			AND d.heightPrice <![CDATA[>]]> c.heightPrice
-			AND c.heightPrice <![CDATA[>]]> b.heightPrice
-			AND b.heightPrice <![CDATA[>]]> a.heightPrice
+			e.height_Price <![CDATA[>]]> d.height_Price
+			AND d.height_Price <![CDATA[>]]> c.height_Price
+			AND c.height_Price <![CDATA[>]]> b.height_Price
+			AND b.height_Price <![CDATA[>]]> a.height_Price
 		)
 	)
 	AND(
-		(f.newPrice - f.todayOpen) <![CDATA[>]]> 0
+		(f.new_Price - f.today_Open) <![CDATA[>]]> 0
 		OR(
-			f.heightPrice <![CDATA[>]]> e.heightPrice
-			AND e.heightPrice <![CDATA[>]]> d.heightPrice
-			AND d.heightPrice <![CDATA[>]]> c.heightPrice
-			AND c.heightPrice <![CDATA[>]]> b.heightPrice
-			AND b.heightPrice <![CDATA[>]]> a.heightPrice
+			f.height_Price <![CDATA[>]]> e.height_Price
+			AND e.height_Price <![CDATA[>]]> d.height_Price
+			AND d.height_Price <![CDATA[>]]> c.height_Price
+			AND c.height_Price <![CDATA[>]]> b.height_Price
+			AND b.height_Price <![CDATA[>]]> a.height_Price
 		)
 	)
 	AND(
-		(g.newPrice - g.todayOpen) <![CDATA[>]]> 0
+		(g.new_Price - g.today_Open) <![CDATA[>]]> 0
 		OR(
-			g.heightPrice <![CDATA[>]]> f.heightPrice
-			AND f.heightPrice <![CDATA[>]]> e.heightPrice
-			AND e.heightPrice <![CDATA[>]]> d.heightPrice
-			AND d.heightPrice <![CDATA[>]]> c.heightPrice
-			AND c.heightPrice <![CDATA[>]]> b.heightPrice
-			AND b.heightPrice <![CDATA[>]]> a.heightPrice
+			g.height_Price <![CDATA[>]]> f.height_Price
+			AND f.height_Price <![CDATA[>]]> e.height_Price
+			AND e.height_Price <![CDATA[>]]> d.height_Price
+			AND d.height_Price <![CDATA[>]]> c.height_Price
+			AND c.height_Price <![CDATA[>]]> b.height_Price
+			AND b.height_Price <![CDATA[>]]> a.height_Price
 		)
 	)
   </select>
@@ -376,16 +426,16 @@
 		t_stock y,
 		t_stock t
 	WHERE
-		y.createDate = #{lastTradeDate,jdbcType=VARCHAR}
-	AND t.createDate = #{todayTradeDate,jdbcType=VARCHAR}
+		y.create_Date = #{lastTradeDate,jdbcType=VARCHAR}
+	AND t.create_Date = #{todayTradeDate,jdbcType=VARCHAR}
 	and y.`code`=t.`code`
-	and t.codeName not like '%st%'
-	and t.todayOpen <![CDATA[<]]> t.yeatedayClose
-	and t.newPrice <![CDATA[<]]> t.yeatedayClose
+	and t.code_Name not like '%st%'
+	and t.today_Open <![CDATA[<]]> t.yeateday_Close
+	and t.new_Price <![CDATA[<]]> t.yeateday_Close
 	and (
-	(t.newPrice <![CDATA[>]]> t.todayOpen and (t.todayOpen-t.lowPrice) <![CDATA[>]]> ((t.newPrice-t.todayOpen)*3) and (t.newPrice-t.todayOpen) <![CDATA[>]]> ((t.heightPrice-t.newPrice)*5))
+	(t.new_Price <![CDATA[>]]> t.today_Open and (t.today_Open-t.low_Price) <![CDATA[>]]> ((t.new_Price-t.today_Open)*3) and (t.new_Price-t.today_Open) <![CDATA[>]]> ((t.height_Price-t.new_Price)*5))
 	OR
-	(t.newPrice <![CDATA[<]]> t.todayOpen and (t.newPrice-t.lowPrice) <![CDATA[>]]> ((t.todayOpen-t.newPrice)*3) and (t.todayOpen-t.newPrice) <![CDATA[>]]> ((t.heightPrice-t.todayOpen)*5))
+	(t.new_Price <![CDATA[<]]> t.today_Open and (t.new_Price-t.low_Price) <![CDATA[>]]> ((t.today_Open-t.new_Price)*3) and (t.today_Open-t.new_Price) <![CDATA[>]]> ((t.height_Price-t.today_Open)*5))
 	)
   </select>
   
@@ -397,16 +447,16 @@
 		t_stock y,
 		t_stock t
 	WHERE
-		y.createDate = #{lastTradeDate,jdbcType=VARCHAR}
-	AND t.createDate = #{todayTradeDate,jdbcType=VARCHAR}
+		y.create_Date = #{lastTradeDate,jdbcType=VARCHAR}
+	AND t.create_Date = #{todayTradeDate,jdbcType=VARCHAR}
 	AND y.`code` = t.`code`
-	AND t.codeName NOT LIKE '%st%'
-	AND t.todayOpen <![CDATA[<]]> t.yeatedayClose
-	AND t.newPrice <![CDATA[<]]> t.yeatedayClose
-	AND t.todayOpen = t.lowPrice
-	AND t.newPrice <![CDATA[>]]> t.todayOpen
-	AND t.dealVol <![CDATA[>]]> y.dealVol
-	AND(t.heightPrice - t.newPrice) <![CDATA[>]]> ((t.newPrice - t.todayOpen) * 2)
+	AND t.code_Name NOT LIKE '%st%'
+	AND t.today_Open <![CDATA[<]]> t.yeateday_Close
+	AND t.new_Price <![CDATA[<]]> t.yeateday_Close
+	AND t.today_Open = t.low_Price
+	AND t.new_Price <![CDATA[>]]> t.today_Open
+	AND t.deal_Vol <![CDATA[>]]> y.deal_Vol
+	AND(t.height_Price - t.new_Price) <![CDATA[>]]> ((t.new_Price - t.today_Open) * 2)
   </select>
   
   <select id="selectStockRecoverBy03" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
@@ -416,29 +466,29 @@
 		t_stock y,
 		t_stock t
 	WHERE
-		y.createDate = #{lastTradeDate,jdbcType=VARCHAR}
-	AND t.createDate = #{todayTradeDate,jdbcType=VARCHAR}
+		y.create_Date = #{lastTradeDate,jdbcType=VARCHAR}
+	AND t.create_Date = #{todayTradeDate,jdbcType=VARCHAR}
 	AND y.`code` = t.`code`
-	AND t.codeName NOT LIKE '%st%'
-	AND t.newPrice <![CDATA[>]]> y.todayOpen
-	AND t.newPrice <![CDATA[>]]> y.newPrice
-	AND t.dealVol <![CDATA[>]]> y.dealVol
-	AND t.newPrice <![CDATA[>]]> t.todayOpen
-	AND t.todayOpen = t.lowPrice
-	AND(t.heightPrice - t.newPrice) <![CDATA[>]]> ((t.newPrice - t.todayOpen) * 2)
+	AND t.code_Name NOT LIKE '%st%'
+	AND t.new_Price <![CDATA[>]]> y.today_Open
+	AND t.new_Price <![CDATA[>]]> y.new_Price
+	AND t.deal_Vol <![CDATA[>]]> y.deal_Vol
+	AND t.new_Price <![CDATA[>]]> t.today_Open
+	AND t.today_Open = t.low_Price
+	AND(t.height_Price - t.new_Price) <![CDATA[>]]> ((t.new_Price - t.today_Open) * 2)
 	AND(
 		(
-			y.newPrice <![CDATA[>]]> y.todayOpen
-			AND(y.todayOpen - y.lowPrice) <![CDATA[>]]> ((y.newPrice - y.todayOpen) * 3)
-			AND(y.newPrice - y.todayOpen) <![CDATA[>]]> (
-				(y.heightPrice - y.newPrice)* 5
+			y.new_Price <![CDATA[>]]> y.today_Open
+			AND(y.today_Open - y.low_Price) <![CDATA[>]]> ((y.new_Price - y.today_Open) * 3)
+			AND(y.new_Price - y.today_Open) <![CDATA[>]]> (
+				(y.height_Price - y.new_Price)* 5
 			)
 		)
 		OR(
-			y.newPrice <![CDATA[<]]> y.todayOpen
-			AND(y.newPrice - y.lowPrice) <![CDATA[>]]> ((y.todayOpen - y.newPrice) * 3)
-			AND(y.todayOpen - y.newPrice) <![CDATA[>]]> (
-				(y.heightPrice - y.todayOpen)* 5
+			y.new_Price <![CDATA[<]]> y.today_Open
+			AND(y.new_Price - y.low_Price) <![CDATA[>]]> ((y.today_Open - y.new_Price) * 3)
+			AND(y.today_Open - y.new_Price) <![CDATA[>]]> (
+				(y.height_Price - y.today_Open)* 5
 			)
 		)
 	)
@@ -451,31 +501,31 @@
 		t_stock y,
 		t_stock t
 	WHERE
-		y.createDate = #{lastTradeDate,jdbcType=VARCHAR}
-	AND t.createDate = #{todayTradeDate,jdbcType=VARCHAR}
+		y.create_Date = #{lastTradeDate,jdbcType=VARCHAR}
+	AND t.create_Date = #{todayTradeDate,jdbcType=VARCHAR}
 	AND y.`code` = t.`code`
-	AND t.codeName NOT LIKE '%st%'
-	AND t.todayOpen <![CDATA[<]]> t.yeatedayClose
-	AND t.newPrice <![CDATA[<]]> t.yeatedayClose
-	AND t.heightPrice <![CDATA[<>]]> t.todayOpen
-	AND t.heightPrice <![CDATA[<>]]> t.newPrice
+	AND t.code_Name NOT LIKE '%st%'
+	AND t.today_Open <![CDATA[<]]> t.yeateday_Close
+	AND t.new_Price <![CDATA[<]]> t.yeateday_Close
+	AND t.height_Price <![CDATA[<>]]> t.today_Open
+	AND t.height_Price <![CDATA[<>]]> t.new_Price
 	AND(
-		t.todayOpen = t.newPrice
-		OR(t.todayOpen - t.newPrice)= 0.01
-		OR(t.newPrice - t.todayOpen)= 0.01
+		t.today_Open = t.new_Price
+		OR(t.today_Open - t.new_Price)= 0.01
+		OR(t.new_Price - t.today_Open)= 0.01
 	)
-	AND t.dealVol <![CDATA[>]]> y.dealVol
+	AND t.deal_Vol <![CDATA[>]]> y.deal_Vol
 	AND(
 		(
-			t.newPrice <![CDATA[>=]]> t.todayOpen
-			AND(t.todayOpen - t.lowPrice) <![CDATA[>]]> (
-				(t.heightPrice - t.newPrice)* 3
+			t.new_Price <![CDATA[>=]]> t.today_Open
+			AND(t.today_Open - t.low_Price) <![CDATA[>]]> (
+				(t.height_Price - t.new_Price)* 3
 			)
 		)
 		OR(
-			t.newPrice <![CDATA[<]]> t.todayOpen
-			AND(t.newPrice - t.lowPrice) <![CDATA[>]]> (
-				(t.heightPrice - t.todayOpen)* 3
+			t.new_Price <![CDATA[<]]> t.today_Open
+			AND(t.new_Price - t.low_Price) <![CDATA[>]]> (
+				(t.height_Price - t.today_Open)* 3
 			)
 		)
 	)
@@ -488,28 +538,28 @@
 		t_stock y,
 		t_stock t
 	WHERE
-		y.createDate = #{lastTradeDate,jdbcType=VARCHAR}
-	AND t.createDate = #{todayTradeDate,jdbcType=VARCHAR}
+		y.create_Date = #{lastTradeDate,jdbcType=VARCHAR}
+	AND t.create_Date = #{todayTradeDate,jdbcType=VARCHAR}
 	AND y.`code` = t.`code`
-	AND t.codeName NOT LIKE '%st%'
-	AND y.newPrice <![CDATA[<]]> y.todayOpen
-	AND t.newPrice <![CDATA[<]]> t.yeatedayClose
-	AND t.todayOpen <![CDATA[<]]> t.yeatedayClose
-	AND t.newPrice <![CDATA[<>]]> t.todayOpen
-	AND t.dealVol <![CDATA[>]]> y.dealVol
-	AND t.heightPrice <![CDATA[>=]]> (
-		y.newPrice +(y.todayOpen - y.newPrice)/ 2
+	AND t.code_Name NOT LIKE '%st%'
+	AND y.new_Price <![CDATA[<]]> y.today_Open
+	AND t.new_Price <![CDATA[<]]> t.yeateday_Close
+	AND t.today_Open <![CDATA[<]]> t.yeateday_Close
+	AND t.new_Price <![CDATA[<>]]> t.today_Open
+	AND t.deal_Vol <![CDATA[>]]> y.deal_Vol
+	AND t.height_Price <![CDATA[>=]]> (
+		y.new_Price +(y.today_Open - y.new_Price)/ 2
 	)
 	AND(
 		(
-			t.newPrice <![CDATA[>]]> t.todayOpen
-			AND(t.heightPrice - t.newPrice) <![CDATA[>]]> (t.newPrice - t.todayOpen)
-			AND(t.todayOpen - t.lowPrice) <![CDATA[>]]> (t.heightPrice - t.newPrice)
+			t.new_Price <![CDATA[>]]> t.today_Open
+			AND(t.height_Price - t.new_Price) <![CDATA[>]]> (t.new_Price - t.today_Open)
+			AND(t.today_Open - t.low_Price) <![CDATA[>]]> (t.height_Price - t.new_Price)
 		)
 		OR(
-			t.newPrice <![CDATA[<]]> t.todayOpen
-			AND(t.heightPrice - t.todayOpen) <![CDATA[>]]> (t.todayOpen - t.newPrice)
-			AND(t.newPrice - t.lowPrice) <![CDATA[>]]> (t.heightPrice - t.todayOpen)
+			t.new_Price <![CDATA[<]]> t.today_Open
+			AND(t.height_Price - t.today_Open) <![CDATA[>]]> (t.today_Open - t.new_Price)
+			AND(t.new_Price - t.low_Price) <![CDATA[>]]> (t.height_Price - t.today_Open)
 		)
 	)
   </select>
@@ -521,18 +571,18 @@
 		t_stock y,
 		t_stock t
 	WHERE
-		y.createDate = #{lastTradeDate,jdbcType=VARCHAR}
-	AND t.createDate = #{todayTradeDate,jdbcType=VARCHAR}
+		y.create_Date = #{lastTradeDate,jdbcType=VARCHAR}
+	AND t.create_Date = #{todayTradeDate,jdbcType=VARCHAR}
 	AND y.`code` = t.`code`
-	AND t.codeName NOT LIKE '%st%'
-	AND y.newPrice <![CDATA[<]]> y.todayOpen
-	AND y.lowPrice <![CDATA[<]]> y.newPrice
-	AND t.newPrice <![CDATA[>]]> t.todayOpen
-	AND t.lowPrice <![CDATA[>]]> y.lowPrice
-	AND t.heightPrice <![CDATA[<]]> y.todayOpen
-	AND t.dealVol <![CDATA[<]]> y.dealVol
-	AND(y.newPrice - y.lowPrice) <![CDATA[>]]> (t.newPrice - t.todayOpen)
-	AND(y.newPrice - y.lowPrice) <![CDATA[>]]> (y.heightPrice - y.todayOpen)
+	AND t.code_Name NOT LIKE '%st%'
+	AND y.new_Price <![CDATA[<]]> y.today_Open
+	AND y.low_Price <![CDATA[<]]> y.new_Price
+	AND t.new_Price <![CDATA[>]]> t.today_Open
+	AND t.low_Price <![CDATA[>]]> y.low_Price
+	AND t.height_Price <![CDATA[<]]> y.today_Open
+	AND t.deal_Vol <![CDATA[<]]> y.deal_Vol
+	AND(y.new_Price - y.low_Price) <![CDATA[>]]> (t.new_Price - t.today_Open)
+	AND(y.new_Price - y.low_Price) <![CDATA[>]]> (y.height_Price - y.today_Open)
   </select>
   
   <select id="selectStockRecoverBy07" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
@@ -542,13 +592,13 @@
 		t_stock y,
 		t_stock t
 	WHERE
-		y.createDate = #{lastTradeDate,jdbcType=VARCHAR}
-	AND t.createDate = #{todayTradeDate,jdbcType=VARCHAR}
+		y.create_Date = #{lastTradeDate,jdbcType=VARCHAR}
+	AND t.create_Date = #{todayTradeDate,jdbcType=VARCHAR}
 	AND y.`code` = t.`code`
-	AND t.codeName NOT LIKE '%st%'
-	AND t.todayOpen <![CDATA[<]]> y.lowPrice
-	AND t.newPrice <![CDATA[>]]> y.heightPrice
-	AND t.dealVol <![CDATA[>]]> (y.dealVol * 1.5)
+	AND t.code_Name NOT LIKE '%st%'
+	AND t.today_Open <![CDATA[<]]> y.low_Price
+	AND t.new_Price <![CDATA[>]]> y.height_Price
+	AND t.deal_Vol <![CDATA[>]]> (y.deal_Vol * 1.5)
   </select>
   
 </mapper>

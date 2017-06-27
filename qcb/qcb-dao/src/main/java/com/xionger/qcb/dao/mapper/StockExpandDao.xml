@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xionger.qcb.dao.mapper.StockExpandDao" >
+  <resultMap id="BaseResultMap" type="com.xionger.qcb.model.StockExpand" >
+    <id column="id" property="id" jdbcType="CHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="code_name" property="codeName" jdbcType="VARCHAR" />
+    <result column="turnover" property="turnover" jdbcType="DECIMAL" />
+    <result column="total_market_value" property="totalMarketValue" jdbcType="DECIMAL" />
+    <result column="circulation_value" property="circulationValue" jdbcType="DECIMAL" />
+    <result column="real_value" property="realValue" jdbcType="DECIMAL" />
+    <result column="bodies_num" property="bodiesNum" jdbcType="INTEGER" />
+    <result column="first_partner" property="firstPartner" jdbcType="VARCHAR" />
+    <result column="stock_ratio" property="stockRatio" jdbcType="DECIMAL" />
+    <result column="business_address" property="businessAddress" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, code, code_name, turnover, total_market_value, circulation_value, real_value, 
+    bodies_num, first_partner, stock_ratio, business_address, create_date
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_stock_expand
+    where id = #{id,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_stock_expand
+    where id = #{id,jdbcType=CHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xionger.qcb.model.StockExpand" >
+    insert into t_stock_expand (id, code, code_name, 
+      turnover, total_market_value, circulation_value, 
+      real_value, bodies_num, first_partner, 
+      stock_ratio, business_address, create_date
+      )
+    values (#{id,jdbcType=CHAR}, #{code,jdbcType=VARCHAR}, #{codeName,jdbcType=VARCHAR}, 
+      #{turnover,jdbcType=DECIMAL}, #{totalMarketValue,jdbcType=DECIMAL}, #{circulationValue,jdbcType=DECIMAL}, 
+      #{realValue,jdbcType=DECIMAL}, #{bodiesNum,jdbcType=INTEGER}, #{firstPartner,jdbcType=VARCHAR}, 
+      #{stockRatio,jdbcType=DECIMAL}, #{businessAddress,jdbcType=VARCHAR}, #{createDate,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.xionger.qcb.model.StockExpand" >
+    insert into t_stock_expand
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="code != null" >
+        code,
+      </if>
+      <if test="codeName != null" >
+        code_name,
+      </if>
+      <if test="turnover != null" >
+        turnover,
+      </if>
+      <if test="totalMarketValue != null" >
+        total_market_value,
+      </if>
+      <if test="circulationValue != null" >
+        circulation_value,
+      </if>
+      <if test="realValue != null" >
+        real_value,
+      </if>
+      <if test="bodiesNum != null" >
+        bodies_num,
+      </if>
+      <if test="firstPartner != null" >
+        first_partner,
+      </if>
+      <if test="stockRatio != null" >
+        stock_ratio,
+      </if>
+      <if test="businessAddress != null" >
+        business_address,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=CHAR},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="codeName != null" >
+        #{codeName,jdbcType=VARCHAR},
+      </if>
+      <if test="turnover != null" >
+        #{turnover,jdbcType=DECIMAL},
+      </if>
+      <if test="totalMarketValue != null" >
+        #{totalMarketValue,jdbcType=DECIMAL},
+      </if>
+      <if test="circulationValue != null" >
+        #{circulationValue,jdbcType=DECIMAL},
+      </if>
+      <if test="realValue != null" >
+        #{realValue,jdbcType=DECIMAL},
+      </if>
+      <if test="bodiesNum != null" >
+        #{bodiesNum,jdbcType=INTEGER},
+      </if>
+      <if test="firstPartner != null" >
+        #{firstPartner,jdbcType=VARCHAR},
+      </if>
+      <if test="stockRatio != null" >
+        #{stockRatio,jdbcType=DECIMAL},
+      </if>
+      <if test="businessAddress != null" >
+        #{businessAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xionger.qcb.model.StockExpand" >
+    update t_stock_expand
+    <set >
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="codeName != null" >
+        code_name = #{codeName,jdbcType=VARCHAR},
+      </if>
+      <if test="turnover != null" >
+        turnover = #{turnover,jdbcType=DECIMAL},
+      </if>
+      <if test="totalMarketValue != null" >
+        total_market_value = #{totalMarketValue,jdbcType=DECIMAL},
+      </if>
+      <if test="circulationValue != null" >
+        circulation_value = #{circulationValue,jdbcType=DECIMAL},
+      </if>
+      <if test="realValue != null" >
+        real_value = #{realValue,jdbcType=DECIMAL},
+      </if>
+      <if test="bodiesNum != null" >
+        bodies_num = #{bodiesNum,jdbcType=INTEGER},
+      </if>
+      <if test="firstPartner != null" >
+        first_partner = #{firstPartner,jdbcType=VARCHAR},
+      </if>
+      <if test="stockRatio != null" >
+        stock_ratio = #{stockRatio,jdbcType=DECIMAL},
+      </if>
+      <if test="businessAddress != null" >
+        business_address = #{businessAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xionger.qcb.model.StockExpand" >
+    update t_stock_expand
+    set code = #{code,jdbcType=VARCHAR},
+      code_name = #{codeName,jdbcType=VARCHAR},
+      turnover = #{turnover,jdbcType=DECIMAL},
+      total_market_value = #{totalMarketValue,jdbcType=DECIMAL},
+      circulation_value = #{circulationValue,jdbcType=DECIMAL},
+      real_value = #{realValue,jdbcType=DECIMAL},
+      bodies_num = #{bodiesNum,jdbcType=INTEGER},
+      first_partner = #{firstPartner,jdbcType=VARCHAR},
+      stock_ratio = #{stockRatio,jdbcType=DECIMAL},
+      business_address = #{businessAddress,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=CHAR}
+  </update>
+</mapper>
