@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd 
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd" >
+        
+     <task:annotation-driven executor="executor"	 />
+     <task:executor id="executor" pool-size="20" queue-capacity="10000"/>
+     
+     
+	<task:scheduler id="trust-task" pool-size="20"/>
+	<task:scheduled-tasks scheduler="trust-task">
+	
+		<task:scheduled ref="executorTimer" method="initStockDate" cron="0 0 01 * * ?"/> <!--增加交易日期信息-->
+	
+		<task:scheduled ref="executorTimer" method="initStockData" cron="0 31 14 * * ?"/> <!-- 股票信息下载保存 -->
+		<task:scheduled ref="executorTimer" method="initStockChange" cron="0 35 14 * * ?"/> <!-- 查找异动的股票 -->
+		<task:scheduled ref="executorTimer" method="initStockRecover" cron="30 35 14 * * ?"/> <!-- 查找底部反转的股票 -->
+		
+		<task:scheduled ref="executorTimer" method="initStockData" cron="0 15 18 * * ?"/><!-- 股票信息下载，当日数据修正-->
+		<task:scheduled ref="executorTimer" method="initStockDayMa" cron="0 25 18 * * ?"/><!-- 计算股票每天的日均线-->
+		<task:scheduled ref="executorTimer" method="initStockWeekMa" cron="0 30 18 * * ?"/> <!-- 计算股票每周的周均线 -->
+		<task:scheduled ref="executorTimer" method="initStockChange" cron="0 40 18 * * ?"/> <!-- 查找异动的股票 -->
+		<task:scheduled ref="executorTimer" method="initStockRecover" cron="30 40 18 * * ?"/> <!-- 查找底部反转的股票 -->
+ 		
+	</task:scheduled-tasks>
+</beans>
