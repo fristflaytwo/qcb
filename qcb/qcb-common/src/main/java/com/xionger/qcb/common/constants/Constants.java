@@ -44,6 +44,39 @@ public class Constants {
 	 * 股票历史数据下载地址，下载的文件格式为csv格式，需要后面追加参数
 	 */
 	public static final String STOCK_CSV_DOWNLOAD_HISTORY_PATH="http://quotes.money.163.com/service/chddata.html?";
+	
+	/**
+	 * 通用无效
+	 */
+	public static final String STATE_99="99";
+	
+	/**
+	 * 通用有效
+	 */
+	public static final String STATE_00="00";
+	
+	/**
+	 * 确定非交易日-星期六
+	 */
+	public static final String CONFIRM_NO_TRAD_SATURDAY_CN="星期六";
+	
+	/**
+	 * 确定非交易日-星期日
+	 */
+	public static final String CONFIRM_NO_TRAD_SUNDAY_CN="星期日";
+	
+	/**
+	 * 4位小数
+	 */
+	public static final String DECIMAL_DIGIT_4="0.0000";
+	/**
+	 * 2位小数
+	 */
+	public static final String DECIMAL_DIGIT_2="0.00";
+	/**
+	 * 整数
+	 */
+	public static final String DECIMAL_DIGIT_0="0";
 }
 
 

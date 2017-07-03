@@ -43,9 +43,10 @@ public class ExecutorTimer {
 	 * 利用httpclient获取股票信息数据
 	 */
 	public void initStockData() {
+		Date date=new Date();
 		//先下载数据到本地磁盘
 		BufferedOutputStream bw = null;
-		String path=stockXlsPath+DateUtil.dateToString(new Date(),DateUtil.formatPattern_Short)+".xls";
+		String path=stockXlsPath+DateUtil.dateToString(date,DateUtil.formatPattern_Short)+".xls";
 		// 创建文件对象
 		File f = new File(path);
 		// 创建文件路径
@@ -67,7 +68,7 @@ public class ExecutorTimer {
 		}
 		
 		//调用server层进行数据保存
-		stockService.insertStockListByXlsdate(new Date(), path);//保存基本数据并返回数据日期
+		stockService.insertStockListByXlsdate(date, path);//保存基本数据并返回数据日期
 	}
 	
 	/**
@@ -84,18 +85,6 @@ public class ExecutorTimer {
 		this.stockService.insertStockWeekMa(DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short));
 	}
 	
-	/**
-	 * 查找异动股票数据
-	 */
-	public void initStockChange(){
-		this.stockService.insertStockChange(DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short));
-	}
 	
-	/**
-	 * 查找底部反转股票数据
-	 */
-	public void initStockRecover(){
-		this.stockService.insertStockRecover(DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short));
-	}
 	
 }

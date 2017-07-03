@@ -40,18 +40,12 @@ import com.xionger.qcb.common.util.conllection.CollectionUtil;
 import com.xionger.qcb.common.util.date.DateUtil;
 import com.xionger.qcb.common.util.http.HttpClientUtils;
 import com.xionger.qcb.common.util.string.StringUtil;
-import com.xionger.qcb.dao.mapper.StockChangeDao;
 import com.xionger.qcb.dao.mapper.StockDao;
 import com.xionger.qcb.dao.mapper.StockDateDao;
 import com.xionger.qcb.dao.mapper.StockMaDao;
-import com.xionger.qcb.dao.mapper.StockRecoverDao;
 import com.xionger.qcb.model.Stock;
-import com.xionger.qcb.model.StockChange;
-import com.xionger.qcb.model.StockChange.ChangeType;
 import com.xionger.qcb.model.StockDate;
 import com.xionger.qcb.model.StockMa;
-import com.xionger.qcb.model.StockRecover;
-import com.xionger.qcb.model.StockRecover.RecoverType;
 
 @Service("userService")
 public class StockServiceImpl implements StockService{
@@ -66,13 +60,58 @@ public class StockServiceImpl implements StockService{
 	private StockMaDao stockMaDao;
 	@Autowired
 	private StockDateDao stockDateDao;
-	@Autowired
-	private StockChangeDao stockChangeDao;
-	@Autowired
-	private StockRecoverDao stockRecoverDao;
 	
 	/**
-     * 从下载的excel冲将数据导入到数据库,调用次方法必须要求该日数据excel必须存在
+     * 股票日期保存
+     * @param date yyyyMMdd格式
+     */
+    public void insertStockDate(String date){
+    	String startDate="20160101";
+    	StockDate stockDate= stockDateDao.selectByIstrueEndWeekDay(date);
+    	if(stockDate!=null){
+    		startDate=stockDate.getStockDate();
+    	}
+    	long days=DateUtil.betweenDays(DateUtil.stringToDate(startDate,DateUtil.formatPattern_Short), DateUtil.stringToDate(date,DateUtil.formatPattern_Short));
+    	int flag=-1;//锁标识，星期天解锁，星期六加锁，星期天记录上周的起始时间
+    	String startTime="";//周的起始日期
+    	for(int i=0;i<days;i++){
+    		StockDate sd=new StockDate();
+    		sd.generateId();
+    		sd.setIsTradeDate(Constants.STATE_99);
+			sd.setIsStartWeekDay(Constants.STATE_99);
+			sd.setIsEndWeekDay(Constants.STATE_99);
+    		Date day=DateUtil.getAddTimeDate(DateUtil.DAY, DateUtil.stringToDate(date,DateUtil.formatPattern_Short), (i*-1));
+    		sd.setStockDate(DateUtil.dateToString(day, DateUtil.formatPattern_Short));
+    		if(Constants.CONFIRM_NO_TRAD_SATURDAY_CN.equals(DateUtil.getWeek(day))){
+    			flag=0;
+    		}
+    		if(Constants.CONFIRM_NO_TRAD_SUNDAY_CN.equals(DateUtil.getWeek(day))){
+    			if(flag==1){
+    				StockDate obj=this.stockDateDao.selectByStockDate(startTime);
+    				obj.setIsStartWeekDay(Constants.STATE_00);
+    				this.stockDateDao.updateByPrimaryKeySelective(obj);
+    			}
+    			flag=-1;
+    		}
+    		if("0".equals(HolidayUtil.request(DateUtil.dateToString(day,DateUtil.formatPattern_Short)).replace("\r\n",""))
+    				&&!Constants.CONFIRM_NO_TRAD_SUNDAY_CN.equals(DateUtil.getWeek(day))
+    				&&!Constants.CONFIRM_NO_TRAD_SATURDAY_CN.equals(DateUtil.getWeek(day))){
+    			sd.setIsTradeDate(Constants.STATE_00);
+    			if(flag==0){
+    				flag=1;
+    				sd.setIsEndWeekDay(Constants.STATE_00);
+    			}
+    			startTime=DateUtil.dateToString(day, DateUtil.formatPattern_Short);
+    		}
+    		this.stockDateDao.deleteByStockDate(sd.getStockDate());
+    		this.stockDateDao.insertSelective(sd);
+    	}
+    }
+	
+	
+	
+	/**
+     * 从下载的excel冲将数据导入到数据库,调用此方法必须要求该日数据excel必须存在
      * @param xlsDate
      */
     public String insertStockListByXlsdate(Date xlsDate,String path){
@@ -105,9 +144,9 @@ public class StockServiceImpl implements StockService{
             		continue;
             	}
             	
-            	DecimalFormat df2 = new DecimalFormat("0.00"); 
-            	DecimalFormat dfNum = new DecimalFormat("0");
-            	DecimalFormat df4 = new DecimalFormat("0.0000");
+            	DecimalFormat df2 = new DecimalFormat(Constants.DECIMAL_DIGIT_2); 
+            	DecimalFormat dfNum = new DecimalFormat(Constants.DECIMAL_DIGIT_0);
+            	DecimalFormat df4 = new DecimalFormat(Constants.DECIMAL_DIGIT_4);
             	
         		String stockCode=row.getCell(0).getStringCellValue();
         		String stockName=row.getCell(1).getStringCellValue();
@@ -139,28 +178,24 @@ public class StockServiceImpl implements StockService{
         		stock.setHeightPrice(new BigDecimal(heightPrice));
         		stock.setLowPrice(new BigDecimal(lowPrice));
         		stock.setCreateDate(dataDate);
-        		stockDao.insert(stock);
+        		stockDao.insertSelective(stock);
                 i++;
             }
         }catch(Exception e){
         	LOGGER.error(">>>>>\t"+new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())+"\t 加载股票数据文件数据入库发生异常："+ ExceptionUtils.getMessage(e) + "\n" + ExceptionUtils.getStackTrace(e));
         }finally{
         	try {
-        		if(fis!=null){
-        			fis.close();
-                }
-        		if(pfs!=null){
-        			pfs.close();
-                }
-        		if(wb!=null){
-        			wb.close();
-        		}
-        		fis=null;
-        		pfs=null;
-        		wb=null;
-			} catch (Exception e) {
-				
-			}
+        		if(fis!=null)fis.close();
+			} catch (Exception e) {}
+        	try {
+        		if(pfs!=null)pfs.close();
+			} catch (Exception e) {}
+        	try {
+        		if(wb!=null)wb.close();
+			} catch (Exception e) {}
+        	fis=null;
+    		pfs=null;
+    		wb=null;
         }
         return dataDate;
     }
@@ -181,10 +216,10 @@ public class StockServiceImpl implements StockService{
     			map.put("createDate", date);
     			stock20List=this.stockDao.select20ListByCodeAndCreateDateOrderCreateDateDesc(map);//必须结果集倒序
     			//均线计算
-    			BigDecimal day5=new BigDecimal("0.00");
-    			BigDecimal day10=new BigDecimal("0.00");
-    			BigDecimal day20=new BigDecimal("0.00");
-    			BigDecimal maSum=new BigDecimal("0.00");
+    			BigDecimal day5=new BigDecimal(Constants.DECIMAL_DIGIT_2);
+    			BigDecimal day10=new BigDecimal(Constants.DECIMAL_DIGIT_2);
+    			BigDecimal day20=new BigDecimal(Constants.DECIMAL_DIGIT_2);
+    			BigDecimal maSum=new BigDecimal(Constants.DECIMAL_DIGIT_2);
     			
     			if(CollectionUtil.isNotEmpty(stock20List)){
     				for(int i=0;i<stock20List.size();i++){
@@ -314,10 +349,10 @@ public class StockServiceImpl implements StockService{
 					}
 				}
     			
-				BigDecimal week5=new BigDecimal("0.00");
-    			BigDecimal week10=new BigDecimal("0.00");
-    			BigDecimal week20=new BigDecimal("0.00");
-    			BigDecimal maSum=new BigDecimal("0.00");
+				BigDecimal week5=new BigDecimal(Constants.DECIMAL_DIGIT_2);
+    			BigDecimal week10=new BigDecimal(Constants.DECIMAL_DIGIT_2);
+    			BigDecimal week20=new BigDecimal(Constants.DECIMAL_DIGIT_2);
+    			BigDecimal maSum=new BigDecimal(Constants.DECIMAL_DIGIT_2);
     			
     			for(int i=0;i<stockList.size();i++){
 					maSum=maSum.add(stockList.get(i).getNewPrice());
@@ -398,7 +433,7 @@ public class StockServiceImpl implements StockService{
     private Stock getHistoryStockInfo(WebClient webclient,String code,String date){
     	Stock stock=null;
     	try {
-    		Thread.sleep(1000);
+    		Thread.sleep(1000);//防止被拉黑名单
     		stock=new Stock();
     		String[] times=date.split("-");
         	if(times[1].startsWith("0")){
@@ -514,297 +549,5 @@ public class StockServiceImpl implements StockService{
 		}
     }
     
-    /**
-     * 扫描下载csv目录下的txt文件并进行股票历史数据保存
-     */
-    public void insertScanStockTxt(){
-    	String path="d:/stock_txt/";
-    	File dir = new File(path);
-    	File[] files=dir.listFiles();
-    	for(int i=0; i<files.length; i++){
-    		InputStream in=null;
-    		InputStreamReader read = null;
-    		BufferedReader bufferedReader =null;
-    		try {
-				in = new FileInputStream(files[i]);
-				read = new InputStreamReader(in,"GBK");//考虑到编码格式
-                bufferedReader = new BufferedReader(read);
-                String lineTxt = null;
-                while((lineTxt = bufferedReader.readLine()) != null){
-                    if(StringUtil.isNotBlank(lineTxt)&&!lineTxt.startsWith("日期")){
-                    	String[] values=lineTxt.split(",");
-                    	System.out.println("#################:\t"+values[0]+"\t"+values[1]+"\t"+values[2]);
-                    	Stock stock=new Stock();
-                    	stock.generateId();
-                    	stock.setAmplitude(new BigDecimal(values[9].replaceAll(" ", "").replace("None", "0")).divide(new BigDecimal("100"), 4));
-                    	stock.setAmplitudePrice(new BigDecimal(values[8].replaceAll(" ", "").replace("None", "0")));
-                    	stock.setBuyPrice(null);
-                    	values[1]=values[1].replace("'", "");
-                    	stock.setCode(values[1].startsWith("6")?("sh"+values[1]):("sz"+values[1]));
-                    	stock.setCodeName(values[2]);
-                    	stock.setCreateDate(values[0].replaceAll("-", ""));
-                    	stock.setDealPrice(new BigDecimal(values[12].replace("None", "0").trim()));
-                    	stock.setDealVol(Long.parseLong(Math.round(Long.parseLong(values[11].replace("None", "0").trim())/100)+""));//手
-                    	stock.setHeightPrice(new BigDecimal(values[4].replace("None", "0").trim()));
-                    	stock.setLowPrice(new BigDecimal(values[5].replace("None", "0").trim()));
-                    	stock.setNewPrice(new BigDecimal(values[3].replace("None", "0").trim()));
-                    	stock.setSalePrice(null);
-                    	stock.setTodayOpen(new BigDecimal(values[6].replace("None", "0").trim()));
-                    	stock.setYeatedayClose(new BigDecimal(values[7].replace("None", "0").trim()));
-                    	this.stockDao.insertSelective(stock);
-                    }
-                }
-			} catch (Exception e) {
-				e.printStackTrace();
-			}finally{
-				try {
-					if(in!=null){
-						in.close();
-					}
-					if(read!=null){
-						read.close();
-					}
-					if(bufferedReader!=null){
-						bufferedReader.close();
-					}
-					in=null;
-	                read=null;
-	                bufferedReader=null;
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
-			}
-    	}
-    }
-
-    /**
-     * 股票日期保存
-     * @param date yyyyMMdd格式
-     */
-    public void insertStockDate(String date){
-    	String startDate="20160101";
-    	StockDate stockDate= stockDateDao.selectByIstrueEndWeekDay(date);
-    	if(stockDate!=null){
-    		startDate=stockDate.getStockDate();
-    	}
-    	long days=DateUtil.betweenDays(DateUtil.stringToDate(startDate,DateUtil.formatPattern_Short), DateUtil.stringToDate(date,DateUtil.formatPattern_Short));
-    	int flag=-1;//锁标识，星期天解锁，星期六加锁，星期天记录上周的起始时间
-    	String startTime="";//周的起始日期
-    	for(int i=0;i<days;i++){
-    		StockDate sd=new StockDate();
-    		sd.generateId();
-    		sd.setIsTradeDate("99");
-			sd.setIsStartWeekDay("99");
-			sd.setIsEndWeekDay("99");
-    		Date day=DateUtil.getAddTimeDate(DateUtil.DAY, DateUtil.stringToDate(date,DateUtil.formatPattern_Short), (i*-1));
-    		sd.setStockDate(DateUtil.dateToString(day, DateUtil.formatPattern_Short));
-    		if("星期六".equals(DateUtil.getWeek(day))){
-    			flag=0;
-    		}
-    		if("星期日".equals(DateUtil.getWeek(day))){
-    			if(flag==1){
-    				StockDate obj=this.stockDateDao.selectByStockDate(startTime);
-    				obj.setIsStartWeekDay("00");
-    				this.stockDateDao.updateByPrimaryKeySelective(obj);
-    			}
-    			flag=-1;
-    		}
-    		if("0".equals(HolidayUtil.request(DateUtil.dateToString(day,DateUtil.formatPattern_Short)).replace("\r\n",""))
-    				&&!"星期日".equals(DateUtil.getWeek(day))&&!"星期六".equals(DateUtil.getWeek(day))){
-    			sd.setIsTradeDate("00");
-    			if(flag==0){
-    				flag=1;
-    				sd.setIsEndWeekDay("00");
-    			}
-    			startTime=DateUtil.dateToString(day, DateUtil.formatPattern_Short);
-    		}
-    		this.stockDateDao.deleteByStockDate(sd.getStockDate());
-    		this.stockDateDao.insertSelective(sd);
-    	}
-    }
     
-    /**
-     * 保存该日期的股票数据存在异动的数据
-     * @param date yyyyMMdd
-     */
-    public void insertStockChange(String date){
-    	Map<String,Object> map=new HashMap<String,Object>();
-    	map.put("stockDate", date);
-    	map.put("limitSize", 7);//查询最近7条交易日期数据
-    	List<StockDate> list=this.stockDateDao.selectByTradStockDateDescLimit(map);
-    	if(CollectionUtil.isNotEmpty(list)){
-    		if(date.equals(list.get(0).getStockDate())){
-    			//先删除当天已经存在的数据
-    			this.stockChangeDao.deleteByCreateDate(date);
-    			//01异动
-    			map.put("lastTradeDate", list.get(1).getStockDate());
-    			map.put("todayTradeDate",list.get(0).getStockDate());
-    			List<Stock> stock01List=this.stockDao.selectStockChangeBy01(map);
-    			saveStockChange(stock01List, ChangeType.CHANGETYPE_01);
-    			
-    			//02异动
-    			List<Stock> stock02List=this.stockDao.selectStockChangeBy02(map);
-    			saveStockChange(stock02List, ChangeType.CHANGETYPE_02);
-    			
-    			//04异动
-    			List<Stock> stock04List=this.stockDao.selectStockChangeBy04(map);
-    			saveStockChange(stock04List, ChangeType.CHANGETYPE_04);
-    			
-    			//05异动
-    			List<Stock> stock05List=this.stockDao.selectStockChangeBy05(map);
-    			saveStockChange(stock05List, ChangeType.CHANGETYPE_05);
-    			
-    			//03异动
-    			List<Stock> stock03List=this.stockDao.selectStockChangeBy03(map);
-    			saveStockChange(stock03List, ChangeType.CHANGETYPE_03);
-    		}
-    	}
-    }
-    
-    /**
-     * 保存异动股票数据公共设置方法
-     */
-    private void saveStockChange(List<Stock> list, ChangeType changeType){
-    	if(CollectionUtil.isNotEmpty(list)){
-    		for(Stock stock:list){
-				StockChange stockChange=new StockChange();
-				stockChange.generateId();
-				stockChange.setCode(stock.getCode());
-				stockChange.setCodeName(stock.getCodeName());
-				stockChange.setChangeType(changeType.getKey());
-				stockChange.setChangeTypeName(changeType.getVal());
-				stockChange.setCreateDate(stock.getCreateDate());
-				this.stockChangeDao.insertSelective(stockChange);
-			}
-    	}
-    }
-    
-    
-    /**
-     * 保存该日期的股票数据存在反转形态的数据
-     * @param date
-     */
-    public void insertStockRecover(String date){
-    	Map<String,Object> map=new HashMap<String,Object>();
-    	map.put("stockDate", date);
-    	map.put("limitSize", 7);//查询最近7条交易日期数据
-    	List<StockDate> list=this.stockDateDao.selectByTradStockDateDescLimit(map);
-    	if(CollectionUtil.isNotEmpty(list)){
-    		if(date.equals(list.get(0).getStockDate())){
-    			//先删除当天已经存在的数据
-    			this.stockRecoverDao.deleteByCreateDate(date);
-    			//01反转
-    			map.put("lastTradeDate", list.get(1).getStockDate());
-    			map.put("todayTradeDate",list.get(0).getStockDate());
-    			List<Stock> stock01List=this.stockDao.selectStockRecoverBy01(map);
-    			saveStockRecover(stock01List, RecoverType.RECOVER_01);
-    			
-    			//02反转
-    			List<Stock> stock02List=this.stockDao.selectStockRecoverBy02(map);
-    			saveStockRecover(stock02List, RecoverType.RECOVER_02);
-    			
-    			//03反转
-    			List<Stock> stock03List=this.stockDao.selectStockRecoverBy03(map);
-    			saveStockRecover(stock03List, RecoverType.RECOVER_03);
-    			
-    			//04反转
-    			List<Stock> stock04List=this.stockDao.selectStockRecoverBy04(map);
-    			saveStockRecover(stock04List, RecoverType.RECOVER_04);
-    			
-    			//05反转
-    			List<Stock> stock05List=this.stockDao.selectStockRecoverBy05(map);
-    			saveStockRecover(stock05List, RecoverType.RECOVER_05);
-    			
-    			//06反转
-    			List<Stock> stock06List=this.stockDao.selectStockRecoverBy06(map);
-    			saveStockRecover(stock06List, RecoverType.RECOVER_06);
-    			
-    			//07反转
-    			List<Stock> stock07List=this.stockDao.selectStockRecoverBy07(map);
-    			saveStockRecover(stock07List, RecoverType.RECOVER_07);
-    		}
-    	}
-    }
-    
-    /**
-     * 保存底部开始反转的股票信息
-     * @param list
-     * @param recoverType
-     */
-    private void saveStockRecover(List<Stock> list,RecoverType recoverType){
-    	if(CollectionUtil.isNotEmpty(list)){
-			for(Stock stock:list){
-				StockRecover stockRecover=new StockRecover();
-				stockRecover.generateId();
-				stockRecover.setCode(stock.getCode());
-				stockRecover.setCodeName(stock.getCodeName());
-				stockRecover.setRecoverType(recoverType.getKey());
-				stockRecover.setRecoverTypeName(recoverType.getVal());
-				stockRecover.setCreateDate(stock.getCreateDate());
-				this.stockRecoverDao.insertSelective(stockRecover);
-			}
-		}
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * 从下载的excel冲将数据导入到数据库,调用次方法必须要求该日数据excel必须存在
-     * @param xlsDate
-     */
-    public void jisuan(String path){
-    	
-    	HSSFWorkbook wb=null;
-    	POIFSFileSystem pfs=null;
-    	FileInputStream fis=null;
-        try{
-        	File file = new File(path);
-        	fis=new FileInputStream(file);
-        	pfs = new POIFSFileSystem(fis);  
-            wb = new HSSFWorkbook(pfs);
-            HSSFSheet  sheet = wb.getSheetAt(0);
-            Iterator<Row> rows=sheet.rowIterator();
-            Row row=null;
-            int i=0;
-            while(rows.hasNext()){
-            	row=rows.next();
-            	if(i>0){
-            		String code=row.getCell(0).getStringCellValue().replace(".SZ", "").replace(".SH", "");
-            		code=code.startsWith("6")?("sh"+code):("sz"+code);
-            		String codeDate=DateUtil.dateToString(DateUtil.stringToDate(row.getCell(4).getStringCellValue()+"235959", DateUtil.formatPattern_rand), DateUtil.formatPattern_14);
-            	}
-            }
-        }catch(Exception e){
-        	e.printStackTrace();
-        }finally{
-        	try {
-        		if(fis!=null){
-        			fis.close();
-                }
-        		if(pfs!=null){
-        			pfs.close();
-                }
-        		if(wb!=null){
-        			wb.close();
-        		}
-        		fis=null;
-        		pfs=null;
-        		wb=null;
-			} catch (Exception e) {
-				
-			}
-        }
-    }
 }

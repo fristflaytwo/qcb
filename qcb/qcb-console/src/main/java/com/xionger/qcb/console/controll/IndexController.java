@@ -92,19 +92,7 @@ public class IndexController extends BaseController {
 		return new ResultVo();
 	}
 	
-	/**
-	 * 将股票历史数据通过扫描保存到数据库
-	 * @param data
-	 * @param req
-	 * @param res
-	 * @return
-	 */
-	@RequestMapping("/insertScanStockTxt")
-	@ResponseBody
-	public ResultVo insertScanStockTxt(@RequestBody String data, HttpServletRequest req, HttpServletResponse res){
-		this.stockService.insertScanStockTxt();
-		return new ResultVo();
-	}
+	
 	
 	
 	/**
@@ -179,37 +167,7 @@ public class IndexController extends BaseController {
 		return rv;
 	}
 	
-	/**
-	 * 找出异动信息票子
-	 * @param data
-	 * @param req
-	 * @param res
-	 * @return
-	 */
-	@RequestMapping("/insertStockChange")
-	@ResponseBody
-	public ResultVo insertStockChange(@RequestBody String data, HttpServletRequest req, HttpServletResponse res){
-		Map<String,String> map=(Map<String, String>) JsonUtil.jsonToMap(data);
-		ResultVo rv=new ResultVo();
-		this.stockService.insertStockChange(map.get("date"));
-		return rv;
-	}
 	
-	/**
-	 * 找出底部开始反转的票子
-	 * @param data
-	 * @param req
-	 * @param res
-	 * @return
-	 */
-	@RequestMapping("/insertStockRecover")
-	@ResponseBody
-	public ResultVo insertStockRecover(@RequestBody String data, HttpServletRequest req, HttpServletResponse res){
-		Map<String,String> map=(Map<String, String>) JsonUtil.jsonToMap(data);
-		ResultVo rv=new ResultVo();
-		this.stockService.insertStockRecover(map.get("date"));
-		return rv;
-	}
 	
 	
 	/**

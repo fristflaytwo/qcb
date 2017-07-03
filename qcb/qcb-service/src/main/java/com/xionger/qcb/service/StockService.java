@@ -32,12 +32,6 @@ public interface StockService{
      */
     public void insertStockWeekMa(String date);
     
-    /**
-     * 保存该日期的股票数据存在异动的数据
-     * @param date
-     */
-    public void insertStockChange(String date);
-    
    
     
     /**
@@ -56,10 +50,7 @@ public interface StockService{
      */
     public void downLoadHisData(String date,String startTime,String endTime);
 	
-    /**
-     * 扫描下载csv目录下的txt文件并进行股票历史数据保存
-     */
-    public void insertScanStockTxt();
+    
     
     /**
      * 股票日期保存
@@ -67,9 +58,4 @@ public interface StockService{
      */
     public void insertStockDate(String date);
     
-    /**
-     * 保存该日期的股票数据存在反转形态的数据
-     * @param date
-     */
-    public void insertStockRecover(String date);
 }
