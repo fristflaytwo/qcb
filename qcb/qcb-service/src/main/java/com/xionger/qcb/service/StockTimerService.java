@@ -26,6 +26,10 @@ public interface StockTimerService{
      */
     public void insertStockDayMa(String date);
     
-    
+    /**
+     * 插入指定日期的股票扩展信息
+     * @param date
+     */
+    public void insertStockExpand(String date);
 	
 }

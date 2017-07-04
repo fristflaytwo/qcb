@@ -16,4 +16,11 @@ public interface StockExpandDao {
     int updateByPrimaryKeySelective(StockExpand record);
 
     int updateByPrimaryKey(StockExpand record);
+    
+    /**
+     * 删除这天的数据
+     * @param createDate
+     * @return
+     */
+    int deleteByCreateDate(String createDate);
 }

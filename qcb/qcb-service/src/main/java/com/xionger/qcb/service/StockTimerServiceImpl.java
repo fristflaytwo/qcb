@@ -24,8 +24,10 @@ import org.springframework.stereotype.Service;
 import com.xionger.qcb.common.constants.Constants;
 import com.xionger.qcb.common.util.conllection.CollectionUtil;
 import com.xionger.qcb.common.util.date.DateUtil;
+import com.xionger.qcb.common.util.http.HttpClientUtils;
 import com.xionger.qcb.common.util.string.StringUtil;
 import com.xionger.qcb.dao.mapper.StockDao;
+import com.xionger.qcb.dao.mapper.StockExpandDao;
 import com.xionger.qcb.dao.mapper.StockMaDao;
 import com.xionger.qcb.model.Stock;
 import com.xionger.qcb.model.StockMa;
@@ -38,6 +40,8 @@ public class StockTimerServiceImpl implements StockTimerService{
 	private StockDao stockDao;
 	@Autowired
 	private StockMaDao stockMaDao;
+	@Autowired
+	private StockExpandDao stockExpandDao;
 	
 	/**
      * 从下载的excel冲将数据导入到数据库,调用此方法必须要求该日数据excel必须存在
@@ -193,7 +197,25 @@ public class StockTimerServiceImpl implements StockTimerService{
     	}
     }
     
-    
+    /**
+     * 插入指定日期的股票扩展信息
+     * @param date
+     */
+    public void insertStockExpand(String date){
+    	System.out.println(HttpClientUtils.doGet("http://web.sqt.gtimg.cn/q=sz300303", Constants.UTF8));
+//    	if(StringUtil.isNotBlank(date)){
+//    		//删除这天数据
+//    		stockExpandDao.deleteByCreateDate(date);
+//    		List<Stock> list=this.stockDao.selectListByCreateDate(date);
+//    		String result=null;
+//    		if(CollectionUtil.isNotEmpty(list)){
+//    			for(Stock stock:list){
+//    				result=HttpClientUtils.doGet("http://web.sqt.gtimg.cn/q="+stock.getCode(), Constants.UTF8);
+//    				
+//    			}
+//    		}
+//    	}
+    }
     
     
 }

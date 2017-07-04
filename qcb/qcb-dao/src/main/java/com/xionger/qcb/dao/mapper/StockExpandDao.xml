@@ -174,4 +174,10 @@
       create_date = #{createDate,jdbcType=VARCHAR}
     where id = #{id,jdbcType=CHAR}
   </update>
+  
+  <delete id="deleteByCreateDate" parameterType="java.lang.String" >
+    delete from t_stock_expand
+    where create_date = #{createDate,jdbcType=VARCHAR}
+  </delete>
+  
 </mapper>

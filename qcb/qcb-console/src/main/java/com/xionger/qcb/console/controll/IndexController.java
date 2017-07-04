@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xionger.qcb.common.constants.Constants;
-import com.xionger.qcb.common.util.date.DateUtil;
 import com.xionger.qcb.common.util.http.HttpClientUtils;
 import com.xionger.qcb.common.util.json.JsonUtil;
 import com.xionger.qcb.common.util.string.StringUtil;
@@ -146,5 +145,15 @@ public class IndexController extends BaseController {
 		}
 		rv.setList(list);
 		return rv;
+	}
+	
+	/**
+	 * 加载本次保存的excel数据到股票信息表
+	 */
+	@RequestMapping("/test")
+	@ResponseBody
+	public ResultVo test(){
+		stockTimerService.insertStockExpand("");
+		return new ResultVo();
 	}
 }
