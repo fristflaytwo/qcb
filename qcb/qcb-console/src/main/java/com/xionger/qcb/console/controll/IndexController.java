@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,7 @@ import com.xionger.qcb.common.util.json.JsonUtil;
 import com.xionger.qcb.common.util.string.StringUtil;
 import com.xionger.qcb.model.vo.ResultVo;
 import com.xionger.qcb.service.StockService;
+import com.xionger.qcb.service.StockTimerService;
 
 
 
@@ -38,7 +40,11 @@ public class IndexController extends BaseController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(IndexController.class);
 	
+	@Value("${stock.xls.path}")
+	private String stockXlsPath;//股票数据文件存放路径
 	
+	@Autowired
+	private StockTimerService stockTimerService;
 	@Autowired
 	private StockService stockService;
 	
@@ -52,8 +58,8 @@ public class IndexController extends BaseController {
 	 */
 	@RequestMapping("/insertStockListByXlsdate")
 	public ResultVo insertStockListByXlsdate(String fileName){
-		String path="d:/stock_xls/"+fileName+".xls";
-		stockService.insertStockListByXlsdate(new Date(), path);
+		String path=stockXlsPath+fileName+".xls";
+		stockTimerService.insertStockListByXlsdate(new Date(), path);
 		return new ResultVo();
 	}
 	
@@ -69,6 +75,7 @@ public class IndexController extends BaseController {
 		缺少12号的数据，最好在跑之前先删除当天的数据，然后最好中间有时间间隔
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping("/insertHistoryStock")
 	@ResponseBody
 	public ResultVo insertHistoryStock(@RequestBody String data, HttpServletRequest req, HttpServletResponse res){
@@ -84,6 +91,7 @@ public class IndexController extends BaseController {
 	 * @param res
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping("/downLoadHisData")
 	@ResponseBody
 	public ResultVo downLoadHisData(@RequestBody String data, HttpServletRequest req, HttpServletResponse res){
@@ -94,38 +102,6 @@ public class IndexController extends BaseController {
 	
 	
 	
-	
-	/**
-	 * 计算股票的交易日期
-	 * @param data
-	 * @param req
-	 * @param res
-	 * @return
-	 */
-	@RequestMapping("/insertStockDate")
-	@ResponseBody
-	public ResultVo insertStockDate(@RequestBody String data, HttpServletRequest req, HttpServletResponse res){
-		ResultVo rv=new ResultVo();
-		this.stockService.insertStockDate(DateUtil.dateToString(new Date(),DateUtil.formatPattern_Short));
-		return rv;
-	}
-	
-	/**
-	 * 周均线统计
-	 * @param data
-	 * @param req
-	 * @param res
-	 * @return
-	 */
-	@RequestMapping("/insertStockWeekMa")
-	@ResponseBody
-	public ResultVo insertStockWeekMa(@RequestBody String data, HttpServletRequest req, HttpServletResponse res){
-		Map<String,String> map=(Map<String, String>) JsonUtil.jsonToMap(data);
-		ResultVo rv=new ResultVo();
-		this.stockService.insertStockWeekMa(map.get("date"));
-		return rv;
-	}
-	
 	/**
 	 * 日均线统计
 	 * @param data
@@ -133,42 +109,15 @@ public class IndexController extends BaseController {
 	 * @param res
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping("/insertStockDayMa")
 	@ResponseBody
 	public ResultVo insertStockDayMa(@RequestBody String data, HttpServletRequest req, HttpServletResponse res){
 		Map<String,String> map=(Map<String, String>) JsonUtil.jsonToMap(data);
 		ResultVo rv=new ResultVo();
-		this.stockService.insertStockDayMa(map.get("date"));
+		this.stockTimerService.insertStockDayMa(map.get("date"));
 		return rv;
 	}
-	
-	/**
-	 * 批量执行均线统计
-	 * @param data
-	 * @param req
-	 * @param res
-	 * @return
-	 */
-	@RequestMapping("/stockMa")
-	@ResponseBody
-	public ResultVo stockMa(@RequestBody String data, HttpServletRequest req, HttpServletResponse res){
-		Map<String,String> map=(Map<String, String>) JsonUtil.jsonToMap(data);
-		ResultVo rv=new ResultVo();
-		int size=Integer.parseInt(map.get("size"));
-		for(int i=0;i<size;i++){
-			Date day=DateUtil.getAddTimeDate(DateUtil.DAY, DateUtil.stringToDate(map.get("date"),DateUtil.formatPattern_Short), i);
-			System.out.println(DateUtil.dateToString(day, DateUtil.formatPattern_Short)+"日开始");
-			this.stockService.insertStockDayMa(DateUtil.dateToString(day, DateUtil.formatPattern_Short));
-			System.out.println(DateUtil.dateToString(day, DateUtil.formatPattern_Short)+"日结束");
-			System.out.println(DateUtil.dateToString(day, DateUtil.formatPattern_Short)+"周开始");
-			this.stockService.insertStockWeekMa(DateUtil.dateToString(day, DateUtil.formatPattern_Short));
-			System.out.println(DateUtil.dateToString(day, DateUtil.formatPattern_Short)+"周结束");
-		}
-		return rv;
-	}
-	
-	
-	
 	
 	/**
 	 * 查询个股的数据
@@ -177,6 +126,7 @@ public class IndexController extends BaseController {
 	 * @param res
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping("/queryStockByCode")
 	@ResponseBody
 	public ResultVo queryStockByCode(@RequestBody String data, HttpServletRequest req, HttpServletResponse res){

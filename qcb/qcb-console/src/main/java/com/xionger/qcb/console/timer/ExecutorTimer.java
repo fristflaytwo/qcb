@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import com.xionger.qcb.common.constants.Constants;
 import com.xionger.qcb.common.util.date.DateUtil;
 import com.xionger.qcb.common.util.http.HttpClientUtils;
-import com.xionger.qcb.service.StockService;
+import com.xionger.qcb.service.StockTimerService;
 
 /**
  * 定时计划任务处理服务类
@@ -30,17 +30,12 @@ public class ExecutorTimer {
 	private String stockXlsPath;//股票数据文件存放路径
 	
 	@Autowired
-	private StockService stockService;
+	private StockTimerService stockTimerService;
+	
+	
 	
 	/**
-	 * 初始化股票交易日期数据
-	 */
-	public void initStockDate(){
-		this.stockService.insertStockDate(DateUtil.dateToString(new Date(),DateUtil.formatPattern_Short));
-	}
-	
-	/**
-	 * 利用httpclient获取股票信息数据
+	 * 利用httpclient获取股票信息数据，并入库
 	 */
 	public void initStockData() {
 		Date date=new Date();
@@ -68,21 +63,14 @@ public class ExecutorTimer {
 		}
 		
 		//调用server层进行数据保存
-		stockService.insertStockListByXlsdate(date, path);//保存基本数据并返回数据日期
+		stockTimerService.insertStockListByXlsdate(date, path);//保存基本数据并返回数据日期
 	}
 	
 	/**
 	 * 初始化每天的日均线
 	 */
 	public void initStockDayMa(){
-		this.stockService.insertStockDayMa(DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short));
-	}
-	
-	/**
-	 * 初始化每周的周均线,需要放在日均线之后执行
-	 */
-	public void initStockWeekMa(){
-		this.stockService.insertStockWeekMa(DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short));
+		this.stockTimerService.insertStockDayMa(DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short));
 	}
 	
 	

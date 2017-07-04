@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<configuration>
+
+	<!-- ch.qos.logback.core.ConsoleAppender 控制台输出 -->
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			 <pattern>%date [%X{traceNo}] %-5level %logger{80}[%line] - %msg%n</pattern>
+			  <charset>UTF-8</charset> 
+		</encoder>
+	</appender>
+
+	<appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>/home/log/console/qcb.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>/home/log/console/qcb-%d{yyyy-MM-dd}.%i.log.gz</FileNamePattern>
+			<TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <MaxFileSize>30MB</MaxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			 <pattern>%date [%X{traceNo}] %-5level %logger{80}[%line] - %msg%n</pattern>
+			  <charset>UTF-8</charset> 
+		</layout>
+	</appender>
+	
+    <!-- 异常 -->
+    <appender name="exception" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/home/log/console/qcb-error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/home/log/console/qcb-error-%i.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <MaxFileSize>30MB</MaxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date [%X{traceNo}] %-5level %logger{80}[%line] - %msg%n</pattern>
+            <charset>UTF-8</charset> 
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter"><!-- 只打印错误日志 -->  
+	        <level>ERROR</level>  
+	        <onMatch>ACCEPT</onMatch>  
+	        <onMismatch>DENY</onMismatch>  
+	    </filter>  
+    </appender>
+    
+   
+    <logger name="java.sql.Connection">
+        <level value="DEBUG" />
+    </logger>
+    <logger name="java.sql.Statement">
+        <level value="DEBUG" />
+    </logger>
+    <logger name="com.ibatis">
+        <level value="DEBUG" />
+    </logger>
+    <logger name="org.mybatis">
+        <level value="DEBUG" />
+    </logger>
+    <logger name="org.apache">
+        <level value="DEBUG" />
+    </logger>
+    <logger name="com.ibatis.common.jdbc.SimpleDataSource">
+        <level value="DEBUG" />
+    </logger>
+    <logger name="com.ibatis.common.jdbc.ScriptRunner">
+        <level value="DEBUG" />
+    </logger>
+    <logger name="com.ibatis.sqlmap.engine.impl.SqlMapClientDelegate">
+        <level value="DEBUG" />
+    </logger>
+    <logger name="org.springframework">
+        <level value="DEBUG" />
+    </logger>
+    
+    <!-- 应用DAO层日志 -->
+    <logger name="com.xionger.qcb.dao.mapper">
+        <level value="DEBUG" />
+    </logger>
+    
+    <!-- 应用层其它日志 -->
+    <logger name="com.xionger.qcb">
+        <level value="DEBUG" />
+    </logger>
+    <!-- 如果没有logger对应则走入默认的root-->
+	<root level="DEBUG">     
+        <appender-ref ref="console" />     
+        <appender-ref ref="file" />     
+        <appender-ref ref="exception" />     
+    </root>   
+   
+</configuration> 

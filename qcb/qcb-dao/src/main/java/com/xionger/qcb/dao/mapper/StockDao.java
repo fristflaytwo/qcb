@@ -76,12 +76,7 @@ public interface StockDao {
      */
     public void deleteStockListByStartAndEnd(Map<String, String> map);
     
-    /**
-     * 得到最近20周的每周最后一个交易日的数据
-     * @param map
-     * @return
-     */
-    public List<Stock> select20WeekListByCodeAndCreateDateOrderCreateDateDesc(Map<String, String> map);
+    
     
     /**
      * 查询该code股票再改日期包括该日期的只一次非停牌数据

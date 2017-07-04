@@ -235,15 +235,7 @@
 	from t_stock t where t.`code`=#{code,jdbcType=VARCHAR} and t.create_date <![CDATA[<]]> #{createDate,jdbcType=VARCHAR} ORDER BY t.create_date desc LIMIT 1
   </select>
   
-  <select id="select20WeekListByCodeAndCreateDateOrderCreateDateDesc" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
-    select 
-	<include refid="Base_Column_List" /> 
-	from t_stock t where t.`code`=#{code,jdbcType=VARCHAR} 
-					and  t.new_price <![CDATA[>]]> 0.00  
-					and  t.create_date <![CDATA[<=]]> #{createDate,jdbcType=VARCHAR}
-					and  exists (select 1 from t_stock_date a where a.is_end_week_day='00' and t.create_date=a.stock_date)
-					ORDER BY t.create_date desc LIMIT 20
-  </select>
+ 
   
   
   <select id="select1ByCreateDateDesc" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
