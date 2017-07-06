@@ -153,7 +153,7 @@ public class IndexController extends BaseController {
 	@RequestMapping("/test")
 	@ResponseBody
 	public ResultVo test(){
-		stockTimerService.insertStockExpand("");
+		stockTimerService.insertStockExpand("20170706");
 		return new ResultVo();
 	}
 }

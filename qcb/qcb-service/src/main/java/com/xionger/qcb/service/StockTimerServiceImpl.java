@@ -20,16 +20,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.xionger.qcb.common.constants.Constants;
 import com.xionger.qcb.common.util.conllection.CollectionUtil;
 import com.xionger.qcb.common.util.date.DateUtil;
 import com.xionger.qcb.common.util.http.HttpClientUtils;
+import com.xionger.qcb.common.util.json.FastJsonUtil;
+import com.xionger.qcb.common.util.string.Native2AsciiUtils;
 import com.xionger.qcb.common.util.string.StringUtil;
 import com.xionger.qcb.dao.mapper.StockDao;
 import com.xionger.qcb.dao.mapper.StockExpandDao;
 import com.xionger.qcb.dao.mapper.StockMaDao;
 import com.xionger.qcb.model.Stock;
+import com.xionger.qcb.model.StockExpand;
 import com.xionger.qcb.model.StockMa;
 
 @Service("stockTimerService")
@@ -155,29 +159,31 @@ public class StockTimerServiceImpl implements StockTimerService{
     			BigDecimal maSum=new BigDecimal(Constants.DECIMAL_DIGIT_2);
     			
     			if(CollectionUtil.isNotEmpty(stock20List)){
+    				BigDecimal DIGIT_5_2=new BigDecimal(Constants.DECIMAL_5_DIGIT_2);
+    				BigDecimal DIGIT_10_2=new BigDecimal(Constants.DECIMAL_10_DIGIT_2);
     				for(int i=0;i<stock20List.size();i++){
     					maSum=maSum.add(stock20List.get(i).getNewPrice());
     					//均线区间统计
     					if(stock20List.size()>10 && stock20List.size()<=20){
     						if(i==4){
-    							day5=maSum.divide(new BigDecimal("5.00"),2);
+    							day5=maSum.divide(DIGIT_5_2,2);
             				}
     						if(i==9){
-            					day10=maSum.divide(new BigDecimal("10.00"),2);
+            					day10=maSum.divide(DIGIT_10_2,2);
             				}
     						if(i==(stock20List.size()-1)){
-    							day20=maSum.divide(new BigDecimal((stock20List.size()+"")),2);
+    							day20=maSum.divide(new BigDecimal(Integer.valueOf(stock20List.size()).toString()),2);
             				}
     					}else if(stock20List.size()>5 && stock20List.size()<=10){
     						if(i==4){
-    							day5=maSum.divide(new BigDecimal("5.00"),2);
+    							day5=maSum.divide(DIGIT_5_2,2);
             				}
     						if(i==(stock20List.size()-1)){
-    							day10=maSum.divide(new BigDecimal((stock20List.size()+"")),2);
+    							day10=maSum.divide(new BigDecimal(Integer.valueOf(stock20List.size()).toString()),2);
             				}
     					}else{
     						if(i==(stock20List.size()-1)){
-    							day5=maSum.divide(new BigDecimal((stock20List.size()+"")),2);
+    							day5=maSum.divide(new BigDecimal(Integer.valueOf(stock20List.size()).toString()),2);
             				}
     					}
         			}
@@ -201,21 +207,73 @@ public class StockTimerServiceImpl implements StockTimerService{
      * 插入指定日期的股票扩展信息
      * @param date
      */
-    public void insertStockExpand(String date){
-    	System.out.println(HttpClientUtils.doGet("http://web.sqt.gtimg.cn/q=sz300303", Constants.UTF8));
-//    	if(StringUtil.isNotBlank(date)){
-//    		//删除这天数据
-//    		stockExpandDao.deleteByCreateDate(date);
-//    		List<Stock> list=this.stockDao.selectListByCreateDate(date);
-//    		String result=null;
-//    		if(CollectionUtil.isNotEmpty(list)){
-//    			for(Stock stock:list){
-//    				result=HttpClientUtils.doGet("http://web.sqt.gtimg.cn/q="+stock.getCode(), Constants.UTF8);
-//    				
-//    			}
-//    		}
-//    	}
+    @SuppressWarnings("unchecked")
+    @Transactional(noRollbackFor={Exception.class})
+	public void insertStockExpand(String date){
+    	if(StringUtil.isNotBlank(date)){
+    		//删除这天数据
+    		stockExpandDao.deleteByCreateDate(date);
+    		List<Stock> list=this.stockDao.selectListByCreateDate(date);
+    		String result=null;
+    		if(CollectionUtil.isNotEmpty(list)){
+    			String startResult="v_";
+    			String $spilt="~";
+    			String [] expandInfo=null;
+    			StockExpand se=null;
+    			HashMap<String, Object> ltgdMap=null;
+    			String ltgdMap_code="code";
+    			String ltgdMap_data="data";
+    			String ltgdMap_rows="rows";
+    			String ltgdMap_gfxz="gfxz";
+    			Map<String, Object> rows=null;
+    			Map<String, Object> ltgf=null;
+    			String ltgdMap_ltbl="ltbl";
+    			String jnfr_Type="境内法人股";
+    			String ltgdMap_noData="NO_DATA";
+    			String ltgdMap_gdmc="gdmc";
+    			List<Map<String, Object>> nearLtgds=null;
+    			for(Stock stock:list){
+    				LOGGER.info("开始遍历"+stock.getCode()+"的扩展股票信息");
+    				result=HttpClientUtils.doGet(Constants.STOCK_EXPAND_BASE_INFO+stock.getCode(), Constants.UTF8);
+    				if(StringUtil.isNotBlank(result)&& result.startsWith(startResult)){
+    					expandInfo=result.split($spilt);
+    					if(expandInfo!=null&& expandInfo.length>45){
+    						se=new StockExpand();
+    						se.generateId();
+    						se.setCode(stock.getCode());
+    						se.setCodeName(stock.getCodeName());
+    						se.setTurnover(new BigDecimal(StringUtil.isNotBlank(expandInfo[38])?expandInfo[38]:"0.00"));
+    						se.setTotalMarketValue(new BigDecimal(StringUtil.isNotBlank(expandInfo[45])?expandInfo[45]:"0.00"));
+    						se.setCirculationValue(new BigDecimal(StringUtil.isNotBlank(expandInfo[44])?expandInfo[44]:"0.00"));
+    						se.setCreateDate(StringUtil.isNotBlank(expandInfo[30])?expandInfo[30].substring(0, 8):"");
+    						result=HttpClientUtils.doGet(Constants.STOCK_EXPAND_LTGD_INFO+stock.getCode(), Constants.UTF8);
+    						result=result.substring(12);
+    						result=Native2AsciiUtils.ascii2Native(result);//汉字编码成native
+    						ltgdMap=FastJsonUtil.jsonToBean(result, Map.class);
+    						if(ltgdMap!=null && !ltgdMap.isEmpty() && !ltgdMap_noData.equals(ltgdMap.get(ltgdMap_code).toString())&&(int)ltgdMap.get(ltgdMap_code)==0){
+    							rows=(Map<String, Object>) ltgdMap.get(ltgdMap_data);
+    							nearLtgds=(List<Map<String, Object>>) rows.get(ltgdMap_data);
+    							rows=(Map<String, Object>)(nearLtgds.get(0));
+    							nearLtgds=(List<Map<String, Object>>) rows.get(ltgdMap_rows);
+    							ltgf=(Map<String, Object>)(nearLtgds.get(0));
+    							se.setStockRatio(new BigDecimal(ltgf.get(ltgdMap_ltbl).toString()));//第一大股东占比
+    							se.setFirstPartner(ltgf.get(ltgdMap_gdmc).toString());
+    							int i=0;
+    							for(Map<String, Object> map:nearLtgds){
+    								if(map.get(ltgdMap_gfxz)!=null && jnfr_Type.equals(map.get(ltgdMap_gfxz).toString())){
+    									i++;
+    								}
+    							}
+    							se.setBodiesNum(i);
+    						}
+    						stockExpandDao.insertSelective(se);
+    					}else{
+    						LOGGER.info("执行{0}日扩展的股票编号{1}:{2}扩展信息异常，扩展结果为:{3}",date,stock.getCode(),stock.getCodeName(),result);
+    					}
+    				}
+    			}
+    		}
+    	}
     }
-    
     
 }

@@ -44,6 +44,15 @@ public class Constants {
 	 * 股票历史数据下载地址，下载的文件格式为csv格式，需要后面追加参数
 	 */
 	public static final String STOCK_CSV_DOWNLOAD_HISTORY_PATH="http://quotes.money.163.com/service/chddata.html?";
+	/**
+	 * 股票扩展基本信息接口
+	 */
+	public static final String STOCK_EXPAND_BASE_INFO="http://web.sqt.gtimg.cn/q=";
+	/**
+	 * 股票扩展信息流通股东信息接口
+	 */
+	public static final String STOCK_EXPAND_LTGD_INFO="http://web.ifzq.gtimg.cn/appstock/hs/ltgd/get?type=ltgd&_var=v_liutonggd&code=";
+	
 	
 	/**
 	 * 通用无效
@@ -77,6 +86,21 @@ public class Constants {
 	 * 整数
 	 */
 	public static final String DECIMAL_DIGIT_0="0";
+	
+	
+	/**
+	 * 已5为分组的均线分子，如5日线、5周线
+	 */
+	public static final String DECIMAL_5_DIGIT_2="5.00";
+	/**
+	 * 已5为分组的均线分子，如10日线、10周线
+	 */
+	public static final String DECIMAL_10_DIGIT_2="10.00";
+	/**
+	 * 已5为分组的均线分子，如20日线、20周线
+	 */
+	public static final String DECIMAL_20_DIGIT_2="20.00";
+	
 }
 
 

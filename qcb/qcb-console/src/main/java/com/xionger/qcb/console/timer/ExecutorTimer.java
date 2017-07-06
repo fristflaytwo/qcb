@@ -73,6 +73,11 @@ public class ExecutorTimer {
 		this.stockTimerService.insertStockDayMa(DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short));
 	}
 	
-	
+	/**
+	 * 扩展股票基本信息
+	 */
+	public void insertStockExpand(){
+		this.stockTimerService.insertStockExpand(DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short));
+	}
 	
 }
