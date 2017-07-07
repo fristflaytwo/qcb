@@ -32,6 +32,7 @@ import com.xionger.qcb.common.util.string.StringUtil;
 import com.xionger.qcb.dao.mapper.StockDao;
 import com.xionger.qcb.dao.mapper.StockExpandDao;
 import com.xionger.qcb.dao.mapper.StockMaDao;
+import com.xionger.qcb.dao.mapper.StockResultDao;
 import com.xionger.qcb.model.Stock;
 import com.xionger.qcb.model.StockExpand;
 import com.xionger.qcb.model.StockMa;
@@ -46,6 +47,8 @@ public class StockTimerServiceImpl implements StockTimerService{
 	private StockMaDao stockMaDao;
 	@Autowired
 	private StockExpandDao stockExpandDao;
+	@Autowired
+	private StockResultDao stockResultDao;
 	
 	/**
      * 从下载的excel冲将数据导入到数据库,调用此方法必须要求该日数据excel必须存在
@@ -242,9 +245,9 @@ public class StockTimerServiceImpl implements StockTimerService{
     						se.generateId();
     						se.setCode(stock.getCode());
     						se.setCodeName(stock.getCodeName());
-    						se.setTurnover(new BigDecimal(StringUtil.isNotBlank(expandInfo[38])?expandInfo[38]:"0.00"));
-    						se.setTotalMarketValue(new BigDecimal(StringUtil.isNotBlank(expandInfo[45])?expandInfo[45]:"0.00"));
-    						se.setCirculationValue(new BigDecimal(StringUtil.isNotBlank(expandInfo[44])?expandInfo[44]:"0.00"));
+    						se.setTurnover(new BigDecimal(StringUtil.isNotBlank(expandInfo[38])?expandInfo[38]:Constants.DECIMAL_DIGIT_2));
+    						se.setTotalMarketValue(new BigDecimal(StringUtil.isNotBlank(expandInfo[45])?expandInfo[45]:Constants.DECIMAL_DIGIT_2));
+    						se.setCirculationValue(new BigDecimal(StringUtil.isNotBlank(expandInfo[44])?expandInfo[44]:Constants.DECIMAL_DIGIT_2));
     						se.setCreateDate(StringUtil.isNotBlank(expandInfo[30])?expandInfo[30].substring(0, 8):"");
     						result=HttpClientUtils.doGet(Constants.STOCK_EXPAND_LTGD_INFO+stock.getCode(), Constants.UTF8);
     						result=result.substring(12);
@@ -274,6 +277,18 @@ public class StockTimerServiceImpl implements StockTimerService{
     			}
     		}
     	}
+    }
+    
+    
+    /**
+     * 插入需要管住的股票信息
+     * @param date
+     */
+    public void insertStockResult(String date){
+    	//删除当天的结果集所有数据
+    	stockResultDao.deleteByCreateDate(date);
+    	//插入当天类型为反包需要管住的股票信息
+    	
     }
     
 }

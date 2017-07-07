@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xionger.qcb.dao.mapper.StockResultDao" >
+  <resultMap id="BaseResultMap" type="com.xionger.qcb.model.StockResult" >
+    <id column="id" property="id" jdbcType="CHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="code_name" property="codeName" jdbcType="VARCHAR" />
+    <result column="result_type" property="resultType" jdbcType="CHAR" />
+    <result column="result_type_name" property="resultTypeName" jdbcType="VARCHAR" />
+    <result column="new_price" property="newPrice" jdbcType="DECIMAL" />
+    <result column="amplitude" property="amplitude" jdbcType="DECIMAL" />
+    <result column="amplitude_price" property="amplitudePrice" jdbcType="DECIMAL" />
+    <result column="turnover" property="turnover" jdbcType="DECIMAL" />
+    <result column="total_market_value" property="totalMarketValue" jdbcType="DECIMAL" />
+    <result column="circulation_value" property="circulationValue" jdbcType="DECIMAL" />
+    <result column="real_value" property="realValue" jdbcType="DECIMAL" />
+    <result column="bodies_num" property="bodiesNum" jdbcType="INTEGER" />
+    <result column="first_partner" property="firstPartner" jdbcType="VARCHAR" />
+    <result column="stock_ratio" property="stockRatio" jdbcType="DECIMAL" />
+    <result column="day5" property="day5" jdbcType="DECIMAL" />
+    <result column="day10" property="day10" jdbcType="DECIMAL" />
+    <result column="day20" property="day20" jdbcType="DECIMAL" />
+    <result column="create_date" property="createDate" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, code, code_name, result_type, result_type_name, new_price, amplitude, amplitude_price, 
+    turnover, total_market_value, circulation_value, real_value, bodies_num, first_partner, 
+    stock_ratio, day5, day10, day20, create_date
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_stock_result
+    where id = #{id,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_stock_result
+    where id = #{id,jdbcType=CHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xionger.qcb.model.StockResult" >
+    insert into t_stock_result (id, code, code_name, 
+      result_type, result_type_name, new_price, 
+      amplitude, amplitude_price, turnover, 
+      total_market_value, circulation_value, real_value, 
+      bodies_num, first_partner, stock_ratio, 
+      day5, day10, day20, 
+      create_date)
+    values (#{id,jdbcType=CHAR}, #{code,jdbcType=VARCHAR}, #{codeName,jdbcType=VARCHAR}, 
+      #{resultType,jdbcType=CHAR}, #{resultTypeName,jdbcType=VARCHAR}, #{newPrice,jdbcType=DECIMAL}, 
+      #{amplitude,jdbcType=DECIMAL}, #{amplitudePrice,jdbcType=DECIMAL}, #{turnover,jdbcType=DECIMAL}, 
+      #{totalMarketValue,jdbcType=DECIMAL}, #{circulationValue,jdbcType=DECIMAL}, #{realValue,jdbcType=DECIMAL}, 
+      #{bodiesNum,jdbcType=INTEGER}, #{firstPartner,jdbcType=VARCHAR}, #{stockRatio,jdbcType=DECIMAL}, 
+      #{day5,jdbcType=DECIMAL}, #{day10,jdbcType=DECIMAL}, #{day20,jdbcType=DECIMAL}, 
+      #{createDate,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xionger.qcb.model.StockResult" >
+    insert into t_stock_result
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="code != null" >
+        code,
+      </if>
+      <if test="codeName != null" >
+        code_name,
+      </if>
+      <if test="resultType != null" >
+        result_type,
+      </if>
+      <if test="resultTypeName != null" >
+        result_type_name,
+      </if>
+      <if test="newPrice != null" >
+        new_price,
+      </if>
+      <if test="amplitude != null" >
+        amplitude,
+      </if>
+      <if test="amplitudePrice != null" >
+        amplitude_price,
+      </if>
+      <if test="turnover != null" >
+        turnover,
+      </if>
+      <if test="totalMarketValue != null" >
+        total_market_value,
+      </if>
+      <if test="circulationValue != null" >
+        circulation_value,
+      </if>
+      <if test="realValue != null" >
+        real_value,
+      </if>
+      <if test="bodiesNum != null" >
+        bodies_num,
+      </if>
+      <if test="firstPartner != null" >
+        first_partner,
+      </if>
+      <if test="stockRatio != null" >
+        stock_ratio,
+      </if>
+      <if test="day5 != null" >
+        day5,
+      </if>
+      <if test="day10 != null" >
+        day10,
+      </if>
+      <if test="day20 != null" >
+        day20,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=CHAR},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="codeName != null" >
+        #{codeName,jdbcType=VARCHAR},
+      </if>
+      <if test="resultType != null" >
+        #{resultType,jdbcType=CHAR},
+      </if>
+      <if test="resultTypeName != null" >
+        #{resultTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="newPrice != null" >
+        #{newPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="amplitude != null" >
+        #{amplitude,jdbcType=DECIMAL},
+      </if>
+      <if test="amplitudePrice != null" >
+        #{amplitudePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="turnover != null" >
+        #{turnover,jdbcType=DECIMAL},
+      </if>
+      <if test="totalMarketValue != null" >
+        #{totalMarketValue,jdbcType=DECIMAL},
+      </if>
+      <if test="circulationValue != null" >
+        #{circulationValue,jdbcType=DECIMAL},
+      </if>
+      <if test="realValue != null" >
+        #{realValue,jdbcType=DECIMAL},
+      </if>
+      <if test="bodiesNum != null" >
+        #{bodiesNum,jdbcType=INTEGER},
+      </if>
+      <if test="firstPartner != null" >
+        #{firstPartner,jdbcType=VARCHAR},
+      </if>
+      <if test="stockRatio != null" >
+        #{stockRatio,jdbcType=DECIMAL},
+      </if>
+      <if test="day5 != null" >
+        #{day5,jdbcType=DECIMAL},
+      </if>
+      <if test="day10 != null" >
+        #{day10,jdbcType=DECIMAL},
+      </if>
+      <if test="day20 != null" >
+        #{day20,jdbcType=DECIMAL},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xionger.qcb.model.StockResult" >
+    update t_stock_result
+    <set >
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="codeName != null" >
+        code_name = #{codeName,jdbcType=VARCHAR},
+      </if>
+      <if test="resultType != null" >
+        result_type = #{resultType,jdbcType=CHAR},
+      </if>
+      <if test="resultTypeName != null" >
+        result_type_name = #{resultTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="newPrice != null" >
+        new_price = #{newPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="amplitude != null" >
+        amplitude = #{amplitude,jdbcType=DECIMAL},
+      </if>
+      <if test="amplitudePrice != null" >
+        amplitude_price = #{amplitudePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="turnover != null" >
+        turnover = #{turnover,jdbcType=DECIMAL},
+      </if>
+      <if test="totalMarketValue != null" >
+        total_market_value = #{totalMarketValue,jdbcType=DECIMAL},
+      </if>
+      <if test="circulationValue != null" >
+        circulation_value = #{circulationValue,jdbcType=DECIMAL},
+      </if>
+      <if test="realValue != null" >
+        real_value = #{realValue,jdbcType=DECIMAL},
+      </if>
+      <if test="bodiesNum != null" >
+        bodies_num = #{bodiesNum,jdbcType=INTEGER},
+      </if>
+      <if test="firstPartner != null" >
+        first_partner = #{firstPartner,jdbcType=VARCHAR},
+      </if>
+      <if test="stockRatio != null" >
+        stock_ratio = #{stockRatio,jdbcType=DECIMAL},
+      </if>
+      <if test="day5 != null" >
+        day5 = #{day5,jdbcType=DECIMAL},
+      </if>
+      <if test="day10 != null" >
+        day10 = #{day10,jdbcType=DECIMAL},
+      </if>
+      <if test="day20 != null" >
+        day20 = #{day20,jdbcType=DECIMAL},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xionger.qcb.model.StockResult" >
+    update t_stock_result
+    set code = #{code,jdbcType=VARCHAR},
+      code_name = #{codeName,jdbcType=VARCHAR},
+      result_type = #{resultType,jdbcType=CHAR},
+      result_type_name = #{resultTypeName,jdbcType=VARCHAR},
+      new_price = #{newPrice,jdbcType=DECIMAL},
+      amplitude = #{amplitude,jdbcType=DECIMAL},
+      amplitude_price = #{amplitudePrice,jdbcType=DECIMAL},
+      turnover = #{turnover,jdbcType=DECIMAL},
+      total_market_value = #{totalMarketValue,jdbcType=DECIMAL},
+      circulation_value = #{circulationValue,jdbcType=DECIMAL},
+      real_value = #{realValue,jdbcType=DECIMAL},
+      bodies_num = #{bodiesNum,jdbcType=INTEGER},
+      first_partner = #{firstPartner,jdbcType=VARCHAR},
+      stock_ratio = #{stockRatio,jdbcType=DECIMAL},
+      day5 = #{day5,jdbcType=DECIMAL},
+      day10 = #{day10,jdbcType=DECIMAL},
+      day20 = #{day20,jdbcType=DECIMAL},
+      create_date = #{createDate,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=CHAR}
+  </update>
+  
+  
+  
+  
+  
+   <delete id="deleteByCreateDate" parameterType="java.lang.String" >
+    delete from t_stock_result
+    where create_date = #{createDate,jdbcType=VARCHAR}
+   </delete>
+   
+   <insert id="insertByResultType01" parameterType="java.lang.String" >
+    	INSERT INTO t_stock_result (
+		  id, CODE, code_name, result_type, result_type_name, new_price, amplitude, amplitude_price, turnover, total_market_value, circulation_value,
+		  real_value, bodies_num, first_partner, stock_ratio, day5, day10, day20, create_date
+		) 
+		(
+		SELECT 
+		  REPLACE(UUID(),'-',''), today.code, today.code_name, '01', '反包', today.new_price, today.amplitude, today.amplitude_price, expand.turnover,
+		  expand.total_market_value, expand.circulation_value, expand.real_value, expand.bodies_num, expand.first_partner, expand.stock_ratio,
+		  ma.day5, ma.day10, ma.day20, '20170707'
+		FROM
+		  t_stock yestoday,
+		  t_stock today,
+		  t_stock_expand expand,
+		  t_stock_ma ma
+		WHERE yestoday.`create_date` = #{createDate,jdbcType=VARCHAR} 
+		  AND today.`create_date` = #{createDate,jdbcType=VARCHAR} 
+		  AND expand.`create_date`=#{createDate,jdbcType=VARCHAR}
+		  AND ma.`create_date`=#{createDate,jdbcType=VARCHAR}
+		  AND yestoday.`code` = today.`code` 
+		  AND today.`code`=expand.`code`
+		  AND today.`code`=ma.`code`
+		  AND yestoday.`new_price` <![CDATA[<]]> yestoday.`today_open` 
+		  AND today.`today_open` <![CDATA[<=]]> yestoday.`low_price` 
+		  AND today.`new_price` <![CDATA[>=]]> yestoday.`height_price` 
+		  AND today.`deal_vol` <![CDATA[>]]> yestoday.`deal_vol` 
+		  AND today.`amplitude` <![CDATA[>]]> '0.03' 
+		  AND EXISTS  (SELECT  1  FROM t_stock_ma ma  
+		  					WHERE ma.`create_date` = #{createDate,jdbcType=VARCHAR}  AND today.`code` = ma.`code`  
+		  							AND today.`new_price` <![CDATA[>]]> ma.`day20` 
+		  							AND yestoday.`new_price` <![CDATA[>]]> ma.`day20`)
+		)
+  </insert>
+</mapper>

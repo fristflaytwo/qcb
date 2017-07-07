@@ -31,5 +31,11 @@ public interface StockTimerService{
      * @param date
      */
     public void insertStockExpand(String date);
+    
+    /**
+     * 插入需要管住的股票信息
+     * @param date
+     */
+    public void insertStockResult(String date);
 	
 }
