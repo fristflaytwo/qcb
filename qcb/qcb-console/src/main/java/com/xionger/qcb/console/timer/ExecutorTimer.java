@@ -80,4 +80,11 @@ public class ExecutorTimer {
 		this.stockTimerService.insertStockExpand(DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short));
 	}
 	
+	/**
+	 * 扩展股票基本信息
+	 */
+	public void insertStockResult(){
+		this.stockTimerService.insertStockResult(DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short));
+	}
+	
 }

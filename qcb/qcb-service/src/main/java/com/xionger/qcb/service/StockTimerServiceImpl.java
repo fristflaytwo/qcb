@@ -281,14 +281,22 @@ public class StockTimerServiceImpl implements StockTimerService{
     
     
     /**
-     * 插入需要管住的股票信息
+     * 插入需要关注的股票信息，需要进入之前均线已初始化完毕
      * @param date
      */
     public void insertStockResult(String date){
     	//删除当天的结果集所有数据
     	stockResultDao.deleteByCreateDate(date);
-    	//插入当天类型为反包需要管住的股票信息
-    	
+    	//插入当天类型为反包需要关注的股票信息
+    	stockResultDao.insertByResultType01(date);
+    	//插入当天类型为阶段底-防御需要关注的股票信息
+    	stockResultDao.insertByResultType02(date);
+    	//插入当天类型为阶段底-进攻需要关注的股票信息
+    	stockResultDao.insertByResultType03(date);
+    	//插入这天的空中加油数据
+    	stockResultDao.insertByResultType04(date);
+        //插入这天的风口神龙数据
+    	stockResultDao.insertByResultType05(date);
     }
     
 }

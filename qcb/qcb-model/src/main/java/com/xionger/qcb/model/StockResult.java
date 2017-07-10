@@ -184,7 +184,7 @@ public class StockResult extends BaseEntity {
     
     
     public enum  ResultType{
-    	TYPE_01("01","反包");
+    	TYPE_01("01","反包"),TYPE_02("02","阶段底-防御"),TYPE_03("03","阶段底-进攻"),TYPE_04("04","空中加油"),TYPE_05("05","风口神龙");
     	private String key;
     	private String value;
     	

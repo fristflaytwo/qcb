@@ -150,10 +150,12 @@ public class IndexController extends BaseController {
 	/**
 	 * 加载本次保存的excel数据到股票信息表
 	 */
-	@RequestMapping("/test")
+	@SuppressWarnings("unchecked")
+	@RequestMapping("/insertStockResult")
 	@ResponseBody
-	public ResultVo test(){
-		stockTimerService.insertStockExpand("20170706");
+	public ResultVo insertStockResult(@RequestBody String data, HttpServletRequest req, HttpServletResponse res){
+		Map<String,String> map=(Map<String, String>) JsonUtil.jsonToMap(data);
+		stockTimerService.insertStockResult(map.get("date"));
 		return new ResultVo();
 	}
 }

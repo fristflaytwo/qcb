@@ -33,7 +33,7 @@ public interface StockTimerService{
     public void insertStockExpand(String date);
     
     /**
-     * 插入需要管住的股票信息
+     * 插入需要管住的股票信息,需要在计算完均线之后操作
      * @param date
      */
     public void insertStockResult(String date);

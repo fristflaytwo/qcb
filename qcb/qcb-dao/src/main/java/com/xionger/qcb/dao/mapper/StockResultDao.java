@@ -21,4 +21,39 @@ public interface StockResultDao {
      * @return
      */
     int deleteByCreateDate(String createDate);
+    
+    /**
+     * 插入这天的反包数据
+     * @param createDate
+     * @return
+     */
+    int insertByResultType01(String createDate);
+    
+    /**
+     * 插入这天的阶段底-防御数据
+     * @param createDate
+     * @return
+     */
+    int insertByResultType02(String createDate);
+    
+    /**
+     * 插入这天的阶段底-进攻数据
+     * @param createDate
+     * @return
+     */
+    int insertByResultType03(String createDate);
+    
+    /**
+     * 插入这天的空中加油数据
+     * @param createDate
+     * @return
+     */
+    int insertByResultType04(String createDate);
+    
+    /**
+     * 插入这天的风口神龙数据
+     * @param createDate
+     * @return
+     */
+    int insertByResultType05(String createDate);
 }
