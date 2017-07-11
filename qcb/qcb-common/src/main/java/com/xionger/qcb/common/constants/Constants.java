@@ -53,6 +53,11 @@ public class Constants {
 	 */
 	public static final String STOCK_EXPAND_LTGD_INFO="http://web.ifzq.gtimg.cn/appstock/hs/ltgd/get?type=ltgd&_var=v_liutonggd&code=";
 	
+	/**
+	 * 上市公司的基本信息，一般情况下不变动，从同花顺上采集下来的
+	 */
+	public static final String STOCK_BASE_INFO="https://basic.10jqka.com.cn/mobile/300033/companyn.html";
+	
 	
 	/**
 	 * 通用无效
