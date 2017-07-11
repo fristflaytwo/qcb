@@ -293,6 +293,7 @@
 		  AND today.`today_open` <![CDATA[<=]]> yestoday.`low_price` 
 		  AND today.`new_price` <![CDATA[>=]]> yestoday.`height_price` 
 		  AND today.`deal_vol` <![CDATA[>]]> yestoday.`deal_vol` 
+		  AND today.`deal_vol` <![CDATA[<]]> (yestoday.`deal_vol` * 1.5) 
 		  AND today.`amplitude` <![CDATA[>]]> '0.03' 
 		  AND today.`new_price` <![CDATA[>]]> ma.`day20`
 		  AND yestoday.`new_price` <![CDATA[>]]> ma.`day20`
@@ -393,7 +394,7 @@
 		  AND yestoday.`amplitude` <![CDATA[>]]> '0.05'
 		  AND today.`today_open` <![CDATA[>]]> yestoday.`new_price`
 		  AND today.`new_price` <![CDATA[>]]> yestoday.`new_price`
-		  AND today.`new_price`-today.`today_open` BETWEEN -0.05 AND 0.05
+		  AND today.`amplitude` BETWEEN -0.005 AND 0.005
 		  AND (today.`height_price`-today.`new_price`) <![CDATA[>=]]> (today.`today_open`-today.`low_price`)
 		  AND today.`low_price` <![CDATA[>]]> (yestoday.`new_price` * 0.8)
 		  AND today.`deal_vol` <![CDATA[<]]> yestoday.`deal_vol`
@@ -442,5 +443,8 @@
 		  AND today.`amplitude` <![CDATA[>]]> '-0.07'
 		)
   </insert>
+  
+  
+  
   
 </mapper>
