@@ -133,6 +133,13 @@
 	
 	<!-- spring security -->
 	<bean name="bcryptEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+	
+	<bean id ="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor" >
+	    <property name ="corePoolSize" value ="${executor.corePoolSize}" />
+	    <property name ="keepAliveSeconds" value ="${executor.keepAliveSeconds}" />
+	    <property name ="maxPoolSize" value ="${executor.maxPoolSize}" />
+	    <property name ="queueCapacity" value ="${executor.queueCapacity}" />
+    </bean>
 
 	<!--验证码 -->
 <!-- 	<bean id="captchaProducer" class="com.google.code.kaptcha.impl.DefaultKaptcha"> -->
@@ -199,7 +206,7 @@
 <!-- 		</property> -->
 <!-- 	</bean> -->
 
-	<!-- 将session放入redis -->
+	<!-- 将session放入redis,session共享 -->
 <!-- 	<bean id="redisHttpSessionConfiguration" -->
 <!-- 		class="org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration"> -->
 <!-- 		<property name="maxInactiveIntervalInSeconds" value="1200" /> -->

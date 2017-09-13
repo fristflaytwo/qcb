@@ -18,12 +18,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xionger.qcb.common.constants.Constants;
+import com.xionger.qcb.common.util.date.DateUtil;
 import com.xionger.qcb.common.util.http.HttpClientUtils;
 import com.xionger.qcb.common.util.json.JsonUtil;
 import com.xionger.qcb.common.util.string.StringUtil;
 import com.xionger.qcb.model.vo.ResultVo;
 import com.xionger.qcb.service.StockService;
 import com.xionger.qcb.service.StockTimerService;
+import com.xionger.qcb.service.tradeday.TradeDayService;
+import com.xionger.qcb.service.tradeday.TradeMaService;
 
 
 
@@ -46,6 +49,10 @@ public class IndexController extends BaseController {
 	private StockTimerService stockTimerService;
 	@Autowired
 	private StockService stockService;
+	@Autowired
+	private TradeDayService tradeDayServiceImpl;
+	@Autowired
+	private TradeMaService tradeMaServiceImpl;
 	
 	@RequestMapping("")
 	public String index() {
@@ -101,22 +108,7 @@ public class IndexController extends BaseController {
 	
 	
 	
-	/**
-	 * 日均线统计
-	 * @param data
-	 * @param req
-	 * @param res
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	@RequestMapping("/insertStockDayMa")
-	@ResponseBody
-	public ResultVo insertStockDayMa(@RequestBody String data, HttpServletRequest req, HttpServletResponse res){
-		Map<String,String> map=(Map<String, String>) JsonUtil.jsonToMap(data);
-		ResultVo rv=new ResultVo();
-		this.stockTimerService.insertStockDayMa(map.get("date"));
-		return rv;
-	}
+	
 	
 	/**
 	 * 查询个股的数据
@@ -157,5 +149,29 @@ public class IndexController extends BaseController {
 		Map<String,String> map=(Map<String, String>) JsonUtil.jsonToMap(data);
 		stockTimerService.insertStockResult(map.get("date"));
 		return new ResultVo();
+	}
+	
+	/**
+	 * 保存股票每日交易数据
+	 */
+	@RequestMapping("/insertTradeDay")
+	@ResponseBody
+	public ResultVo insertTradeDay(HttpServletRequest req, HttpServletResponse res){
+		ResultVo rv=new ResultVo();
+		rv.setMsg("D://luolonglong//work//qcb//qcb//qcb-console//stock_xls//20170912.xls");
+		tradeDayServiceImpl.processExcute(rv);
+		return rv;
+	}
+	
+	/**
+	 * 保存股票每日交易数据
+	 */
+	@RequestMapping("/insertStockDayMa")
+	@ResponseBody
+	public ResultVo insertStockDayMa(HttpServletRequest req, HttpServletResponse res){
+		ResultVo rv=new ResultVo();
+		rv.setMsg("20170912");
+		tradeMaServiceImpl.processExcute(rv);
+		return rv;
 	}
 }

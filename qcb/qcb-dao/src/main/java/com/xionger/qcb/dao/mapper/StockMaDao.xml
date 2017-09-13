@@ -8,34 +8,37 @@
     <result column="day5" property="day5" jdbcType="DECIMAL" />
     <result column="day10" property="day10" jdbcType="DECIMAL" />
     <result column="day20" property="day20" jdbcType="DECIMAL" />
+    <result column="day30" property="day30" jdbcType="DECIMAL" />
     <result column="week5" property="week5" jdbcType="DECIMAL" />
     <result column="week10" property="week10" jdbcType="DECIMAL" />
     <result column="week20" property="week20" jdbcType="DECIMAL" />
     <result column="create_Date" property="createDate" jdbcType="VARCHAR" />
   </resultMap>
+  
   <sql id="Base_Column_List" >
-    id, code, code_Name, day5, day10, day20, week5, week10, week20, create_Date
+    id, code, code_Name, day5, day10, day20,day30, week5, week10, week20, create_Date
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  
+  <select id="selectByCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
     from t_stock_ma
-    where id = #{id,jdbcType=CHAR}
+    where code = #{code,jdbcType=CHAR} order by create_Date desc LIMIT 1
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
-    delete from t_stock_ma
-    where id = #{id,jdbcType=CHAR}
-  </delete>
-  <insert id="insert" parameterType="com.xionger.qcb.model.StockMa" >
-    insert into t_stock_ma (id, code, code_Name, 
-      day5, day10, day20, 
-      week5, week10, week20, 
-      create_Date)
-    values (#{id,jdbcType=CHAR}, #{code,jdbcType=VARCHAR}, #{codeName,jdbcType=VARCHAR}, 
-      #{day5,jdbcType=DECIMAL}, #{day10,jdbcType=DECIMAL}, #{day20,jdbcType=DECIMAL}, 
-      #{week5,jdbcType=DECIMAL}, #{week10,jdbcType=DECIMAL}, #{week20,jdbcType=DECIMAL}, 
-      #{createDate,jdbcType=VARCHAR})
+  
+  <insert id="inserts" parameterType="com.xionger.qcb.model.StockMa" >
+      insert into t_stock_ma (<include refid="Base_Column_List"/>) 
+      values 
+    	<foreach item="item" index="key" collection="stockMaList" open="" separator="," close="">
+	    	(
+	    		#{item.id,jdbcType=CHAR}, #{item.code,jdbcType=VARCHAR}, #{item.codeName,jdbcType=VARCHAR}, 
+      			#{item.day5,jdbcType=DECIMAL}, #{item.day10,jdbcType=DECIMAL}, #{item.day20,jdbcType=DECIMAL}, #{item.day30,jdbcType=DECIMAL}, 
+     			#{item.week5,jdbcType=DECIMAL}, #{item.week10,jdbcType=DECIMAL}, #{item.week20,jdbcType=DECIMAL}, 
+      			#{item.createDate,jdbcType=VARCHAR}
+      		)
+    	</foreach>
   </insert>
+  
   <insert id="insertSelective" parameterType="com.xionger.qcb.model.StockMa" >
     insert into t_stock_ma
     <trim prefix="(" suffix=")" suffixOverrides="," >
@@ -56,6 +59,9 @@
       </if>
       <if test="day20 != null" >
         day20,
+      </if>
+      <if test="day30 != null" >
+        day30,
       </if>
       <if test="week5 != null" >
         week5,
@@ -89,6 +95,9 @@
       <if test="day20 != null" >
         #{day20,jdbcType=DECIMAL},
       </if>
+      <if test="day30 != null" >
+        #{day30,jdbcType=DECIMAL},
+      </if>
       <if test="week5 != null" >
         #{week5,jdbcType=DECIMAL},
       </if>
@@ -103,52 +112,8 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.xionger.qcb.model.StockMa" >
-    update t_stock_ma
-    <set >
-      <if test="code != null" >
-        code = #{code,jdbcType=VARCHAR},
-      </if>
-      <if test="codeName != null" >
-        code_Name = #{codeName,jdbcType=VARCHAR},
-      </if>
-      <if test="day5 != null" >
-        day5 = #{day5,jdbcType=DECIMAL},
-      </if>
-      <if test="day10 != null" >
-        day10 = #{day10,jdbcType=DECIMAL},
-      </if>
-      <if test="day20 != null" >
-        day20 = #{day20,jdbcType=DECIMAL},
-      </if>
-      <if test="week5 != null" >
-        week5 = #{week5,jdbcType=DECIMAL},
-      </if>
-      <if test="week10 != null" >
-        week10 = #{week10,jdbcType=DECIMAL},
-      </if>
-      <if test="week20 != null" >
-        week20 = #{week20,jdbcType=DECIMAL},
-      </if>
-      <if test="createDate != null" >
-        create_Date = #{createDate,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=CHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.xionger.qcb.model.StockMa" >
-    update t_stock_ma
-    set code = #{code,jdbcType=VARCHAR},
-      code_Name = #{codeName,jdbcType=VARCHAR},
-      day5 = #{day5,jdbcType=DECIMAL},
-      day10 = #{day10,jdbcType=DECIMAL},
-      day20 = #{day20,jdbcType=DECIMAL},
-      week5 = #{week5,jdbcType=DECIMAL},
-      week10 = #{week10,jdbcType=DECIMAL},
-      week20 = #{week20,jdbcType=DECIMAL},
-      create_Date = #{createDate,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=CHAR}
-  </update>
+  
+  
   
   <delete id="deleteByCreateDate" parameterType="java.lang.String" >
     delete from t_stock_ma
@@ -159,6 +124,6 @@
     select 
     <include refid="Base_Column_List" />
     from t_stock_ma
-    where create_Date = #{date,jdbcType=VARCHAR}
+    where create_Date = #{createDate,jdbcType=VARCHAR}
   </select>
 </mapper>

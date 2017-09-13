@@ -3,8 +3,20 @@
 
 public class Constants {
 
+	/********************************************************************************************
+	 * 框架基础信息结构
+	 *******************************************************************************************/
 	public static final String UNDERLINE = "_";
  
+	/**
+	 * 通用无效
+	 */
+	public static final String STATE_99="99";
+	
+	/**
+	 * 通用有效
+	 */
+	public static final String STATE_00="00";
 	/**
 	 * 分页参数
 	 */
@@ -23,6 +35,11 @@ public class Constants {
 	public static final int HTTP_TIME_OUT = 5000;// 链接超期时间
 	public static final int HTTP_EXECUTION_COUNT = 5;//已经重试次数，超过重拾次数就放弃
 	
+	
+	
+	/********************************************************************************************
+	 * 数据接口地址
+	 *******************************************************************************************/
 	/**
 	 * 百度apikey
 	 */
@@ -31,44 +48,43 @@ public class Constants {
 	 * 百度api工作日接口调用
 	 */
 	public static final String BAIDU_API_HOLIDAY="http://apis.baidu.com/xiaogg/holiday/holiday";
-	
 	/**
-	 * 用爬虫爬去的历史的单个股票历史信息，需要后面追加参数
-	 */
-	public static final String STOCK_HISTORY_ONES_PATH="http://money.finance.sina.com.cn/quotes_service/view/vMS_tradehistory.php?";
-	/**
-	 * 下载的股票数据地址
+	 * 下载的股票数据地址，股票日交易数据，下载为excel文件
 	 */
 	public static final String STOCK_XLS_DOWNLOAD_PATH="http://stock.gtimg.cn/data/get_hs_xls.php?id=ranka&type=1&metric=chr";
 	/**
-	 * 股票历史数据下载地址，下载的文件格式为csv格式，需要后面追加参数
+	 * 股票历史数据下载地址，下载的文件格式为csv格式，需要后面追加参数，+"code=1600101&start=20170101&end=20170130"，code为深圳则0+股票代码
 	 */
 	public static final String STOCK_CSV_DOWNLOAD_HISTORY_PATH="http://quotes.money.163.com/service/chddata.html?";
 	/**
-	 * 股票扩展基本信息接口
+	 * 用爬虫爬去的历史的单个股票历史信息，需要后面追加参数，+"symbol=sz300303&date=201711",年月日单位不需要0补位数
+	 */
+	public static final String STOCK_HISTORY_ONES_PATH="http://money.finance.sina.com.cn/quotes_service/view/vMS_tradehistory.php?";
+	/**
+	 * 股票扩展基本信息接口,http://web.sqt.gtimg.cn/q=sh600101
 	 */
 	public static final String STOCK_EXPAND_BASE_INFO="http://web.sqt.gtimg.cn/q=";
 	/**
-	 * 股票扩展信息流通股东信息接口
+	 * 股票扩展信息流通股东信息接口,http://web.ifzq.gtimg.cn/appstock/hs/ltgd/get?type=ltgd&_var=v_liutonggd&code=sh600101
 	 */
 	public static final String STOCK_EXPAND_LTGD_INFO="http://web.ifzq.gtimg.cn/appstock/hs/ltgd/get?type=ltgd&_var=v_liutonggd&code=";
-	
 	/**
-	 * 上市公司的基本信息，一般情况下不变动，从同花顺上采集下来的
+	 * 上市公司数据来源入口，来自同花顺，暂时未用
 	 */
 	public static final String STOCK_BASE_INFO="https://basic.10jqka.com.cn/mobile/300033/companyn.html";
-	
-	
 	/**
-	 * 通用无效
+	 * 上市公司的基本信息，一般情况下不变动，从同花顺上采集下来的，https://basic.10jqka.com.cn/mobile/002008/profilen.html
 	 */
-	public static final String STATE_99="99";
+	public static final String STOCK_INFO="https://basic.10jqka.com.cn/mobile/#code#/profilen.html";
 	
-	/**
-	 * 通用有效
-	 */
-	public static final String STATE_00="00";
 	
+	
+	
+	
+	
+	/********************************************************************************************
+	 * 业务参数
+	 *******************************************************************************************/
 	/**
 	 * 确定非交易日-星期六
 	 */
@@ -98,13 +114,14 @@ public class Constants {
 	 */
 	public static final String DECIMAL_5_DIGIT_2="5.00";
 	/**
-	 * 已5为分组的均线分子，如10日线、10周线
+	 * 已10为分组的均线分子，如10日线、10周线
 	 */
 	public static final String DECIMAL_10_DIGIT_2="10.00";
 	/**
-	 * 已5为分组的均线分子，如20日线、20周线
+	 * 已20为分组的均线分子，如20日线、20周线
 	 */
 	public static final String DECIMAL_20_DIGIT_2="20.00";
+	
 	
 }
 

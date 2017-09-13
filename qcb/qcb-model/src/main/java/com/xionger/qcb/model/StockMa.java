@@ -24,6 +24,8 @@ public class StockMa  extends BaseEntity {
     private BigDecimal day10;
 
     private BigDecimal day20;
+    
+    private BigDecimal day30;
 
     private BigDecimal week5;
 
@@ -100,6 +102,14 @@ public class StockMa  extends BaseEntity {
     public void setWeek20(BigDecimal week20) {
         this.week20 = week20;
     }
+
+	public BigDecimal getDay30() {
+		return day30;
+	}
+
+	public void setDay30(BigDecimal day30) {
+		this.day30 = day30;
+	}
 
    
 }

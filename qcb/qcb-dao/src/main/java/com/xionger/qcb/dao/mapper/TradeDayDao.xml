@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xionger.qcb.dao.mapper.TradeDayDao" >
+  <resultMap id="BaseResultMap" type="com.xionger.qcb.model.TradeDay" >
+    <result column="id" property="id" jdbcType="CHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="code_name" property="codeName" jdbcType="VARCHAR" />
+    <result column="new_price" property="newPrice" jdbcType="DECIMAL" />
+    <result column="amplitude" property="amplitude" jdbcType="DECIMAL" />
+    <result column="amplitude_price" property="amplitudePrice" jdbcType="DECIMAL" />
+    <result column="buy_price" property="buyPrice" jdbcType="DECIMAL" />
+    <result column="sale_price" property="salePrice" jdbcType="DECIMAL" />
+    <result column="deal_vol" property="dealVol" jdbcType="BIGINT" />
+    <result column="deal_price" property="dealPrice" jdbcType="DECIMAL" />
+    <result column="today_open" property="todayOpen" jdbcType="DECIMAL" />
+    <result column="yeateday_close" property="yeatedayClose" jdbcType="DECIMAL" />
+    <result column="height_price" property="heightPrice" jdbcType="DECIMAL" />
+    <result column="low_price" property="lowPrice" jdbcType="DECIMAL" />
+    <result column="create_date" property="createDate" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, code, code_name, new_price, amplitude, amplitude_price, buy_price, sale_price, 
+    deal_vol, deal_price, today_open, yeateday_close, height_price, low_price, create_date
+  </sql>
+  
+  <insert id="inserts">
+    insert into t_trade_day (
+    	<include refid="Base_Column_List"/>  
+    )
+    values 
+    	<foreach item="item" index="key" collection="tradeDayList" open="" separator="," close="">
+	    	(
+	    		#{item.id,jdbcType=CHAR}, #{item.code,jdbcType=VARCHAR}, #{item.codeName,jdbcType=VARCHAR}, 
+      			#{item.newPrice,jdbcType=DECIMAL}, #{item.amplitude,jdbcType=DECIMAL}, #{item.amplitudePrice,jdbcType=DECIMAL}, 
+      			#{item.buyPrice,jdbcType=DECIMAL}, #{item.salePrice,jdbcType=DECIMAL}, #{item.dealVol,jdbcType=BIGINT}, 
+      			#{item.dealPrice,jdbcType=DECIMAL}, #{item.todayOpen,jdbcType=DECIMAL}, #{item.yeatedayClose,jdbcType=DECIMAL}, 
+      			#{item.heightPrice,jdbcType=DECIMAL}, #{item.lowPrice,jdbcType=DECIMAL}, #{item.createDate,jdbcType=VARCHAR}
+      		)
+    	
+    	</foreach>
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.xionger.qcb.model.TradeDay" >
+    insert into t_trade_day
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="code != null" >
+        code,
+      </if>
+      <if test="codeName != null" >
+        code_name,
+      </if>
+      <if test="newPrice != null" >
+        new_price,
+      </if>
+      <if test="amplitude != null" >
+        amplitude,
+      </if>
+      <if test="amplitudePrice != null" >
+        amplitude_price,
+      </if>
+      <if test="buyPrice != null" >
+        buy_price,
+      </if>
+      <if test="salePrice != null" >
+        sale_price,
+      </if>
+      <if test="dealVol != null" >
+        deal_vol,
+      </if>
+      <if test="dealPrice != null" >
+        deal_price,
+      </if>
+      <if test="todayOpen != null" >
+        today_open,
+      </if>
+      <if test="yeatedayClose != null" >
+        yeateday_close,
+      </if>
+      <if test="heightPrice != null" >
+        height_price,
+      </if>
+      <if test="lowPrice != null" >
+        low_price,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=CHAR},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="codeName != null" >
+        #{codeName,jdbcType=VARCHAR},
+      </if>
+      <if test="newPrice != null" >
+        #{newPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="amplitude != null" >
+        #{amplitude,jdbcType=DECIMAL},
+      </if>
+      <if test="amplitudePrice != null" >
+        #{amplitudePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="buyPrice != null" >
+        #{buyPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="salePrice != null" >
+        #{salePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="dealVol != null" >
+        #{dealVol,jdbcType=BIGINT},
+      </if>
+      <if test="dealPrice != null" >
+        #{dealPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="todayOpen != null" >
+        #{todayOpen,jdbcType=DECIMAL},
+      </if>
+      <if test="yeatedayClose != null" >
+        #{yeatedayClose,jdbcType=DECIMAL},
+      </if>
+      <if test="heightPrice != null" >
+        #{heightPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="lowPrice != null" >
+        #{lowPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  
+  <delete id="deleteByCreateDate" >
+    delete from t_trade_day  where create_date = #{createDate,jdbcType=VARCHAR}
+  </delete>
+  
+  <select id="selectListByCreateDate" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_trade_day
+    where create_date = #{createDate,jdbcType=VARCHAR}
+  </select>
+  
+  
+  <select id="select30ListByCodeCreateDateOrderDesc" resultMap="BaseResultMap" >
+    select 
+	<include refid="Base_Column_List" /> 
+	from t_trade_day t where t.`code`=#{code,jdbcType=VARCHAR} and t.create_date <![CDATA[<=]]> #{createDate,jdbcType=VARCHAR} and t.new_price <![CDATA[>]]> 0.00  ORDER BY t.create_date desc LIMIT 30
+  </select>
+  
+  <select id="getLastCreateDate" resultType="java.lang.String" >
+    SELECT t.`create_date` FROM t_trade_day t ORDER BY t.`create_date` DESC LIMIT 1
+  </select>
+  
+  
+  
+</mapper>

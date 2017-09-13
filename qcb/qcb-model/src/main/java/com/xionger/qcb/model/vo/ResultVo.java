@@ -4,6 +4,7 @@ package com.xionger.qcb.model.vo;
 import java.util.List;
 
 import com.xionger.qcb.common.enums.ResultEnum;
+import com.xionger.qcb.common.util.json.FastJsonUtil;
 
 
 
@@ -79,5 +80,10 @@ public class ResultVo implements java.io.Serializable {
 
 	public void setData(Object data) {
 		this.data = data;
+	}
+	
+	@Override
+	public String toString() {
+		return FastJsonUtil.beanToJson(this);
 	}
 }

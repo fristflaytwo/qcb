@@ -20,11 +20,7 @@ public interface StockTimerService{
      */
     public String insertStockListByXlsdate(Date xlsDate,String path);
     
-    /**
-     * 日均线统计
-     * @param date 股票信息表的股票数据日期
-     */
-    public void insertStockDayMa(String date);
+    
     
     /**
      * 插入指定日期的股票扩展信息

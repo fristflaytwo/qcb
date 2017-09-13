@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xionger.qcb.dao.mapper.StockInfoDao" >
+  <resultMap id="BaseResultMap" type="com.xionger.qcb.model.StockInfo" >
+    <id column="id" property="id" jdbcType="CHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="code_name" property="codeName" jdbcType="VARCHAR" />
+    <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+    <result column="register_address" property="registerAddress" jdbcType="VARCHAR" />
+    <result column="chairman" property="chairman" jdbcType="VARCHAR" />
+    <result column="secretary" property="secretary" jdbcType="VARCHAR" />
+    <result column="main_business" property="mainBusiness" jdbcType="VARCHAR" />
+    <result column="control_partner" property="controlPartner" jdbcType="VARCHAR" />
+    <result column="fact_control" property="factControl" jdbcType="VARCHAR" />
+    <result column="final_control" property="finalControl" jdbcType="VARCHAR" />
+    <result column="market_date" property="marketDate" jdbcType="VARCHAR" />
+    <result column="lssue_price" property="lssuePrice" jdbcType="DECIMAL" />
+    <result column="lssue_pe" property="lssuePe" jdbcType="DECIMAL" />
+    <result column="business_scope" property="businessScope" jdbcType="VARCHAR" />
+    <result column="product_type" property="productType" jdbcType="VARCHAR" />
+    <result column="product_name" property="productName" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, code, code_name, company_name, register_address, chairman, secretary, main_business, 
+    control_partner, fact_control, final_control, market_date, lssue_price, lssue_pe, 
+    business_scope, product_type, product_name, create_date
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_stock_info
+    where id = #{id,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_stock_info
+    where id = #{id,jdbcType=CHAR}
+  </delete>
+  
+  <insert id="inserts" >
+    insert into t_stock_info (id, code, code_name, 
+      company_name, register_address, chairman, 
+      secretary, main_business, control_partner, 
+      fact_control, final_control, market_date, 
+      lssue_price, lssue_pe, business_scope, 
+      product_type, product_name, create_date
+      )
+      values 
+    	<foreach item="item" index="key" collection="stockInfoList" open="" separator="," close="">
+	    	(
+	    		#{item.id,jdbcType=CHAR}, #{item.code,jdbcType=VARCHAR}, #{item.codeName,jdbcType=VARCHAR}, 
+			    #{item.companyName,jdbcType=VARCHAR}, #{item.registerAddress,jdbcType=VARCHAR}, #{item.chairman,jdbcType=VARCHAR}, 
+			    #{item.secretary,jdbcType=VARCHAR}, #{item.mainBusiness,jdbcType=VARCHAR}, #{item.controlPartner,jdbcType=VARCHAR}, 
+			    #{item.factControl,jdbcType=VARCHAR}, #{item.finalControl,jdbcType=VARCHAR}, #{item.marketDate,jdbcType=VARCHAR}, 
+			    #{item.lssuePrice,jdbcType=DECIMAL}, #{item.lssuePe,jdbcType=DECIMAL}, #{item.businessScope,jdbcType=VARCHAR}, 
+			    #{item.productType,jdbcType=VARCHAR}, #{item.productName,jdbcType=VARCHAR}, #{item.createDate,jdbcType=VARCHAR}
+      		)
+    	</foreach>
+  </insert>
+  
+  
+  
+  <insert id="insertSelective" parameterType="com.xionger.qcb.model.StockInfo" >
+    insert into t_stock_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="code != null" >
+        code,
+      </if>
+      <if test="codeName != null" >
+        code_name,
+      </if>
+      <if test="companyName != null" >
+        company_name,
+      </if>
+      <if test="registerAddress != null" >
+        register_address,
+      </if>
+      <if test="chairman != null" >
+        chairman,
+      </if>
+      <if test="secretary != null" >
+        secretary,
+      </if>
+      <if test="mainBusiness != null" >
+        main_business,
+      </if>
+      <if test="controlPartner != null" >
+        control_partner,
+      </if>
+      <if test="factControl != null" >
+        fact_control,
+      </if>
+      <if test="finalControl != null" >
+        final_control,
+      </if>
+      <if test="marketDate != null" >
+        market_date,
+      </if>
+      <if test="lssuePrice != null" >
+        lssue_price,
+      </if>
+      <if test="lssuePe != null" >
+        lssue_pe,
+      </if>
+      <if test="businessScope != null" >
+        business_scope,
+      </if>
+      <if test="productType != null" >
+        product_type,
+      </if>
+      <if test="productName != null" >
+        product_name,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=CHAR},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="codeName != null" >
+        #{codeName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null" >
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="registerAddress != null" >
+        #{registerAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="chairman != null" >
+        #{chairman,jdbcType=VARCHAR},
+      </if>
+      <if test="secretary != null" >
+        #{secretary,jdbcType=VARCHAR},
+      </if>
+      <if test="mainBusiness != null" >
+        #{mainBusiness,jdbcType=VARCHAR},
+      </if>
+      <if test="controlPartner != null" >
+        #{controlPartner,jdbcType=VARCHAR},
+      </if>
+      <if test="factControl != null" >
+        #{factControl,jdbcType=VARCHAR},
+      </if>
+      <if test="finalControl != null" >
+        #{finalControl,jdbcType=VARCHAR},
+      </if>
+      <if test="marketDate != null" >
+        #{marketDate,jdbcType=VARCHAR},
+      </if>
+      <if test="lssuePrice != null" >
+        #{lssuePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="lssuePe != null" >
+        #{lssuePe,jdbcType=DECIMAL},
+      </if>
+      <if test="businessScope != null" >
+        #{businessScope,jdbcType=VARCHAR},
+      </if>
+      <if test="productType != null" >
+        #{productType,jdbcType=VARCHAR},
+      </if>
+      <if test="productName != null" >
+        #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xionger.qcb.model.StockInfo" >
+    update t_stock_info
+    <set >
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="codeName != null" >
+        code_name = #{codeName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null" >
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="registerAddress != null" >
+        register_address = #{registerAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="chairman != null" >
+        chairman = #{chairman,jdbcType=VARCHAR},
+      </if>
+      <if test="secretary != null" >
+        secretary = #{secretary,jdbcType=VARCHAR},
+      </if>
+      <if test="mainBusiness != null" >
+        main_business = #{mainBusiness,jdbcType=VARCHAR},
+      </if>
+      <if test="controlPartner != null" >
+        control_partner = #{controlPartner,jdbcType=VARCHAR},
+      </if>
+      <if test="factControl != null" >
+        fact_control = #{factControl,jdbcType=VARCHAR},
+      </if>
+      <if test="finalControl != null" >
+        final_control = #{finalControl,jdbcType=VARCHAR},
+      </if>
+      <if test="marketDate != null" >
+        market_date = #{marketDate,jdbcType=VARCHAR},
+      </if>
+      <if test="lssuePrice != null" >
+        lssue_price = #{lssuePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="lssuePe != null" >
+        lssue_pe = #{lssuePe,jdbcType=DECIMAL},
+      </if>
+      <if test="businessScope != null" >
+        business_scope = #{businessScope,jdbcType=VARCHAR},
+      </if>
+      <if test="productType != null" >
+        product_type = #{productType,jdbcType=VARCHAR},
+      </if>
+      <if test="productName != null" >
+        product_name = #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xionger.qcb.model.StockInfo" >
+    update t_stock_info
+    set code = #{code,jdbcType=VARCHAR},
+      code_name = #{codeName,jdbcType=VARCHAR},
+      company_name = #{companyName,jdbcType=VARCHAR},
+      register_address = #{registerAddress,jdbcType=VARCHAR},
+      chairman = #{chairman,jdbcType=VARCHAR},
+      secretary = #{secretary,jdbcType=VARCHAR},
+      main_business = #{mainBusiness,jdbcType=VARCHAR},
+      control_partner = #{controlPartner,jdbcType=VARCHAR},
+      fact_control = #{factControl,jdbcType=VARCHAR},
+      final_control = #{finalControl,jdbcType=VARCHAR},
+      market_date = #{marketDate,jdbcType=VARCHAR},
+      lssue_price = #{lssuePrice,jdbcType=DECIMAL},
+      lssue_pe = #{lssuePe,jdbcType=DECIMAL},
+      business_scope = #{businessScope,jdbcType=VARCHAR},
+      product_type = #{productType,jdbcType=VARCHAR},
+      product_name = #{productName,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=CHAR}
+  </update>
+</mapper>

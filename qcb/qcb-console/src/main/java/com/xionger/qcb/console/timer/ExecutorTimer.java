@@ -15,7 +15,10 @@ import org.springframework.stereotype.Component;
 import com.xionger.qcb.common.constants.Constants;
 import com.xionger.qcb.common.util.date.DateUtil;
 import com.xionger.qcb.common.util.http.HttpClientUtils;
+import com.xionger.qcb.model.vo.ResultVo;
 import com.xionger.qcb.service.StockTimerService;
+import com.xionger.qcb.service.tradeday.TradeDayService;
+import com.xionger.qcb.service.tradeday.TradeMaService;
 
 /**
  * 定时计划任务处理服务类
@@ -31,46 +34,27 @@ public class ExecutorTimer {
 	
 	@Autowired
 	private StockTimerService stockTimerService;
+	@Autowired
+	private TradeDayService tradeDayServiceImpl;
+	@Autowired
+	private TradeMaService tradeMaServiceImpl;
 	
 	
 	
 	/**
-	 * 利用httpclient获取股票信息数据，并入库
+	 * 股票日批数据
 	 */
-	public void initStockData() {
-		Date date=new Date();
-		//先下载数据到本地磁盘
-		BufferedOutputStream bw = null;
-		String path=stockXlsPath+DateUtil.dateToString(date,DateUtil.formatPattern_Short)+".xls";
-		// 创建文件对象
-		File f = new File(path);
-		// 创建文件路径
-		if (!f.getParentFile().exists()) f.getParentFile().mkdirs();
-		try {
-			byte[] result=HttpClientUtils.doGetReturnBytes(Constants.STOCK_XLS_DOWNLOAD_PATH, Constants.UTF8);
-			// 写入文件
-			bw = new BufferedOutputStream(new FileOutputStream(path));
-			bw.write(result);
-		} catch (Exception e) {
-			LOGGER.error("下载"+DateUtil.dateToString(new Date(),DateUtil.formatPattern_Short)+"天股票信息数据异常",e);
-		} finally {
-			try {
-				if (bw != null)
-					bw.close();
-			} catch (Exception e) {
-			}
-			bw=null;
-		}
-		
-		//调用server层进行数据保存
-		stockTimerService.insertStockListByXlsdate(date, path);//保存基本数据并返回数据日期
+	public void insertTradeDay() {
+		tradeDayServiceImpl.process(new ResultVo());
 	}
 	
 	/**
 	 * 初始化每天的日均线
 	 */
-	public void initStockDayMa(){
-		this.stockTimerService.insertStockDayMa(DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short));
+	public void insertStockDayMa(){
+		ResultVo rv=new ResultVo();
+		rv.setMsg(DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short));
+		tradeMaServiceImpl.process(rv);
 	}
 	
 	/**
@@ -81,10 +65,12 @@ public class ExecutorTimer {
 	}
 	
 	/**
-	 * 扩展股票基本信息
+	 * 扩展股票结果信息
 	 */
 	public void insertStockResult(){
 		this.stockTimerService.insertStockResult(DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short));
 	}
+	
+	
 	
 }

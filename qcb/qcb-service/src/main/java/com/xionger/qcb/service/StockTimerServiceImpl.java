@@ -35,7 +35,6 @@ import com.xionger.qcb.dao.mapper.StockMaDao;
 import com.xionger.qcb.dao.mapper.StockResultDao;
 import com.xionger.qcb.model.Stock;
 import com.xionger.qcb.model.StockExpand;
-import com.xionger.qcb.model.StockMa;
 
 @Service("stockTimerService")
 public class StockTimerServiceImpl implements StockTimerService{
@@ -140,71 +139,7 @@ public class StockTimerServiceImpl implements StockTimerService{
         return dataDate;
     }
     
-    /**
-     * 进行均线计算
-     * @param date 股票信息表的股票数据日期
-     */
-    public void insertStockDayMa(String date){
-    	List<Stock> list=this.stockDao.selectListByCreateDate(date);
-    	if(CollectionUtil.isNotEmpty(list)){
-    		this.stockMaDao.deleteByCreateDate(date);//删除均线
-    		//均线和过滤适合条件的股票算法开始
-    		List<Stock> stock20List=null;
-    		for(Stock stock:list){
-    			Map<String, String> map=new HashMap<String, String>();
-    			map.put("code", stock.getCode());
-    			map.put("createDate", date);
-    			stock20List=this.stockDao.select20ListByCodeAndCreateDateOrderCreateDateDesc(map);//必须结果集倒序
-    			//均线计算
-    			BigDecimal day5=new BigDecimal(Constants.DECIMAL_DIGIT_2);
-    			BigDecimal day10=new BigDecimal(Constants.DECIMAL_DIGIT_2);
-    			BigDecimal day20=new BigDecimal(Constants.DECIMAL_DIGIT_2);
-    			BigDecimal maSum=new BigDecimal(Constants.DECIMAL_DIGIT_2);
-    			
-    			if(CollectionUtil.isNotEmpty(stock20List)){
-    				BigDecimal DIGIT_5_2=new BigDecimal(Constants.DECIMAL_5_DIGIT_2);
-    				BigDecimal DIGIT_10_2=new BigDecimal(Constants.DECIMAL_10_DIGIT_2);
-    				for(int i=0;i<stock20List.size();i++){
-    					maSum=maSum.add(stock20List.get(i).getNewPrice());
-    					//均线区间统计
-    					if(stock20List.size()>10 && stock20List.size()<=20){
-    						if(i==4){
-    							day5=maSum.divide(DIGIT_5_2,2);
-            				}
-    						if(i==9){
-            					day10=maSum.divide(DIGIT_10_2,2);
-            				}
-    						if(i==(stock20List.size()-1)){
-    							day20=maSum.divide(new BigDecimal(Integer.valueOf(stock20List.size()).toString()),2);
-            				}
-    					}else if(stock20List.size()>5 && stock20List.size()<=10){
-    						if(i==4){
-    							day5=maSum.divide(DIGIT_5_2,2);
-            				}
-    						if(i==(stock20List.size()-1)){
-    							day10=maSum.divide(new BigDecimal(Integer.valueOf(stock20List.size()).toString()),2);
-            				}
-    					}else{
-    						if(i==(stock20List.size()-1)){
-    							day5=maSum.divide(new BigDecimal(Integer.valueOf(stock20List.size()).toString()),2);
-            				}
-    					}
-        			}
-    			}
-    			
-    			//保存均线数据
-    			StockMa stockMa=new StockMa();
-    			stockMa.generateId();
-    			stockMa.setCode(stock.getCode());
-    			stockMa.setCodeName(stock.getCodeName());
-    			stockMa.setCreateDate(date);//数据日期
-    			stockMa.setDay5(day5);
-    			stockMa.setDay10(day10);
-    			stockMa.setDay20(day20);
-    			stockMaDao.insertSelective(stockMa);
-    		}
-    	}
-    }
+    
     
     /**
      * 插入指定日期的股票扩展信息

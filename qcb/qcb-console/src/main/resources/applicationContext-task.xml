@@ -10,19 +10,10 @@
      
 	<task:scheduler id="trust-task" pool-size="20"/>
 	<task:scheduled-tasks scheduler="trust-task">
-		<task:scheduled ref="executorTimer" method="initStockData" cron="0 40 9 * * ?"/><!-- 股票信息下载，当日数据修正-->
-		<task:scheduled ref="executorTimer" method="initStockData" cron="0 0 10 * * ?"/><!-- 股票信息下载，当日数据修正-->
-		<task:scheduled ref="executorTimer" method="initStockData" cron="0 0 11 * * ?"/><!-- 股票信息下载，当日数据修正-->
-		<task:scheduled ref="executorTimer" method="initStockData" cron="0 30 13 * * ?"/><!-- 股票信息下载，当日数据修正-->
-	
-		<task:scheduled ref="executorTimer" method="initStockData" cron="0 35 14 * * ?"/><!-- 股票信息下载，当日数据修正-->
-		<task:scheduled ref="executorTimer" method="insertStockExpand" cron="0 40 14 * * ?"/><!-- 计算股票每天的基本扩展信息-->
-		<task:scheduled ref="executorTimer" method="initStockDayMa" cron="0 40 14 * * ?"/><!-- 计算股票每天的日均线-->
-		<task:scheduled ref="executorTimer" method="insertStockResult" cron="0 45 14 * * ?"/><!-- 需要管住的股票-->
-	
-		<task:scheduled ref="executorTimer" method="initStockData" cron="0 05 15 * * ?"/><!-- 股票信息下载，当日数据修正-->
-		<task:scheduled ref="executorTimer" method="initStockDayMa" cron="0 10 15 * * ?"/><!-- 计算股票每天的日均线-->
-		<task:scheduled ref="executorTimer" method="insertStockExpand" cron="0 30 15 * * ?"/><!-- 计算股票每天的基本扩展信息-->
-		<task:scheduled ref="executorTimer" method="insertStockResult" cron="0 50 15 * * ?"/><!-- 需要管住的股票-->
+		<task:scheduled ref="executorTimer" method="insertTradeDay" cron="0 12 15 * * ?"/><!-- 需要管住的股票-->
+		<task:scheduled ref="executorTimer" method="insertStockDayMa" cron="0 15 15 * * ?"/><!-- 计算股票每天的日均线-->
+		
+<!-- 		<task:scheduled ref="executorTimer" method="insertStockExpand" cron="0 30 15 * * ?"/>计算股票每天的基本扩展信息 -->
+<!-- 		<task:scheduled ref="executorTimer" method="insertStockResult" cron="0 50 15 * * ?"/>需要管住的股票 -->
 	</task:scheduled-tasks>
 </beans>
