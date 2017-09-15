@@ -171,4 +171,9 @@ public class StockInfo extends BaseEntity {
         this.productName = productName == null ? null : productName.trim();
     }
 
+    @Override
+    public String toString() {
+    	return super.toString();
+    }
+    
 }
