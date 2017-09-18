@@ -1,9 +1,6 @@
 package com.xionger.qcb.console.timer;
 
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.Date;
 
 import org.slf4j.Logger;
@@ -12,11 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.xionger.qcb.common.constants.Constants;
 import com.xionger.qcb.common.util.date.DateUtil;
-import com.xionger.qcb.common.util.http.HttpClientUtils;
 import com.xionger.qcb.model.vo.ResultVo;
 import com.xionger.qcb.service.StockTimerService;
+import com.xionger.qcb.service.info.StockInfoService;
 import com.xionger.qcb.service.tradeday.TradeDayService;
 import com.xionger.qcb.service.tradeday.TradeMaService;
 
@@ -38,6 +34,8 @@ public class ExecutorTimer {
 	private TradeDayService tradeDayServiceImpl;
 	@Autowired
 	private TradeMaService tradeMaServiceImpl;
+	@Autowired
+	private StockInfoService stockInfoServiceImpl;
 	
 	
 	
@@ -56,6 +54,14 @@ public class ExecutorTimer {
 		rv.setMsg(DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short));
 		tradeMaServiceImpl.process(rv);
 	}
+	
+	/**
+	 * 初始化每月的股票基本数据
+	 */
+	public void insertStockInfo(){
+		this.stockInfoServiceImpl.process(new ResultVo());
+	}
+	
 	
 	/**
 	 * 扩展股票基本信息

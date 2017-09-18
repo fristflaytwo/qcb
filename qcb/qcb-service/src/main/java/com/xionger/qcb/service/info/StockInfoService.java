@@ -9,14 +9,12 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import com.xionger.qcb.common.util.conllection.CollectionUtil;
-import com.xionger.qcb.common.util.string.StringUtil;
 import com.xionger.qcb.dao.mapper.StockInfoDao;
-import com.xionger.qcb.dao.mapper.StockMaDao;
 import com.xionger.qcb.dao.mapper.TradeDayDao;
 import com.xionger.qcb.model.TradeDay;
 import com.xionger.qcb.model.vo.ResultVo;
 import com.xionger.qcb.service.BaseStockAbstract;
-import com.xionger.qcb.service.tradeday.task.StockMaTask;
+import com.xionger.qcb.service.info.task.StockInfoTask;
 
 @Service("stockInfoServiceImpl")
 public class StockInfoService extends BaseStockAbstract{
@@ -52,11 +50,12 @@ public class StockInfoService extends BaseStockAbstract{
      * 获取同花顺中股票基本信息数据
      */
     public void insertStockInfo(ResultVo rv){
-    	List<TradeDay> list=(List<TradeDay>) rv.getList();
+    	@SuppressWarnings("unchecked")
+		List<TradeDay> list=(List<TradeDay>) rv.getList();
     	if(CollectionUtil.isNotEmpty(list)){
     		int size=list.size()%50==0?list.size()/50:list.size()/50+1;
     		for(int i=0;i<size;i++){
-    			//taskExecutor.execute(new StockMaTask(list.subList(i*50, (i==size-1)?list.size():(i+1)*50), tradeDayDao, stockMaDao, date));
+    			taskExecutor.execute(new StockInfoTask(list.subList(i*50, (i==size-1)?list.size():(i+1)*50), stockInfoDao));
     		}
     	}
     }

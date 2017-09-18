@@ -18,13 +18,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xionger.qcb.common.constants.Constants;
-import com.xionger.qcb.common.util.date.DateUtil;
 import com.xionger.qcb.common.util.http.HttpClientUtils;
 import com.xionger.qcb.common.util.json.JsonUtil;
 import com.xionger.qcb.common.util.string.StringUtil;
 import com.xionger.qcb.model.vo.ResultVo;
 import com.xionger.qcb.service.StockService;
 import com.xionger.qcb.service.StockTimerService;
+import com.xionger.qcb.service.info.StockInfoService;
 import com.xionger.qcb.service.tradeday.TradeDayService;
 import com.xionger.qcb.service.tradeday.TradeMaService;
 
@@ -53,6 +53,8 @@ public class IndexController extends BaseController {
 	private TradeDayService tradeDayServiceImpl;
 	@Autowired
 	private TradeMaService tradeMaServiceImpl;
+	@Autowired
+	private StockInfoService stockInfoServiceImpl;
 	
 	@RequestMapping("")
 	public String index() {
@@ -172,6 +174,17 @@ public class IndexController extends BaseController {
 		ResultVo rv=new ResultVo();
 		rv.setMsg("20170912");
 		tradeMaServiceImpl.processExcute(rv);
+		return rv;
+	}
+	
+	/**
+	 * 保存股票基本信息数据
+	 */
+	@RequestMapping("/insertStockInfo")
+	@ResponseBody
+	public ResultVo insertStockInfo(HttpServletRequest req, HttpServletResponse res){
+		ResultVo rv=new ResultVo();
+		stockInfoServiceImpl.process(rv);
 		return rv;
 	}
 }
