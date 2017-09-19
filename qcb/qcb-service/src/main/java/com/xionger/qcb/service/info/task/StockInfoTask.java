@@ -1,6 +1,5 @@
 package com.xionger.qcb.service.info.task;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,12 +12,12 @@ import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.xionger.qcb.common.constants.Constants;
 import com.xionger.qcb.common.util.conllection.CollectionUtil;
 import com.xionger.qcb.common.util.date.DateUtil;
+import com.xionger.qcb.common.util.string.StringUtil;
 import com.xionger.qcb.dao.mapper.StockInfoDao;
 import com.xionger.qcb.model.StockInfo;
 import com.xionger.qcb.model.TradeDay;
@@ -58,6 +57,7 @@ public class StockInfoTask implements Runnable {
     			stockInfo=new StockInfo();
     			LOGGER.info("线程id{}:上市公司{}--->{}:基础信息获取开始",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName());
     			try {
+    				Thread.sleep(500);
     				stockInfo=new StockInfo();
     				stockInfo.generateId();
     				stockInfo.setCode(tradeDay.getCode());
@@ -67,7 +67,8 @@ public class StockInfoTask implements Runnable {
     				doc=Jsoup.parse(htmlpage.asXml());
     				doc=Jsoup.parse(doc.toString().replaceAll("&nbsp;", ""));
     				LOGGER.info("线程id{}:上市公司{}--->{}:开始解析公司基本信息",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName());
-    				element=doc.getElementsByClass(gsxx).get(0).child(1).child(0).child(0);
+    				element=doc.getElementsByClass(gsxx)!=null && doc.getElementsByClass(gsxx).size()>0?doc.getElementsByClass(gsxx).get(0).child(1).child(0).child(0):null;
+    				if(element==null) continue;
     				ListIterator<Element> elementList=element.children().listIterator();
     				while(elementList.hasNext()){
     					Element ele=elementList.next();
@@ -99,14 +100,17 @@ public class StockInfoTask implements Runnable {
     						stockInfo.setMarketDate(ele.child(1).text().replaceAll(" ", "").replace("-", ""));
     					}
     					if(ele.hasText() && ele.child(0).text().replaceAll(" ", "").indexOf("发行价")==0){
-    						stockInfo.setLssuePrice(new BigDecimal(ele.child(1).text().replaceAll(" ", "").split("/")[0].replace("元", "")));
+    						String fxj=ele.child(1).text().replaceAll(" ", "").split("/")[0].replace("元", "").replaceAll("-", "");
+    						stockInfo.setLssuePrice(new BigDecimal(StringUtil.isNotBlank(fxj)?fxj:"0"));
     					}
     					if(ele.hasText() && ele.child(0).text().replaceAll(" ", "").indexOf("市盈率")>0){
-    						stockInfo.setLssuePe(new BigDecimal(ele.child(1).text().replaceAll(" ", "").split("/")[1].replace("倍", "")));
+    						String syl=ele.child(1).text().replaceAll(" ", "").split("/")[1].replace("倍", "").replaceAll("-", "");
+    						stockInfo.setLssuePe(new BigDecimal(StringUtil.isNotBlank(syl)?syl:"0"));
     					}
     				}
     				LOGGER.info("线程id{}:上市公司{}--->{}:开始解析公司主营业务",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName());
-    				element=doc.getElementsByClass(gsyw).get(0).child(1).child(0).child(0);
+    				element=doc.getElementsByClass(gsyw)!=null && doc.getElementsByClass(gsyw).size()>0? doc.getElementsByClass(gsyw).get(0).child(1).child(0).child(0):null;
+    				if(element==null) continue;
     				elementList=element.children().listIterator();
     				while(elementList.hasNext()){
     					Element ele=elementList.next();
@@ -123,12 +127,12 @@ public class StockInfoTask implements Runnable {
     				siList.add(stockInfo);
     				LOGGER.info("线程id{}:上市公司{}--->{}:解析基础信息完毕。",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName());
     				LOGGER.info("线程id{}:上市公司{}--->{},数据对象{}",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName(),stockInfo.toString());
-    			} catch (FailingHttpStatusCodeException | IOException e) {
-					LOGGER.info("线程id{}:上市公司{}--->{}:基础信息获取失败.",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName(),e);
-				}finally{
-					webclient.close();
+    			} catch (Exception e) {
+					LOGGER.error("线程id{}:上市公司{}--->{}:基础信息获取失败.",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName(),e);
+					LOGGER.error("线程id{}:上市公司{}--->{}:失败的数据对象：",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName(),stockInfo!=null?stockInfo.toString():"数据组装时发生异常");
 				}
     		}
+    		webclient.close();
 			if(CollectionUtil.isNotEmpty(siList)){
 				stockInfoDao.inserts(siList);
 			}

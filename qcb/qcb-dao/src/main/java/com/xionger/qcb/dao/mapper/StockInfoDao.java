@@ -18,4 +18,6 @@ public interface StockInfoDao {
     int updateByPrimaryKeySelective(StockInfo record);
 
     int updateByPrimaryKey(StockInfo record);
+    
+    int deleteByCreateDate(@Param("createDate")String createDate);
 }

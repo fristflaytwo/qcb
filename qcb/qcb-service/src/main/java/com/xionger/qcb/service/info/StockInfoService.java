@@ -1,5 +1,6 @@
 package com.xionger.qcb.service.info;
 
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import com.xionger.qcb.common.util.conllection.CollectionUtil;
+import com.xionger.qcb.common.util.date.DateUtil;
 import com.xionger.qcb.dao.mapper.StockInfoDao;
 import com.xionger.qcb.dao.mapper.TradeDayDao;
 import com.xionger.qcb.model.TradeDay;
@@ -32,7 +34,7 @@ public class StockInfoService extends BaseStockAbstract{
 	 * @param rv
 	 */
 	protected void processBefore(ResultVo rv) {
-		List<TradeDay> list=this.tradeDayDao.selectListByCreateDate(this.tradeDayDao.getLastCreateDate());
+		List<TradeDay> list=this.tradeDayDao.selectListForUpdateStockInfo(this.tradeDayDao.getLastCreateDate(),DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short));
 		rv.setList(list);
 		LOGGER.info("总共需要获取{}多上市公司信息",CollectionUtil.isNotEmpty(list)?list.size():0);
 	}

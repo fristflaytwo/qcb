@@ -253,4 +253,11 @@
       create_date = #{createDate,jdbcType=VARCHAR}
     where id = #{id,jdbcType=CHAR}
   </update>
+  
+  <delete id="deleteByCreateDate">
+    delete from t_stock_info
+    where create_date = #{createDate,jdbcType=VARCHAR}
+  </delete>
+  
+  
 </mapper>

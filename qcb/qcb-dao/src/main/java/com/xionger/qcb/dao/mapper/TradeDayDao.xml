@@ -162,6 +162,10 @@
     SELECT t.`create_date` FROM t_trade_day t ORDER BY t.`create_date` DESC LIMIT 1
   </select>
   
-  
+  <select id="selectListForUpdateStockInfo" resultMap="BaseResultMap" >
+    select 
+	<include refid="Base_Column_List" /> 
+	from t_trade_day t where t.create_date = #{tradeDayDate,jdbcType=VARCHAR} and NOT EXISTS (SELECT 1 FROM t_stock_info a WHERE t.`code`=a.`code` AND a.`create_date`=#{stockInfoDate,jdbcType=VARCHAR})
+  </select>
   
 </mapper>

@@ -48,4 +48,12 @@ public interface TradeDayDao {
      */
     String getLastCreateDate();
     
+    /**
+     * 查询需要爬去股票信息的股票记录
+     * @param tradeDayDate
+     * @param stockInfoDate
+     * @return
+     */
+    List<TradeDay> selectListForUpdateStockInfo(@Param("tradeDayDate")String tradeDayDate,@Param("stockInfoDate")String stockInfoDate);
+    
 }
