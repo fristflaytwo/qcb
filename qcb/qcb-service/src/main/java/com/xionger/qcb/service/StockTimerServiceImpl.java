@@ -233,5 +233,5 @@ public class StockTimerServiceImpl implements StockTimerService{
         //插入这天的风口神龙数据
     	stockResultDao.insertByResultType05(date);
     }
-    
+   
 }

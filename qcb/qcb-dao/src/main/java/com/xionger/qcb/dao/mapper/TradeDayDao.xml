@@ -174,5 +174,11 @@
 	from t_trade_day t where t.create_date = #{tradeDayDate,jdbcType=VARCHAR} and NOT EXISTS (SELECT 1 FROM t_stock_concept a WHERE t.`code`=a.`code` AND a.`create_date`=#{stockConceptDate,jdbcType=VARCHAR})
   </select>
   
+  <select id="selectListForUpdateTradeExpand" resultMap="BaseResultMap" >
+    select 
+	<include refid="Base_Column_List" /> 
+	from t_trade_day t where t.create_date = #{tradeDayDate,jdbcType=VARCHAR} and NOT EXISTS (SELECT 1 FROM t_trade_expand a WHERE t.`code`=a.`code` AND a.`create_date`=#{tradeExpandDate,jdbcType=VARCHAR})
+  </select>
+  
   
 </mapper>

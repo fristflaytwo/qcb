@@ -16,6 +16,7 @@ import com.xionger.qcb.service.concept.StockConceptService;
 import com.xionger.qcb.service.info.StockInfoService;
 import com.xionger.qcb.service.tradeday.TradeDayService;
 import com.xionger.qcb.service.tradeday.TradeMaService;
+import com.xionger.qcb.service.tradeexpand.TradeExpandService;
 
 /**
  * 定时计划任务处理服务类
@@ -39,6 +40,8 @@ public class ExecutorTimer {
 	private StockInfoService stockInfoServiceImpl;
 	@Autowired
 	private StockConceptService stockConceptServiceImpl;
+	@Autowired
+	private TradeExpandService tradeExpandServiceImpl;
 	
 	
 	
@@ -46,6 +49,7 @@ public class ExecutorTimer {
 	 * 股票日批数据
 	 */
 	public void insertTradeDay() {
+		LOGGER.info("开始下载每天的交易数据");
 		tradeDayServiceImpl.process(new ResultVo());
 	}
 	
@@ -53,6 +57,7 @@ public class ExecutorTimer {
 	 * 初始化每天的日均线
 	 */
 	public void insertStockDayMa(){
+		LOGGER.info("开始初始化每天交易均线数据");
 		ResultVo rv=new ResultVo();
 		rv.setMsg(DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short));
 		tradeMaServiceImpl.process(rv);
@@ -62,6 +67,7 @@ public class ExecutorTimer {
 	 * 初始化每月的股票基本数据
 	 */
 	public void insertStockInfo(){
+		LOGGER.info("开始爬取股票信息每月的基本信息更新");
 		this.stockInfoServiceImpl.process(new ResultVo());
 	}
 	
@@ -69,6 +75,7 @@ public class ExecutorTimer {
 	 * 初始化股票概念
 	 */
 	public void insertStockConcept(){
+		LOGGER.info("开始爬取股票信息的概念数据");
 		this.stockConceptServiceImpl.process(new ResultVo());
 	}
 	
@@ -77,7 +84,8 @@ public class ExecutorTimer {
 	 * 扩展股票基本信息
 	 */
 	public void insertStockExpand(){
-		this.stockTimerService.insertStockExpand(DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short));
+		LOGGER.info("开始爬取股票信息的每天交易扩展数据");
+		this.tradeExpandServiceImpl.process(new ResultVo());
 	}
 	
 	/**

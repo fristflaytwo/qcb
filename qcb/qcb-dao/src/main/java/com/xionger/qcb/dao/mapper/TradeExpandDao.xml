@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xionger.qcb.dao.mapper.TradeExpandDao" >
+  <resultMap id="BaseResultMap" type="com.xionger.qcb.model.TradeExpand" >
+    <id column="id" property="id" jdbcType="CHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="code_name" property="codeName" jdbcType="VARCHAR" />
+    <result column="turnover" property="turnover" jdbcType="DECIMAL" />
+    <result column="amplitude" property="amplitude" jdbcType="DECIMAL" />
+    <result column="circulation_value" property="circulationValue" jdbcType="DECIMAL" />
+    <result column="total_market_value" property="totalMarketValue" jdbcType="DECIMAL" />
+    <result column="create_date" property="createDate" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, code, code_name, turnover, amplitude, circulation_value, total_market_value, 
+    create_date
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_trade_expand
+    where id = #{id,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_trade_expand
+    where id = #{id,jdbcType=CHAR}
+  </delete>
+  
+  <insert id="inserts">
+    insert into t_trade_expand (id, code, code_name, 
+      turnover, amplitude, circulation_value, 
+      total_market_value, create_date)
+    values 
+    <foreach item="item" index="key" collection="tradeExpandList" open="" separator="," close="">
+    	(
+    		#{item.id,jdbcType=CHAR}, #{item.code,jdbcType=VARCHAR}, #{item.codeName,jdbcType=VARCHAR}, 
+      		#{item.turnover,jdbcType=DECIMAL}, #{item.amplitude,jdbcType=DECIMAL}, #{item.circulationValue,jdbcType=DECIMAL}, 
+      		#{item.totalMarketValue,jdbcType=DECIMAL}, #{item.createDate,jdbcType=VARCHAR}
+     	)
+   	</foreach>
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.xionger.qcb.model.TradeExpand" >
+    insert into t_trade_expand
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="code != null" >
+        code,
+      </if>
+      <if test="codeName != null" >
+        code_name,
+      </if>
+      <if test="turnover != null" >
+        turnover,
+      </if>
+      <if test="amplitude != null" >
+        amplitude,
+      </if>
+      <if test="circulationValue != null" >
+        circulation_value,
+      </if>
+      <if test="totalMarketValue != null" >
+        total_market_value,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=CHAR},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="codeName != null" >
+        #{codeName,jdbcType=VARCHAR},
+      </if>
+      <if test="turnover != null" >
+        #{turnover,jdbcType=DECIMAL},
+      </if>
+      <if test="amplitude != null" >
+        #{amplitude,jdbcType=DECIMAL},
+      </if>
+      <if test="circulationValue != null" >
+        #{circulationValue,jdbcType=DECIMAL},
+      </if>
+      <if test="totalMarketValue != null" >
+        #{totalMarketValue,jdbcType=DECIMAL},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xionger.qcb.model.TradeExpand" >
+    update t_trade_expand
+    <set >
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="codeName != null" >
+        code_name = #{codeName,jdbcType=VARCHAR},
+      </if>
+      <if test="turnover != null" >
+        turnover = #{turnover,jdbcType=DECIMAL},
+      </if>
+      <if test="amplitude != null" >
+        amplitude = #{amplitude,jdbcType=DECIMAL},
+      </if>
+      <if test="circulationValue != null" >
+        circulation_value = #{circulationValue,jdbcType=DECIMAL},
+      </if>
+      <if test="totalMarketValue != null" >
+        total_market_value = #{totalMarketValue,jdbcType=DECIMAL},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xionger.qcb.model.TradeExpand" >
+    update t_trade_expand
+    set code = #{code,jdbcType=VARCHAR},
+      code_name = #{codeName,jdbcType=VARCHAR},
+      turnover = #{turnover,jdbcType=DECIMAL},
+      amplitude = #{amplitude,jdbcType=DECIMAL},
+      circulation_value = #{circulationValue,jdbcType=DECIMAL},
+      total_market_value = #{totalMarketValue,jdbcType=DECIMAL},
+      create_date = #{createDate,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=CHAR}
+  </update>
+</mapper>

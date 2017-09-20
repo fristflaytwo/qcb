@@ -64,6 +64,14 @@ public interface TradeDayDao {
      */
     List<TradeDay> selectListForUpdateStockConcept(@Param("tradeDayDate")String tradeDayDate,@Param("stockConceptDate")String stockConceptDate);
     
+    /**
+     * 查询需要爬去股票交易扩展信息
+     * @param tradeDayDate
+     * @param tradeExpandDate
+     * @return
+     */
+    List<TradeDay> selectListForUpdateTradeExpand(@Param("tradeDayDate")String tradeDayDate,@Param("tradeExpandDate")String tradeExpandDate);
+    
     
     
 }

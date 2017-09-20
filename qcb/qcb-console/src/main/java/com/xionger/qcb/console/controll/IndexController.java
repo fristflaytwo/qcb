@@ -28,6 +28,7 @@ import com.xionger.qcb.service.concept.StockConceptService;
 import com.xionger.qcb.service.info.StockInfoService;
 import com.xionger.qcb.service.tradeday.TradeDayService;
 import com.xionger.qcb.service.tradeday.TradeMaService;
+import com.xionger.qcb.service.tradeexpand.TradeExpandService;
 
 
 
@@ -58,6 +59,8 @@ public class IndexController extends BaseController {
 	private StockInfoService stockInfoServiceImpl;
 	@Autowired
 	private StockConceptService stockConceptServiceImpl;
+	@Autowired
+	private TradeExpandService tradeExpandServiceImpl;
 	
 	@RequestMapping("")
 	public String index() {
@@ -201,4 +204,17 @@ public class IndexController extends BaseController {
 		stockConceptServiceImpl.process(rv);
 		return rv;
 	}
+	
+	/**
+	 * 保存股票日交易扩展数据
+	 */
+	@RequestMapping("/insertStockExpand")
+	@ResponseBody
+	public ResultVo insertStockExpand(HttpServletRequest req, HttpServletResponse res){
+		ResultVo rv=new ResultVo();
+		tradeExpandServiceImpl.process(rv);
+		return rv;
+	}
+	
+	
 }
