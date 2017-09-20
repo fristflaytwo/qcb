@@ -54,7 +54,6 @@ public class StockInfoTask implements Runnable {
 			Document doc=null;
 			Element element=null;
     		for(TradeDay tradeDay:this.list){
-    			stockInfo=new StockInfo();
     			LOGGER.info("线程id{}:上市公司{}--->{}:基础信息获取开始",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName());
     			try {
     				Thread.sleep(500);

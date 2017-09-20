@@ -28,5 +28,10 @@ public class StockConcept extends BaseEntity {
     public void setConceptName(String conceptName) {
         this.conceptName = conceptName == null ? null : conceptName.trim();
     }
+    
+    @Override
+    public String toString() {
+    	return super.toString();
+    }
 
 }

@@ -20,12 +20,17 @@
     delete from t_stock_concept
     where id = #{id,jdbcType=CHAR}
   </delete>
-  <insert id="insert" parameterType="com.xionger.qcb.model.StockConcept" >
-    insert into t_stock_concept (id, code, concept_name, 
-      create_date)
-    values (#{id,jdbcType=CHAR}, #{code,jdbcType=VARCHAR}, #{conceptName,jdbcType=VARCHAR}, 
-      #{createDate,jdbcType=VARCHAR})
+  
+  <insert id="inserts" >
+    insert into t_stock_concept (id, code, concept_name, create_date)
+      values 
+    	<foreach item="item" index="key" collection="stockConceptList" open="" separator="," close="">
+	    	(
+	    		#{item.id,jdbcType=CHAR}, #{item.code,jdbcType=VARCHAR}, #{item.conceptName,jdbcType=VARCHAR},#{item.createDate,jdbcType=VARCHAR}
+      		)
+    	</foreach>
   </insert>
+  
   <insert id="insertSelective" parameterType="com.xionger.qcb.model.StockConcept" >
     insert into t_stock_concept
     <trim prefix="(" suffix=")" suffixOverrides="," >
@@ -57,6 +62,7 @@
       </if>
     </trim>
   </insert>
+  
   <update id="updateByPrimaryKeySelective" parameterType="com.xionger.qcb.model.StockConcept" >
     update t_stock_concept
     <set >
@@ -72,6 +78,7 @@
     </set>
     where id = #{id,jdbcType=CHAR}
   </update>
+  
   <update id="updateByPrimaryKey" parameterType="com.xionger.qcb.model.StockConcept" >
     update t_stock_concept
     set code = #{code,jdbcType=VARCHAR},
@@ -79,4 +86,5 @@
       create_date = #{createDate,jdbcType=VARCHAR}
     where id = #{id,jdbcType=CHAR}
   </update>
+  
 </mapper>

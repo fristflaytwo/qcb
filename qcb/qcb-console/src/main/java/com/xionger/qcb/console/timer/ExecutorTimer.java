@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import com.xionger.qcb.common.util.date.DateUtil;
 import com.xionger.qcb.model.vo.ResultVo;
 import com.xionger.qcb.service.StockTimerService;
+import com.xionger.qcb.service.concept.StockConceptService;
 import com.xionger.qcb.service.info.StockInfoService;
 import com.xionger.qcb.service.tradeday.TradeDayService;
 import com.xionger.qcb.service.tradeday.TradeMaService;
@@ -36,6 +37,8 @@ public class ExecutorTimer {
 	private TradeMaService tradeMaServiceImpl;
 	@Autowired
 	private StockInfoService stockInfoServiceImpl;
+	@Autowired
+	private StockConceptService stockConceptServiceImpl;
 	
 	
 	
@@ -60,6 +63,13 @@ public class ExecutorTimer {
 	 */
 	public void insertStockInfo(){
 		this.stockInfoServiceImpl.process(new ResultVo());
+	}
+	
+	/**
+	 * 初始化股票概念
+	 */
+	public void insertStockConcept(){
+		this.stockConceptServiceImpl.process(new ResultVo());
 	}
 	
 	

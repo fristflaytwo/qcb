@@ -24,6 +24,7 @@ import com.xionger.qcb.common.util.string.StringUtil;
 import com.xionger.qcb.model.vo.ResultVo;
 import com.xionger.qcb.service.StockService;
 import com.xionger.qcb.service.StockTimerService;
+import com.xionger.qcb.service.concept.StockConceptService;
 import com.xionger.qcb.service.info.StockInfoService;
 import com.xionger.qcb.service.tradeday.TradeDayService;
 import com.xionger.qcb.service.tradeday.TradeMaService;
@@ -55,6 +56,8 @@ public class IndexController extends BaseController {
 	private TradeMaService tradeMaServiceImpl;
 	@Autowired
 	private StockInfoService stockInfoServiceImpl;
+	@Autowired
+	private StockConceptService stockConceptServiceImpl;
 	
 	@RequestMapping("")
 	public String index() {
@@ -185,6 +188,17 @@ public class IndexController extends BaseController {
 	public ResultVo insertStockInfo(HttpServletRequest req, HttpServletResponse res){
 		ResultVo rv=new ResultVo();
 		stockInfoServiceImpl.process(rv);
+		return rv;
+	}
+	
+	/**
+	 * 保存股票概念信息数据
+	 */
+	@RequestMapping("/insertStockConcept")
+	@ResponseBody
+	public ResultVo insertStockConcept(HttpServletRequest req, HttpServletResponse res){
+		ResultVo rv=new ResultVo();
+		stockConceptServiceImpl.process(rv);
 		return rv;
 	}
 }

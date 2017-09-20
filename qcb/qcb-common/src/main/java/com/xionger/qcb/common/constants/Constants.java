@@ -77,6 +77,11 @@ public class Constants {
 	 */
 	public static final String STOCK_INFO="https://basic.10jqka.com.cn/mobile/#code#/profilen.html";
 	
+	/**
+	 * 上市公司的概念信息，一般情况下不变动，从同花顺上采集下来的，https://basic.10jqka.com.cn/mobile/300033/conceptn.html
+	 */
+	public static final String STOCK_CONCEPT="https://basic.10jqka.com.cn/mobile/#code#/conceptn.html";	
+		
 	
 	
 	
