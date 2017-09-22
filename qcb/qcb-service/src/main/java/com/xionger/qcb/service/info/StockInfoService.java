@@ -30,21 +30,21 @@ public class StockInfoService extends BaseStockAbstract{
 	private ThreadPoolTaskExecutor taskExecutor;
 	
 	/**
-	 * 先查询最后一天股票交易代码信息
+	 * 获取股票基础信息之前准备工作
 	 * @param rv
 	 */
 	protected void processBefore(ResultVo rv) {
 		List<TradeDay> list=this.tradeDayDao.selectListForUpdateStockInfo(this.tradeDayDao.getLastCreateDate(),DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short));
 		rv.setList(list);
-		LOGGER.info("总共需要获取{}多上市公司信息",CollectionUtil.isNotEmpty(list)?list.size():0);
+		LOGGER.info("#--->总共需要获取{}多上市公司信息",CollectionUtil.isNotEmpty(list)?list.size():0);
 	}
 	
 	/**
-	 * 日交易数据保存
+	 * 开始获取股票基本信息
 	 * @param rv
 	 */
 	public void processExcute(ResultVo rv) {
-		LOGGER.info("开始获取同花顺中股票基本信息数据");
+		LOGGER.info("#--->开始获取同花顺中股票基本信息数据");
 		insertStockInfo(rv);
 	}
 	

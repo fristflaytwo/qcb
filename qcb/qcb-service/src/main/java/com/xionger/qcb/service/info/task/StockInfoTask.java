@@ -54,7 +54,7 @@ public class StockInfoTask implements Runnable {
 			Document doc=null;
 			Element element=null;
     		for(TradeDay tradeDay:this.list){
-    			LOGGER.info("线程id{}:上市公司{}--->{}:基础信息获取开始",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName());
+    			LOGGER.info("#--->线程id{}:上市公司{}--->{}:基础信息获取开始",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName());
     			try {
     				Thread.sleep(500);
     				stockInfo=new StockInfo();
@@ -65,7 +65,7 @@ public class StockInfoTask implements Runnable {
     				htmlpage = webclient.getPage(Constants.STOCK_INFO.replace(code, tradeDay.getCode().substring(2)));
     				doc=Jsoup.parse(htmlpage.asXml());
     				doc=Jsoup.parse(doc.toString().replaceAll("&nbsp;", ""));
-    				LOGGER.info("线程id{}:上市公司{}--->{}:开始解析公司基本信息",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName());
+    				LOGGER.info("#--->线程id{}:上市公司{}--->{}:开始解析公司基本信息",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName());
     				element=doc.getElementsByClass(gsxx)!=null && doc.getElementsByClass(gsxx).size()>0?doc.getElementsByClass(gsxx).get(0).child(1).child(0).child(0):null;
     				if(element==null) continue;
     				ListIterator<Element> elementList=element.children().listIterator();
@@ -107,7 +107,7 @@ public class StockInfoTask implements Runnable {
     						stockInfo.setLssuePe(new BigDecimal(StringUtil.isNotBlank(syl)?syl:"0"));
     					}
     				}
-    				LOGGER.info("线程id{}:上市公司{}--->{}:开始解析公司主营业务",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName());
+    				LOGGER.info("#--->线程id{}:上市公司{}--->{}:开始解析公司主营业务",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName());
     				element=doc.getElementsByClass(gsyw)!=null && doc.getElementsByClass(gsyw).size()>0? doc.getElementsByClass(gsyw).get(0).child(1).child(0).child(0):null;
     				if(element==null) continue;
     				elementList=element.children().listIterator();
@@ -124,11 +124,11 @@ public class StockInfoTask implements Runnable {
     					}
     				}
     				siList.add(stockInfo);
-    				LOGGER.info("线程id{}:上市公司{}--->{}:解析基础信息完毕。",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName());
-    				LOGGER.info("线程id{}:上市公司{}--->{},数据对象{}",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName(),stockInfo.toString());
+    				LOGGER.info("#--->线程id{}:上市公司{}--->{}:解析基础信息完毕。",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName());
+    				LOGGER.info("#--->线程id{}:上市公司{}--->{},数据对象{}",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName(),stockInfo.toString());
     			} catch (Exception e) {
-					LOGGER.error("线程id{}:上市公司{}--->{}:基础信息获取失败.",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName(),e);
-					LOGGER.error("线程id{}:上市公司{}--->{}:失败的数据对象：",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName(),stockInfo!=null?stockInfo.toString():"数据组装时发生异常");
+					LOGGER.error("#--->线程id{}:上市公司{}--->{}:基础信息获取失败.",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName(),e);
+					LOGGER.error("#--->线程id{}:上市公司{}--->{}:失败的数据对象：",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName(),stockInfo!=null?stockInfo.toString():"数据组装时发生异常");
 				}
     		}
     		webclient.close();

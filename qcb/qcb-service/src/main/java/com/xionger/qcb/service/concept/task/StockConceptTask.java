@@ -55,7 +55,7 @@ public class StockConceptTask implements Runnable {
 			Element element=null;
 			StringBuffer stockGnxx=null;
     		for(TradeDay tradeDay:this.list){
-    			LOGGER.info("线程id{}:上市公司{}--->{}:概念信息获取开始",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName());
+    			LOGGER.info("#--->线程id{}:上市公司{}--->{}:概念信息获取开始",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName());
     			try {
     				stockGnxx=new StringBuffer("");
     				Thread.sleep(500);
@@ -66,7 +66,7 @@ public class StockConceptTask implements Runnable {
     				htmlpage = webclient.getPage(Constants.STOCK_CONCEPT.replace(code, tradeDay.getCode().substring(2)));
     				doc=Jsoup.parse(htmlpage.asXml());
     				doc=Jsoup.parse(doc.toString().replaceAll("&nbsp;", sNull0));
-    				LOGGER.info("线程id{}:上市公司{}--->{}:开始解析公司概念信息",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName());
+    				LOGGER.info("#--->线程id{}:上市公司{}--->{}:开始解析公司概念信息",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName());
     				element=doc.getElementsByClass(gnxx)!=null && doc.getElementsByClass(gnxx).size()>0?doc.getElementsByClass(gnxx).get(0):null;
     				if(element==null) continue;
     				ListIterator<Element> elementList=element.children().listIterator();
@@ -76,11 +76,11 @@ public class StockConceptTask implements Runnable {
     				}
     				stockConcept.setConceptName(stockGnxx.toString());
     				siList.add(stockConcept);
-    				LOGGER.info("线程id{}:上市公司{}--->{}:解析概念信息完毕。",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName());
-    				LOGGER.info("线程id{}:上市公司{}--->{},概念数据对象{}",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName(),stockConcept.toString());
+    				LOGGER.info("#--->线程id{}:上市公司{}--->{}:解析概念信息完毕。",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName());
+    				LOGGER.info("#--->线程id{}:上市公司{}--->{},概念数据对象{}",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName(),stockConcept.toString());
     			} catch (Exception e) {
-					LOGGER.error("线程id{}:上市公司{}--->{}:概念信息获取失败.",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName(),e);
-					LOGGER.error("线程id{}:上市公司{}--->{}:概念失败的数据对象：",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName(),stockConcept!=null?stockConcept.toString():"数据组装时发生异常");
+					LOGGER.error("#--->线程id{}:上市公司{}--->{}:概念信息获取失败.",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName(),e);
+					LOGGER.error("#--->线程id{}:上市公司{}--->{}:概念失败的数据对象：",Thread.currentThread().getName(),tradeDay.getCode(),tradeDay.getCodeName(),stockConcept!=null?stockConcept.toString():"数据组装时发生异常");
 				}
     		}
     		webclient.close();

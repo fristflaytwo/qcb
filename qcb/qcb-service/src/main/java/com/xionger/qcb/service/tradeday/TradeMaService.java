@@ -33,18 +33,23 @@ public class TradeMaService extends BaseStockAbstract{
 	 */
 	protected boolean validate(ResultVo rv) {
 		if(rv==null || StringUtil.isBlank(rv.getMsg())){//计算均线必须传入日期
+			LOGGER.info("#--->系统传入TradeMaService->validate 参数【rv】或rv.getMsg()为空");
 			return Boolean.FALSE;
 		}
 		return Boolean.TRUE;
 	}
 	
 	/**
-	 * 日交易数据保存
+	 * 股票交易均线计算前准备工作
 	 * @param rv
 	 */
 	public void processExcute(ResultVo rv) {
-		LOGGER.info("开始计算{}天的均线数据",rv.getMsg());
-		insertStockDayMa(rv.getMsg());
+		if(rv.getMsg().equals(this.tradeDayDao.getLastCreateDate())){
+			insertStockDayMa(rv.getMsg());
+			LOGGER.info("#--->系统传入TradeMaService->processExcute {}天均线计算完毕",rv.getMsg());
+		}else{
+			LOGGER.info("#--->系统传入TradeMaService->processExcute {}天均线已存在不需重复计算",rv.getMsg());
+		}
 	}
 	
 	/**

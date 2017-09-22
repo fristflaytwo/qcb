@@ -30,21 +30,28 @@ public class StockConceptService extends BaseStockAbstract{
 	private ThreadPoolTaskExecutor taskExecutor;
 	
 	/**
-	 * 先查询最后一天股票交易代码信息
+	 * 查询概念信息前准备工作
 	 * @param rv
 	 */
 	protected void processBefore(ResultVo rv) {
-		List<TradeDay> list=this.tradeDayDao.selectListForUpdateStockConcept(this.tradeDayDao.getLastCreateDate(),DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short));
-		rv.setList(list);
-		LOGGER.info("总共需要获取{}多上市公司信息，进行概念爬取",CollectionUtil.isNotEmpty(list)?list.size():0);
+		if(rv==null){
+			rv=new ResultVo(false,"9999","传入参数错误");
+			LOGGER.info("#--->系统传入参数【rv】为空");
+		}else{
+			if(DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short).equals(this.tradeDayDao.getLastCreateDate())){
+				List<TradeDay> list=this.tradeDayDao.selectListForUpdateStockConcept(this.tradeDayDao.getLastCreateDate(),DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short));
+				rv.setList(list);
+			}
+			LOGGER.info("#--->总共需要获取{}上市公司信息，进行概念爬取",CollectionUtil.isNotEmpty(rv.getList())?rv.getList().size():0);
+		}
 	}
 	
 	/**
-	 * 日交股票概念爬去
+	 * 开始爬取股票概念爬去
 	 * @param rv
 	 */
 	public void processExcute(ResultVo rv) {
-		LOGGER.info("开始获取同花顺中股票概念信息数据");
+		LOGGER.info("#--->开始获取同花顺中获取股票概念信息数据");
 		insertStockConcept(rv);
 	}
 	

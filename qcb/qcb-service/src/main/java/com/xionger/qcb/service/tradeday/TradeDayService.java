@@ -6,13 +6,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
@@ -43,7 +41,7 @@ public class TradeDayService extends BaseStockAbstract{
 	
 	
 	/**
-	 * 应用操作之前处理内容
+	 * 每天交易数据处理之前准备工作
 	 * @param rv
 	 */
 	protected void processBefore(ResultVo rv) {
@@ -58,14 +56,14 @@ public class TradeDayService extends BaseStockAbstract{
 			rv.setSuccess(Boolean.TRUE);
 			rv.setMsg(path);
 		} catch (Exception e) {
-			LOGGER.error("下载"+DateUtil.dateToString(new Date(),DateUtil.formatPattern_Short)+"天股票信息数据异常",e);
+			LOGGER.error("#--->下载{}天股票信息数据异常",DateUtil.dateToString(new Date(),DateUtil.formatPattern_Short),e);
 			rv.setSuccess(Boolean.FALSE);
 		} finally {
 			try {
 				if (bw != null)
 					bw.close();
 			} catch (Exception e) {
-				LOGGER.error("关闭写入{}股票数据文件流异常",DateUtil.dateToString(new Date(),DateUtil.formatPattern_Short),e);
+				LOGGER.error("#--->关闭写入{}股票数据文件流异常",DateUtil.dateToString(new Date(),DateUtil.formatPattern_Short),e);
 				rv.setSuccess(Boolean.FALSE);
 			}
 			bw=null;
@@ -86,7 +84,7 @@ public class TradeDayService extends BaseStockAbstract{
 	 * @return
 	 */
 	private String insertsTradeDayByXls(String path){
-		LOGGER.info("开始读取{}目录的股票excel数据，并保存数据库",path);
+		LOGGER.info("#--->开始读取{}目录的股票excel数据，并保存数据库",path);
 		HSSFWorkbook wb=null;
     	POIFSFileSystem pfs=null;
     	FileInputStream fis=null;
@@ -104,11 +102,15 @@ public class TradeDayService extends BaseStockAbstract{
         	DecimalFormat dfNum = new DecimalFormat(Constants.DECIMAL_DIGIT_0);
         	DecimalFormat df4 = new DecimalFormat(Constants.DECIMAL_DIGIT_4);
         	TradeDay tradeDay=null;
+        	String lastDate=this.tradeDayDao.getLastCreateDate();
             while(rows.hasNext()){
             	row=rows.next();
             	if(i==0){
             		dataDate=delDataBackDataTime(row, 1);
-            		if(StringUtil.isBlank(dataDate)) break;
+            		if(StringUtil.isBlank(dataDate) || (StringUtil.isNotBlank(dataDate)&& dataDate.equals(lastDate))){
+            			LOGGER.info("#--->读取{}目录的股票excel数据完毕，但并未数据入库，原因：{}",path,StringUtil.isBlank(dataDate)?"excel中数据日期为空":"该天数据已存在");
+            			break;
+            		} 
             		rows.next();// 绕过数据标题
             		i++;
             		continue;
@@ -125,7 +127,7 @@ public class TradeDayService extends BaseStockAbstract{
             	i++;
             }
         }catch(Exception e){
-        	LOGGER.error(">>>>>\t"+new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())+"\t 加载股票数据文件数据入库发生异常："+ ExceptionUtils.getMessage(e) + "\n" + ExceptionUtils.getStackTrace(e));
+        	LOGGER.error("#--->加载目录{}股票数据文件，数据入库发生异常。",path,e);
         }finally{
         	try {
         		if(fis!=null)fis.close();
@@ -166,7 +168,7 @@ public class TradeDayService extends BaseStockAbstract{
 	
 	
 	/**
-	 * 返回row中的数据日期，并且如果数据库中存在该日期数据则删除
+	 * 返回row中的数据日期
 	 * @param row
 	 * @param cellIndex
 	 * @return
@@ -177,7 +179,6 @@ public class TradeDayService extends BaseStockAbstract{
 			return null;
 		}else{
 			dataDate=DateUtil.dateToString(new Date(), DateUtil.YEAR)+dataDate.split(" ")[0].replace("-", "");
-			this.tradeDayDao.deleteByCreateDate(dataDate);//如果这天存在数据，则先删除数据
 		}
 		return dataDate;
 	}

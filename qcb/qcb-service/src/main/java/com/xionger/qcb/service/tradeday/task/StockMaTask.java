@@ -4,15 +4,19 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.xionger.qcb.common.constants.Constants;
 import com.xionger.qcb.common.util.conllection.CollectionUtil;
 import com.xionger.qcb.dao.mapper.StockMaDao;
 import com.xionger.qcb.dao.mapper.TradeDayDao;
 import com.xionger.qcb.model.StockMa;
 import com.xionger.qcb.model.TradeDay;
+import com.xionger.qcb.service.tradeday.TradeMaService;
 
 public class StockMaTask implements Runnable {
-
+	private static final Logger LOGGER = LoggerFactory.getLogger(TradeMaService.class);
 	private List<TradeDay> list=new ArrayList<TradeDay>();
 	private TradeDayDao tradeDayDao;
 	private StockMaDao stockMaDao;
@@ -34,6 +38,7 @@ public class StockMaTask implements Runnable {
 			BigDecimal DIGIT_10_2=new BigDecimal(Constants.DECIMAL_10_DIGIT_2);
 			BigDecimal DIGIT_20_2=new BigDecimal(Constants.DECIMAL_20_DIGIT_2);
 			for(TradeDay stock:list){
+				LOGGER.info("#--->系统进入[StockMaTask->run],开始计算{}天，代码{}的股票均线",date,stock.getCode());
     			stock30List=this.tradeDayDao.select30ListByCodeCreateDateOrderDesc(stock.getCode(),date);//必须结果集倒序
     			//均线计算
     			BigDecimal day5=new BigDecimal(Constants.DECIMAL_DIGIT_2);

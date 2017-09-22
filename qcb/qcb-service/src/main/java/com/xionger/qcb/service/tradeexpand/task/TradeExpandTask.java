@@ -30,7 +30,7 @@ public class TradeExpandTask implements Runnable {
 	
 	@Override
 	public void run() {
-		LOGGER.info("线程id:{}--->开始进入股票交易扩展信息爬取线程",Thread.currentThread().getId());
+		LOGGER.info("#--->线程id:{}--->开始进入股票交易扩展信息爬取线程",Thread.currentThread().getId());
 		if(CollectionUtil.isNotEmpty(this.list)){
 			List<TradeExpand> tradeExpandList=new ArrayList<TradeExpand>();
 			String date=DateUtil.dateToString(new Date(), DateUtil.formatPattern_Short);
@@ -40,7 +40,7 @@ public class TradeExpandTask implements Runnable {
 			String bigVal="0.0000";
 			TradeExpand tradeExpand=null;
 			for(TradeDay tradeDay:this.list){
-				LOGGER.info("线程id:{}--->开始爬取股票代码{}的交易扩展信息",Thread.currentThread().getId(),tradeDay.getCode());
+				LOGGER.info("#--->线程id:{}--->开始爬取股票代码{}的交易扩展信息",Thread.currentThread().getId(),tradeDay.getCode());
 				try {
 					Thread.sleep(500);
 					result=HttpClientUtils.doGet(Constants.STOCK_EXPAND_BASE_INFO+tradeDay.getCode(), Constants.UTF8);
@@ -59,12 +59,12 @@ public class TradeExpandTask implements Runnable {
 						tradeExpandList.add(tradeExpand);
 					}
 				} catch (Exception e) {
-					LOGGER.error("线程id:{}--->爬取股票代码:{}的交易扩展信息失败，爬取到的数据为:{}",Thread.currentThread().getId(),tradeDay.getCode(),result,e);
+					LOGGER.error("#--->线程id:{}--->爬取股票代码:{}的交易扩展信息失败，爬取到的数据为:{}",Thread.currentThread().getId(),tradeDay.getCode(),result,e);
 				}
 			}
 			if(CollectionUtil.isNotEmpty(tradeExpandList)){
 				tradeExpandDao.inserts(tradeExpandList);
-				LOGGER.info("线程id:{}--->爬取股票的交易扩展信息成功，本线程共插入{}条记录。",Thread.currentThread().getId(),tradeExpandList.size());
+				LOGGER.info("#--->线程id:{}--->爬取股票的交易扩展信息成功，本线程共插入{}条记录。",Thread.currentThread().getId(),tradeExpandList.size());
 			}
 		}
 	}

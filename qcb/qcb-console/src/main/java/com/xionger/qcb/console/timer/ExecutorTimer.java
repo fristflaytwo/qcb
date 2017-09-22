@@ -83,7 +83,7 @@ public class ExecutorTimer {
 	/**
 	 * 扩展股票基本信息
 	 */
-	public void insertStockExpand(){
+	public void insertTradeExpand(){
 		LOGGER.info("开始爬取股票信息的每天交易扩展数据");
 		this.tradeExpandServiceImpl.process(new ResultVo());
 	}
