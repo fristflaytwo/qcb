@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -61,6 +62,8 @@ public class IndexController extends BaseController {
 	private StockConceptService stockConceptServiceImpl;
 	@Autowired
 	private TradeExpandService tradeExpandServiceImpl;
+	@Autowired
+	private RedisTemplate<String, String> redisTemplate;
 	
 	@RequestMapping("")
 	public String index() {
@@ -213,6 +216,19 @@ public class IndexController extends BaseController {
 	public ResultVo insertStockExpand(HttpServletRequest req, HttpServletResponse res){
 		ResultVo rv=new ResultVo();
 		tradeExpandServiceImpl.process(rv);
+		return rv;
+	}
+	
+	/**
+	 * 保存股票日交易扩展数据
+	 */
+	@RequestMapping("/redisTest")
+	@ResponseBody
+	public ResultVo redisTest(HttpServletRequest req, HttpServletResponse res){
+		ResultVo rv=new ResultVo();
+		Object obj=this.redisTemplate.opsForValue().get("111");
+		System.out.println(obj.toString());
+		rv.setData(obj);
 		return rv;
 	}
 	

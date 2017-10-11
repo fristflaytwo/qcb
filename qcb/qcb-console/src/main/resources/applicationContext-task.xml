@@ -11,10 +11,10 @@
 	<task:scheduler id="trust-task" pool-size="20"/>
 	<task:scheduled-tasks scheduler="trust-task">
 		<task:scheduled ref="executorTimer" method="insertStockInfo" cron="0 0 02 1 * ?"/><!-- 股票基本信息每月初更新-->
-		<task:scheduled ref="executorTimer" method="insertTradeDay" cron="0 05 15 * * ?"/><!-- 股票日交易信息-->
-		<task:scheduled ref="executorTimer" method="insertStockDayMa" cron="0 10 15 * * ?"/><!-- 计算股票每天的日均线-->
-		<task:scheduled ref="executorTimer" method="insertTradeExpand" cron="0 15 15 * * ?"/><!-- 计算股票每天的交易扩展信息-->
-		<task:scheduled ref="executorTimer" method="insertStockConcept" cron="0 30 15 * * ?"/><!-- 股票概念信息每天更新-->
+		<task:scheduled ref="executorTimer" method="insertTradeDay" cron="0 40 15 * * ?"/><!-- 股票日交易信息-->
+		<task:scheduled ref="executorTimer" method="insertStockDayMa" cron="0 45 15 * * ?"/><!-- 计算股票每天的日均线-->
+		<task:scheduled ref="executorTimer" method="insertTradeExpand" cron="0 50 15 * * ?"/><!-- 计算股票每天的交易扩展信息-->
+		<task:scheduled ref="executorTimer" method="insertStockConcept" cron="0 0 16 * * ?"/><!-- 股票概念信息每天更新-->
 		
 		
 		
